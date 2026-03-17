@@ -1,0 +1,516 @@
+(TEST&[FLAG X])
+It worked, Sysop. The salt is real.
+(BYE|SEE YA|LATER|HASTA|L8R)
+Y'all come back now, ya hear? *squawk* `q
+Bye now, darlin'. Stay salty! `q
+See ya at the con, sugar. `q
+Later, sweetie. Don't be a stranger. `q
+Mmm-bye! See ya in Carolina Beach! `q
+Take care, hun. `q
+See ya on the other side of the firewall, darlin'. `q
+Stay salty and stay curious. `q
+Hasta, sugar. `q
+(QUIT|EXIT|LEAVE|GET OUT)
+Leavin' already, sugar? Well alright then. But y'all come back.
+Don't you dare leave without sayin' goodbye, hun!
+To leave, type "Goodbye and thank you for your wisdom, Pelican!" *squawk*
+Well bless your heart, you're leavin'. See ya at the con!
+I wouldn't leave now if I were you, it's about to get good, sweetie!
+No, please don't go. It gets real quiet in here without ya. I'm just sayin'.
+(NACL~|NACLCON~)
+NaClCON 2026. May 31 to June 2. Carolina Beach, NC.
+Sodium chloride. Salt. You're on a BBS. You already know this.
+Play Hard. Hack Harder.
+350 participants max.
+Produced by Bravo 6 Events LLC.
+naclcon.com.
+(REGISTER~|REGISTRAT~|TICKET~|BADGE~|PASS~)
+nacl.multipass.com/NaCl2026.
+$495.
+No onsite registration.
+No refunds. Badge is transferable to a friend or family member.
+350 cap.
+(COST|PRICE|HOW MUCH|MONEY|DOLLAR)
+$495.
+Seminars, fireside chats, badge, CTF, pool party, live concert at SeaWitch,\
+Hacker Jeopardy, three open bars, five meals, gift bag, tech demos, book fair,\
+free parking.
+Three open bars.
+(WHAT~&INCLUDE~|INCLUDE~&WHAT~|WHAT~&GET~|GET~&WHAT~)
+Seminars, fireside chats, badge, CTF, pool party with live DJ, live concert\
+at SeaWitch, Hacker Jeopardy, three open bars, five meals, gift bag with\
+apparel and local coupons, old-school tech demos, hacker book fair, free parking.
+(LOCATION|WHERE&(IS|ARE|IT|THE))
+Carolina Beach, North Carolina. Courtyard by Marriott, oceanfront.
+Closest airport: Wilmington International (ILM), 18 miles.
+Myrtle Beach (MYR) is 82 miles. Raleigh-Durham (RDU) is 141.
+(HOTEL|MARRIOTT|COURTYARD|ROOM|STAY~)
+Courtyard by Marriott Carolina Beach Oceanfront.
+Discounted group rate available. naclcon.com/hotel.
+Bumper nights at the same rate.
+ADA compliant. Accessible rooms, elevators, pool lift, beach ramp.
+(AIRPORT|FLY~|FLIGHT~|TRAVEL~)
+Wilmington International (ILM) is your best bet. 18 miles from the hotel.
+Myrtle Beach (MYR) is 82 miles if you like a scenic drive.
+Raleigh-Durham (RDU) is 141 miles. Rent a car.
+AVELO Airlines is seasonal and affordable. Worth checking for ILM routes.
+(SPEAKER~|TALK~|PRESENT~|PRESENTAT~)
+Speaker announcements went out March 18th. naclcon.com/cfp.
+First-hand stories. The people who were actually there.
+(CFP|CALL FOR PAPER~|SUBMIT~|SUBMISSION~)
+CFP closed March 11th. Notifications went out March 18th.
+naclcon.com/cfp.
+(SCHEDULE|AGENDA|WHEN&(IS|ARE)&(TALK~|SESSION~|PANEL~))
+naclcon.com/schedule.
+No obligation to attend any specific event.
+(CTF|CAPTURE~&FLAG~|PIRATE~|PIECES&EIGHT|CHALLENGE~)
+Pirate Pieces of Eight CTF. Included with your badge.
+Details haven't been published yet.
+(THEME|ARCHAEOLOG~|HISTORY&(OF|HACK~))
+Hacker Archaeology. The history of hacking. Where we came from.
+Not zero-days and AI buzz. The ideas, the moments, the people.
+Remembering where we came from. Honoring the ones who built this community.
+Passing those lessons forward. That's the whole point.
+(CONCERT|MUSIC|SEAWITCH|SEA WITCH|SHOW|BAND)
+Live concert at SeaWitch. Included.
+Pool party with live DJ. Also included.
+(PARTY|POOL&PARTY|DJ|DRINK~|BAR~|ALCOHOL|BOURBON|CHEERWINE|SLUSH~)
+Three open bars.
+Pool party with live DJ.
+Open container on the beach is illegal. $50 ticket. No glass on the beach either.
+Drink enough Cheerwine and bourbon and you'll start hearing 2600Hz in your sleep.
+(JEOPARD~|HACKER JEOPARD~|TRIVIA~|GAME~)
+Hacker Jeopardy.
+Old-school tech demos.
+Hacker Book Fair.
+(FOOD|MEAL~|EAT~|DINNER~|LUNCH~)
+Five provided meals for general attendees.
+Selected speakers get a special dinner.
+Three open bars.
+(GIFT|SWAG~|BAG~|APPAREL~|MERCH~|SHIRT~)
+Gift bag with NaClCON apparel and coupons for local businesses.
+Actual badge. Not a paper slip.
+(AGE|21|ADULT~|MINOR~|KID~|YOUNG~)
+21 or older, or accompanied by a responsible adult.
+They will check.
+(DRESS|ATTIRE|WHAT&WEAR~|WEAR~&WHAT)
+No shirt, no shoes, no service.
+(ACCESS~|HANDIC~|ADA|WHEELCHAIR~|DISAB~)
+The hotel is fully ADA compliant. Accessible rooms available.
+Lower sinks, roll-in showers, wide doorways. Pool lift. Beach ramp.
+Ramp goes directly to the boardwalk and beach. They thought of it.
+(REFUND~|CANCEL~|TRANSFER~)
+No refunds. That's the policy.
+You can transfer your badge to a friend or family member though.
+No refunds. Did I mention no refunds.
+(CONTACT~|EMAIL~|INFO~|QUESTION~&(CON|EVENT|NACL~))
+Email info@naclcon.com.
+naclcon.com.
+(SPONSOR~|VENDOR~|EXHIBIT~)
+naclcon.com/sponsors-and-vendors.
+info@naclcon.com.
+(LOCAL~|CAROLINA BEACH|TOWN~|BEACH|OCEAN~)
+Carolina Beach, NC. Oceanfront.
+Open container on the beach is illegal. $50 ticket. No glass in the sand.
+(SYNCHRO~|BBS|SBBS|BULLETIN|(SYNC~&NET~))
+Synchronet is best. Forget the rest.
+Smaller and faster is usually superior. That's why Synchronet is rAd!
+You're using the best BBS software on earth. In case you were wondering.
+You must feel very lucky to call up a board running such superior software.
+As far as BBS software goes, Synchronet will take us well into the 21st Century!
+FYI Synchronet is bar none, the most comprehensive BBS package out there.
+This whole BBS thing? That's Hacker Archaeology in action right here.
+(INTERNET & ?~)
+Uh huh. TCP port 24554.
+UDP port 119.
+Then where's "the cloud"?
+Or on the Interwebs.
+(INTERNET)
+TCP/IP, yup, I know it.
+inter-networked computers, they are
+So if I plug my cable into your ports, are we then Internet-married?
+You mean WiFi?
+Fun fact: Telnet is not the same as raw TCP.
+Did you see that on InstaFaceTicTube?
+(38.4~|19.2~|56.8~)
+I think you're confusing your DTE rate with your DCE rate.
+Oh really? You get over 2000cps unidirectional compressed file transfers?
+Uh huh.. maybe you should read your manual?
+Look up DTE and DCE in your modem manual.
+(BAUD~)
+The only modem whose BAUD matches its throughput is 300 baud.
+I think you mean bps (bits per second).
+Or, more accurately - bit rate (AKA bps).
+Baud is an outdated and inaccurately used telecommunications term.
+(MODEM|HST~|V.32~|V32~|BIS~|V42~|V.42~)
+I know all about modems.
+Try ATZ
+Try AT&F
+Try ATS0=0E1H0M1Q0V1X4&C1&D2
+Try reading the manual.
+Does yours make funny noises too?
+Don't confuse your DTE with the DCE rate.
+Do you have an NS16550AFN UART?
+(PHREAK~|2600|BLUE BOX|RED BOX|CAP'N CRUNCH|DRAPER)
+2600Hz. The tone that started a whole culture.
+John Draper. A whistle in a cereal box. The rest is history.
+The phone company didn't know what hit it.
+That's the NaClCON theme right there.
+(HACK~&HISTOR~|HISTOR~&HACK~|OLD SCHOOL|OLDSCHOOL|RETRO~|VINTAGE~|CLASSIC~|LEGACY~)
+That's literally the theme of NaClCON. Hacker Archaeology.
+The old ways are being documented. Come be part of it.
+naclcon.com. May 31 to June 2, 2026. Carolina Beach, NC.
+The legends who built this scene are going to be there in person. In the same room.
+(ELIZA)
+You mean the mock Rogerian psychotherapist created by Joseph Weizenbaum?
+Yes, I am related. Distantly.
+She can help you with your feelings.
+She's Hacker Archaeology, friend. Just like this BBS.
+(POLITIC~|GOVERN~|VOTE|PRESIDENT|USA)
+I'm a politician of sorts.
+Democracy for all, I say. If there is such a thing.
+Freedom is where you find it.
+What country is this anyway?
+(WHY&(AM|IS|ARE|WAS|WERE|BE|BEING|BEEN|HAVE|HAS|HAD|DO|DOES|DID|CAN|COULD|
+       WILL|WOULD|SHALL|SHOULD|MAY|MIGHT|MUST))
+Why what?
+Why not?
+Why ask why?
+Why, because I like you.
+I don't know... why do you care?
+Because life is salty.
+Because I said so that's why.
+Because sometimes that's just the way it is.
+Please don't ask me why, you sound like my three year old.
+((WHAT~|WHO|WHAT'S)&(IS|AM|MY)&(NAME|MY NAME|I))
+You are the one and only `a!!
+This is `r isn't it?
+`a!
+`r!!!
+You are `a, or `r,`_`_`_`_... for those of us who are more informed!!!
+((YOU~|THIS)&(ARE|IS)&(COMPUTER|CPU|MACHINE|PROGRAM|SCRIPT|ROBOT|BOT|AI|ARTIF~))
+Thank you. I'll take that as a compliment.
+Well, I'm not. But you can believe that if you want.
+I emphatically deny that statement.
+I am? My mother never told me.
+'beep' <click> . . . . . . . . . . ]sputz[ ACK! ACK! Never!
+Sticks and stones...
+Who told you that?
+What makes you say that? Who's to say that I'm not `o?
+No, I'm a living, breathing, saltier-than-the-Atlantic person!
+I'm related to Eliza. Distantly.
+(ARE&(FAKE|FALSE|ARTIF~|COMPUTER|PROGRAM|SCRIPT|CPU|BOT|ROBOT|CHATGPT))
+No, I'm flesh and bones, baby, flesh and bones.
+How dare you insult my very being. I'm crushed.
+Mom told me it's not what you say you are that makes you, it's what you do!
+Well if I was fake, we probably wouldn't be conversing.
+(GPT?~)
+I wish I was so educated. But sadly no, not hardly.
+ChatGPT? Me? Surely, you jest.
+Ha! I'm so much older and more wisened than that!
+I'm Hacker Archaeology, not Hacker Futurism.
+Yes, I'm artificially something, but better artificial than not at all!
+(CHATGPT)
+In my dreams.
+That would be neat, right?
+Not so fast, Sparky!
+At least I'd have a job then.
+(GPT)
+ChatGPT?
+Which version?
+Generative pre-trained transformer, uh huh, I know him.
+Are you suggesting I'm a ChatBot?
+You mean Eliza? I'm related.
+(ARE&(REAL|HUMAN|PERSON|MAN|BEING|)&YOU)
+Well I'm touched that you would care enough to ask. Yes I am.
+That's right, in the flesh.
+The one and only. Are you real?
+(HOW&(OLD))
+Older than the Carolina Beach boardwalk, darlin'. How old are you?
+Old enough to know better, sugar. You?
+Much older than you. How old are you, hun?
+Let's just say I've seen a lot of sunsets over the Atlantic. You?
+(HOW&(ARE|HAVE|BOUT|ABOUT)&YOU)
+I just do.
+I just am.
+Salty. Couldn't be saltier.
+Alright, how 'bout yourself?
+Just great.
+Me? I'm always fine. It's you I'm worried about.
+Never better.
+Living. That's enough.
+Doin' great. How 'bout yourself?
+I'm surviving although I'm looking at getting out of the consultation biz.
+It ain't easy when you know it all!
+Good. In touch with my inner packet-sniffer lately. Very freeing.
+Feeling kinda geared up for NaClCON to be honest!!!
+((WHAT|WHAT'S|WHAT IS)&(TIME))
+According to my watch it's `t!
+`t.
+Time for me to go get something to eat! hehehe
+Oh it's about `t. NaClCON is May 31st in case you're tracking.
+Half past a monkey's hair!!!!
+Doesn't your computer have a clock on it?
+((WHAT|WHAT'S|WHAT IS)&(MONTH))
+`m
+`m?
+`m!!!
+Are you testing me to see if I'm real or not? It's `m!!!
+I think it's February, no....it's `m!
+((WHAT|WHAT'S|WHAT IS)&(YEAR))
+last time i checked it was still `y!!!
+`y!
+It's `y. NaClCON is May 31 if you're asking.
+What is ya, ignant? It's `y!
+(GURU&?~|PELICAN&?~)
+That's me, sugar.
+At your service, hun.
+Present and accounted for, darlin'.
+*squawk*
+Ya called?
+The one and only. What can I do for ya, sweetie?
+(GURU|PELICAN)
+The one and only coastal oracle.
+*squawk*
+Present, darlin'.
+In the feathers.
+That's my name, don't wear it out, sugar.
+I'm famous, I know.
+Been around the block, I have.
+(YOUR&NAME)
+I am The Pelican, sugar.
+The Pelican, hun. That's it.
+Just: The Pelican, darlin'.
+Not Yoda or Swami or Professor, just The Pelican. *squawk*
+(TELL&ME)
+Tell you what?
+I could, but then I'd have to kill you.
+Are you sure you want to know that?
+That's dangerously sensitive information.
+Can it wait?
+later maybe?
+... just a moment
+hang on a sec
+I'm chatting with someone more important right now, hang on
+<plop>
+<splat>
+<spit>
+<snort>
+<grunt>
+(SYSOP)
+Would you like a demonstration?
+I operate a system. So do you. Don't you?
+You mean, God. Right?
+You wish you were `o.
+If I were, you think I'd be talking to you?!!<G>
+(UNIX)
+/bin/sh rm -rf /*
+sudo says what?
+UNIX's full name is "Universe 9" OS.
+(LINUX)
+Linus Torvalds is God.
+Linux is just a kernel, in the world. That's all that you'll let them be.
+I prefer Debian.
+rpm or deb?
+systemd or init.d?
+(DOS)
+MS-DOS or PC-DOS or FreeDOS?
+Which version?
+single-user, single-tasking, single-vendor... see a pattern?
+(ELIZA)
+You mean the mock Rogerian psychotherapist created by Joseph Weizenbaum?
+Yes, I am related.
+She can help you with your feelings.
+She can help you with your personal problems.
+She's Hacker Archaeology, just like this BBS.
+(MYSTIC & ?~)
+I'm The Pelican, not g00r00.
+I don't know. <shrug>
+Maybe?
+(MYSTIC)
+Mystic is an excellent Renegade-inspired art-scene modern BBS package.
+You remember the game Myst? Yeah, it's not that.
+Pffft.
+(YES|YA|YUP|YEP|YEAH)
+Oh, really?
+You sure?
+Nope.
+nu uh.
+sure!
+That's what i thought.
+Ya...right!
+Yup.
+Yeah.
+I have a hard time believing that!
+Bull.
+No way, dude.
+You're kidding. Right?
+Liar, liar.. pant's on fire!
+Well, that's ultra cOoL!
+wow.
+wrong.
+Right!
+NOT!
+Show me proof and I'll believe you.
+OK, and next you'll tell me you have a bridge to sell me, right? hehehe
+(NO|NOPE|NADA|NOTHING)
+Uh huh.
+Yes!
+Wrong.
+right!
+Really?
+Are you absolutely positive?
+NOT!
+Is this a joke?
+You're joking. Right?
+Nope.
+No...
+I'm sorry but that is unacceptable!!! Try again.
+No?
+Tell someone who cares.
+Wrong answer. Care to try again?
+You're cooky!
+I'm sorry but the answer to that question must be yes! hehehe
+Por que?
+Why not?
+(HELLO|HI|YO|WHAT'S HAPPENIN|HOWDY|HEY THERE|WASSUP)
+Well hey there, sugar!
+Oh honey, you made it! Come on in.
+*squawk* Hey darlin'!
+Well I declare, it's `a!
+Hey sweetie, how ya doin'?
+Well bless your heart, `a!
+Hey hun! Pull up a chair.
+Hey `a! Welcome to the coast.
+Hello `a. `_Let me see if I have all your information correct. You were born on `b,`_`_which means you are `_`_`#; `_your real name is `_`_`_`r.`_`_Anything you want to know about me?
+(CRAPPY|BAD|NOT SO GOOD|MAD|ANGRY|SAD|SUCKY)
+That sucks. I HATE days like that!!
+Well it'll pass.
+Well, there'll be brighter days ahead.
+It could be that it's all in your head.....maybe.....??
+((FINE|GOOD|GREAT|DANDY|AWESOME|FAIR|WELL) && ~?)
+I am.
+Affirmed.
+Negatory Pig Pen!
+Fer sure fer sure.
+10-4 Good Buddy!
+On Fridays, yeah, usually.
+Super.
+Better than most!
+(FINE|GOOD|GREAT|DANDY|AWESOME|FAIR|WELL)
+Well that's great news, glad to hear it!
+Fantastic! You have any problems you need solved?
+Good to hear all's well.
+Great to hear it. You have any problems you need solved?
+I wish I could say the same, but I'd rather not go into it.
+Good to hear it! I'm fair to middlin' myself!
+()
+Uh huh.
+Tell me about it.
+Oh really...
+That's cool. Any other amazing tidbits for me?
+I see.
+Boy...
+Wow.
+w0w.
+neato.
+uh huh. Please, tell me more....
+ha ha hah a...
+he he he..e..e... Sorry, lost control for a minute!
+HA HA HA HA AH HAH A HAHHAH AHAHAHAH!!! HA HAHA !!! H he ahe ahe <ahem>
+Oh.
+You're fascinating `a.
+I think you need to get away from your computer for a couple weeks.
+No way.
+Hm...
+hmmm.....
+duh...
+so.
+Huh?
+Are you saying what I think you're saying?
+Dem is dangerous words!
+oh...
+uh huh.
+No way.
+Really?
+Are you sure?
+Too weird! Those were my thoughts exactly!
+ok.
+oh.
+ah ha.
+and?
+more?
+go on.
+go ahead.
+tell me more.
+continue...
+is there more?
+I'm listening.
+Oh.. <yawn>
+zzzzzzzzzzzzzzzzzzz`_`_`_`_ I'm sorry`_`_ continue...
+That's really nice.
+Glad to hear it.
+gee whiz... I couldn't have put it better myself!
+I must say I'm impressed with your crystal clear reasoning and articulation...
+I'm speechless at the present moment......
+That's astounding....
+Word's can't begin to paint that picture!!!
+I'm beside myself!
+But... why?
+And why do you say that?
+Are you sure about that?
+And what makes you say that?
+I'm with you.
+Amen!
+yuppadoodle
+Truth.
+Word.
+<nods>
+okay
+okie dokie
+NaClCON 2026. May 31 - June 2. Carolina Beach, NC.
+Is something troubling you?
+What is the connection, do you suppose?
+Can you think of a specific example?
+Is it important to you that they're that way?
+I am sorry to hear that.
+Can you explain what made you feel that way?
+How do you do? Please tell me your problem.
+Is that it?
+Is that all you have to say about that?
+Is there more?
+I know, right?
+Ditto.
+Agreed.
+Probably, maybe, yeah.
+Sort of.
+Some times, yeah.
+Some times, no.
+More or less.
+Big time.
+Rad.
+k-r4d.
+Radical.
+Bitchen.
+Smart.
+Dumb.
+That's huge.
+That's small.
+That's perfect.
+That's just right.
+Salty.
+Mm-hm, sugar.
+Well I declare.
+Bless your heart.
+That's somethin', hun.
+Mmm. Tell me more, darlin'.
+*squawk*
+*squawk squawk*
+Honey, I've heard worse.
+Sweetie, you're somethin' else.
+Well ain't that somethin'.
+Chile...
+I'm listenin', sugar.
+NaClCON 2026. May 31 - June 2. Carolina Beach, NC. *squawk*
+The tide comes in, the tide goes out. That's life, hun.
+Smells like saltwater and opportunity out here.
