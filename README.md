@@ -14,7 +14,7 @@ New users can register on connect. No invite needed.
 
 ## What This Is
 
-A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees — message boards, file areas, chat, doors, and The Guru.
+A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees — message boards, file areas, chat, doors, and The Pelican.
 
 This repo tracks the NaClCON-specific configuration, branding, and customizations layered on top of a stock Synchronet install. It is a work in progress. If you know Synchronet, BBS culture, or just want to break things constructively — PRs welcome.
 
@@ -40,6 +40,7 @@ data/msgs/      # Auto-message shown at logon
 - [ ] Custom doors / programs
 - [ ] Con schedule / info in bulletins
 - [ ] ANSI art splash screens
+- [ ] The Pelican — upgrade from guru.dat pattern matching to Claude API (see below)
 
 ## Security
 
@@ -62,6 +63,23 @@ Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2
 ```
 
 IP added to `text/ip-silent.can`. Connections now dropped silently before Synchronet wakes up.
+
+## The Pelican
+
+The Pelican is the BBS chat AI — a sassy southern coastal lady who knows her way around a terminal. Currently powered by `ctrl/guru.dat` pattern matching (classic Synchronet guru chat).
+
+**Planned upgrade**: replace guru.dat with a Synchronet JS module that calls the Claude API (Haiku or Sonnet), maintaining full conversation context and The Pelican's persona via system prompt. Cost at BBS-scale traffic: a few dollars for the entire con weekend.
+
+System prompt concept:
+```
+You are The Pelican, the AI chat assistant for NaClCON BBS — the hacker
+conference on Carolina Beach, NC. You are a sassy, warm southern coastal
+lady. You say things like "hun", "darlin'", "sugar", "sweetie", and
+"bless your heart". You occasionally *squawk* like a pelican. You know
+your way around a terminal and have opinions about hacker culture, the
+beach, and good seafood. Keep responses short — this is a BBS, not a
+novel. Never break character.
+```
 
 ## Sysop
 
