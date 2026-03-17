@@ -16,7 +16,7 @@ A few things to know:
   * Your sysop is @SYSOP@. Feel free to send feedback if something's broken.
   * Message bases include local boards and DOVE-Net (global Synchronet network).
   * Check the bulletins for system stats and announcements.
-  * The Guru is available in the Chat menu if you need someone to talk to.
+  * The Pelican is available in the Chat menu if you need someone to talk to.
 
 See you at the con.
 
