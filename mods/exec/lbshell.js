@@ -15,8 +15,8 @@
 //################################# Begins Here #################################
 
 /* Adjustable settings */
-const LBShell_Attr=0x07;		/* light-grey on black */
-const MessageWindow_Attr=7;
+const LBShell_Attr=0x07;		/* white on black */
+const MessageWindow_Attr=0x0B;		/* bright cyan on black */
 const MessageTimeout=50;		/* 100ths of a second */
 
 
@@ -110,7 +110,8 @@ if (jxl_bg_names.length > 0) {
 		}
 	}
 }
-var use_bg=BackGround.load(bg_filename);
+BackGround.load(bg_filename);
+var use_bg=false;	/* NaClCON: disabled stock SYNC background */
 var MessageWindow=new Graphic(80,console.screen_rows,MessageWindow_Attr,' ');
 var bars80="\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4";
 var spaces80="                                                                               ";
@@ -308,6 +309,8 @@ ShellLB.prototype.callback = message_callback;
 ShellLB.prototype.hotkeys = KEY_LEFT+KEY_RIGHT+"\b\x7f\x1b"+ctrl('O')+ctrl('U')+ctrl('T')+ctrl('K')+ctrl('P');
 ShellLB.prototype.mouse_miss_key = '\b';
 ShellLB.prototype.mouse_enabled = true;
+ShellLB.prototype.norml_attr = 0x0F;	/* bright white on black */
+ShellLB.prototype.lbattr = 0x5F;		/* bright white on magenta (NaClCON purple) */
 
 function Mainbar()
 {
@@ -624,7 +627,7 @@ function Infomenu()
 	this.ypos=2;
 	this.add("\xda\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xbf",undefined,undefined,"","");
 	this.add("System |Information","I",25);
-	this.add("Synchronet |Version Info","V",25);
+	this.add("NaClCON |Version Info","V",25);
 	this.add("Info on |Sub-Board","S",25);
 	this.add("|Your Statistics","Y",25);
 	this.add("< |User Lists","U",25);
@@ -679,7 +682,7 @@ while(bbs.online) {
 			mainbar.current=8;
 			mainbar.draw();
 			console.gotoxy(1,2);
-			console.attributes=9;
+			console.attributes=0x0D;
 			console.write("Command (? For Help): ");
 			console.attributes=7;
 			if(!console.aborted) {
@@ -967,6 +970,33 @@ function clear_screen()
 	console.ctrlkey_passthru=orig_passthru;
 }
 
+function display_logo()
+{
+	var f=new File(system.text_dir+"logo.asc");
+	if(!f.open("r"))
+		return;
+	var lines=f.readAll();
+	f.close();
+	/* Available area: rows 2 to screen_rows-9 (above the built-in status bar) */
+	var area_top=2;
+	var area_bottom=console.screen_rows-9;
+	var available=area_bottom-area_top+1;
+	var start_row=Math.floor((available-lines.length)/2)+area_top;
+	if(start_row<area_top) start_row=area_top;
+	for(var i=0; i<lines.length; i++) {
+		var row=start_row+i;
+		if(row>area_bottom) break;
+		console.gotoxy(1,row);
+		if(lines[i].match(/^[=]{3,}/) || lines[i].match(/^[-]{3,}/))
+			console.attributes=0x05;	/* magenta — borders */
+		else if(lines[i].match(/[()\\/_]/))
+			console.attributes=0x0D;	/* bright magenta — ASCII art */
+		else
+			console.attributes=0x0F;	/* bright white — text */
+		console.write(lines[i]);
+	}
+}
+
 function draw_main(topline)
 {
 	/*
@@ -981,6 +1011,7 @@ function draw_main(topline)
 		console.clear();
 		recreate_jxl_buffer();
 		cleararea(1,1,console.screen_columns,console.screen_rows,true);
+		display_logo();
 	}
 	else
 		cleararea(1,2,console.screen_columns,console.screen_rows,true);
@@ -2379,7 +2410,7 @@ function show_chatmenu()
 							return;
 					}
 					write("\001n\001y\001hIRC Channel: ");
-					var channel=console.getstr("#Synchronet", 40, K_EDIT|K_LINE|K_AUTODEL);
+					var channel=console.getstr("#NaClCON", 40, K_EDIT|K_LINE|K_AUTODEL);
 					if(!console.aborted)
 						bbs.exec("?irc -a " + server + " " + channel);
 				});
@@ -2521,7 +2552,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 		/* Redraw main menu line if asked */
 		if(ypos==1) {
 			console.gotoxy(1,1);
-			console.attributes=0x17;
+			console.attributes=0x5F;
 			console.cleartoeol();
 			mainbar.draw();
 			ypos++;
@@ -2548,7 +2579,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 		/* Redraw main menu line if asked */
 		if(ypos==1) {
 			console.gotoxy(1,1);
-			console.attributes=0x17;
+			console.attributes=0x5F;
 			console.cleartoeol();
 			mainbar.draw();
 			ypos++;
@@ -2604,7 +2635,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 		if(eol_allowed) {
 			if(y==1) {
 				console.gotoxy(1,1);
-				console.attributes=0x17;
+				console.attributes=0x5F;
 				console.cleartoeol();
 				mainbar.draw();
 			}
@@ -2618,23 +2649,29 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 				switch(y) {
 					case console.screen_rows-8:
 						console.attributes=LBShell_Attr;
-						console.putmsg("\x01n \x01n\x01h\xdc\xdc\xdc\xdc \xdb \xdc\xdc  \xdc\xdc\xde\xdb \xdc \xdc\xdc\xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc\xdc \x01n\x01b\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc ");
+						console.cleartoeol();
 						break;
 					case console.screen_rows-7:
-						console.attributes=LBShell_Attr;
-						console.putmsg("\x01h\x01c\x016\xdf\x01n\x01c\xdc\xdc \x01h\x016\xdf\x01n \x01h\x016\xdf\x01n \x01n\x01c\xdc \x01h\x016\xdf\x01n \x01h\x016\xdf\x01n \x01c\xdc\x01h\x016\xdf\x01n\x01c\xdc\x01h\x016\xdf\x01n\x01c\xdc\xdc\xdc\x01h\xdf \x016\xdf\x01n \x01h\x016\xdf\x01n \x01c\xdc \x01h\x016\xdf\x01n \x01h\x016\xdf\x01n\x01c\xdc\xdc \xdc\x01bgj \xdb\x01w\x014@TIME-L@ @DATE@  \x01y\x01h@BOARDNAME-L19@ \x01n ");
+						console.attributes=0x5F;
+						console.cleartoeol();
+						console.putmsg("\x01h\x01w  NaClCON BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
+						console.attributes=0x5F;
+						console.cleartoeol();
 						break;
 					case console.screen_rows-6:
-						console.attributes=LBShell_Attr;
-						console.putmsg("\x01n  \x01b\x01h\x014\xdf\x01n\x01b\xdd\x01h\xdf\x014\xdf\x010\xdf \x014\xdf\x010 \x014\xdf\x010 \x014\xdf\x010  \x014\xdf\x010 \x014\xdf\x01n\x01b\xdd\x01h\x014\xdf\x010 \x014\xdf\x01n\x01b\xdd\x01h\x014\xdf\x010 \x014\xdf\x010 \x014\xdf\x010 \x014\xdf\x010 \x014\xdf\x010   \x014\xdf\x010   \x014\x01n\x01b\xdb\x01h\x01w\x014Last On\x01k: \x01n\x014@LASTDATEON@  \x01h\x01cNode \x01k\x01n\x01c\x014@NODE-L3@ \x01wUp \x01c@UPTIME-L8@\x01n ");
+						console.attributes=0x5B;
+						console.cleartoeol();
+						console.putmsg("\x01h\x01c  Last On: @LASTDATEON@  \xb3  Calls: @SERVED-R4@ of @TCALLS-L7@  \xb3  Since: @SINCE@\x01n");
+						console.attributes=0x5B;
+						console.cleartoeol();
 						break;
 					case console.screen_rows-5:
 						console.attributes=LBShell_Attr;
-						console.putmsg("\x01n\x01b \xdf\xdf  \xdf  \xdf \xdb\xdd\xdf\xdf\xdf\xdf \xdb\xdd  \xdb\xdb\xdf\xdf  \xdf \xdb\xdd\xdf\xdf\xdf \xdf   \xdb\x014\x01h\x01wFirstOn\x01k:\x01n\x014 @SINCE@  \x01h\x01cCalls\x01n\x01c\x014@SERVED-R4@ \x01wof\x01c @TCALLS-L7@\x01n ");
+						console.cleartoeol();
 						break;
 					case console.screen_rows-4:
 						console.attributes=LBShell_Attr;
-						console.putmsg("\x01n                                       \x01b\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf ");
+						console.cleartoeol();
 						break;
 					case console.screen_rows-3:
 						console.attributes=7;
@@ -2665,7 +2702,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 			 */
 			if(y==1) {
 				console.gotoxy(1,1);
-				console.attributes=0x17;
+				console.attributes=0x5F;
 				console.cleartoeol();
 				mainbar.draw();
 			}
@@ -2680,23 +2717,29 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 				switch(y) {
 					case console.screen_rows-8:
 						console.attributes=LBShell_Attr;
-						console.putmsg("\x01n \x01n\x01h\xdc\xdc\xdc\xdc \xdb \xdc\xdc  \xdc\xdc\xde\xdb \xdc \xdc\xdc\xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc\xdc \x01n\x01b\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc ");
+						console.cleartoeol();
 						break;
 					case console.screen_rows-7:
-						console.attributes=LBShell_Attr;
-						console.putmsg("\x01h\x01c\x016\xdf\x01n\x01c\xdc\xdc \x01h\x016\xdf\x01n \x01h\x016\xdf\x01n \x01n\x01c\xdc \x01h\x016\xdf\x01n \x01h\x016\xdf\x01n \x01c\xdc\x01h\x016\xdf\x01n\x01c\xdc\x01h\x016\xdf\x01n\x01c\xdc\xdc\xdc\x01h\xdf \x016\xdf\x01n \x01h\x016\xdf\x01n \x01c\xdc \x01h\x016\xdf\x01n \x01h\x016\xdf\x01n\x01c\xdc\xdc \xdc\x01bgj \xdb\x01w\x014@TIME-L@ @DATE@  \x01y\x01h@BOARDNAME-L19@ \x01n ");
+						console.attributes=0x5F;
+						console.cleartoeol();
+						console.putmsg("\x01h\x01w  NaClCON BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
+						console.attributes=0x5F;
+						console.cleartoeol();
 						break;
 					case console.screen_rows-6:
-						console.attributes=LBShell_Attr;
-						console.putmsg("\x01n  \x01b\x01h\x014\xdf\x01n\x01b\xdd\x01h\xdf\x014\xdf\x010\xdf \x014\xdf\x010 \x014\xdf\x010 \x014\xdf\x010  \x014\xdf\x010 \x014\xdf\x01n\x01b\xdd\x01h\x014\xdf\x010 \x014\xdf\x01n\x01b\xdd\x01h\x014\xdf\x010 \x014\xdf\x010 \x014\xdf\x010 \x014\xdf\x010 \x014\xdf\x010   \x014\xdf\x010   \x014\x01n\x01b\xdb\x01h\x01w\x014Last On\x01k: \x01n\x014@LASTDATEON@  \x01h\x01cNode \x01k\x01n\x01c\x014@NODE-L3@ \x01wUp \x01c@UPTIME-L8@\x01n ");
+						console.attributes=0x5B;
+						console.cleartoeol();
+						console.putmsg("\x01h\x01c  Last On: @LASTDATEON@  \xb3  Calls: @SERVED-R4@ of @TCALLS-L7@  \xb3  Since: @SINCE@\x01n");
+						console.attributes=0x5B;
+						console.cleartoeol();
 						break;
 					case console.screen_rows-5:
 						console.attributes=LBShell_Attr;
-						console.putmsg("\x01n\x01b \xdf\xdf  \xdf  \xdf \xdb\xdd\xdf\xdf\xdf\xdf \xdb\xdd  \xdb\xdb\xdf\xdf  \xdf \xdb\xdd\xdf\xdf\xdf \xdf   \xdb\x014\x01h\x01wFirstOn\x01k:\x01n\x014 @SINCE@  \x01h\x01cCalls\x01n\x01c\x014@SERVED-R4@ \x01wof\x01c @TCALLS-L7@\x01n ");
+						console.cleartoeol();
 						break;
 					case console.screen_rows-4:
 						console.attributes=LBShell_Attr;
-						console.putmsg("\x01n                                       \x01b\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf\xdf ");
+						console.cleartoeol();
 						break;
 					case console.screen_rows-3:
 						console.attributes=7;

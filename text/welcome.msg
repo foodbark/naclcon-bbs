@@ -14,7 +14,8 @@ or just hang out.
 A few things to know:
 
   * Your sysop is @SYSOP@. Feel free to send feedback if something's broken.
-  * Message bases include local boards and DOVE-Net (global Synchronet network).
+  * Message boards: CTF, Talks, Villages, Swap Shop, Beach, Food, After Hours,
+    Tools, Help Desk, Warez, and General.
   * Check the bulletins for system stats and announcements.
   * The Pelican is available in the Chat menu if you need someone to talk to.
 
