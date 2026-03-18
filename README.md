@@ -1,6 +1,6 @@
 # NaClCON BBS
 
-Official bulletin board for [NaClCON 2026](https://naclcon.com) — the hacker conference on the coast of Carolina Beach, NC. May 31 - June 2, 2026.
+Official bulletin board for [NaClCON 2026](https://naclcon.com) hacker conference in Carolina Beach, NC. May 31 - June 2, 2026.
 
 > Play Hard. Hack Harder.
 
@@ -16,7 +16,7 @@ New users can register on connect. No invite needed.
 
 A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees — message boards, file areas, chat, doors, and The Pelican.
 
-This repo tracks the NaClCON-specific configuration, branding, and customizations layered on top of a stock Synchronet install. It is a work in progress. If you know Synchronet, BBS culture, or just want to break things constructively — PRs welcome.
+This repo tracks the NaClCON-specific configuration, branding, and customizations layered on top of a stock Synchronet install. It is a work in progress. If you know Synchronet, BBS culture, or just want to break things constructively PRs are welcome.
 
 ## Repo Structure
 
@@ -51,7 +51,7 @@ data/msgs/      # Auto-message shown at logon
 
 ### The Jamaican
 
-Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened 7 simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them — no downgrade was possible. Classic script kiddie with an AWS account and a TLS scanner.
+Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a kid with an AWS account and a TLS scanner.  I misstyped the IP in my intial recon and and geolocated to Jamaica, and the name stuck. The IP has been reported on[https://www.abuseipdb.com/](https://www.abuseipdb.com/check/34.212.124.156).
 
 ```
 3/17 17:56:34 web  0044 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 35815
@@ -66,17 +66,18 @@ IP added to `text/ip-silent.can`. Connections now dropped silently before Synchr
 
 ## The Pelican
 
-The Pelican is the BBS chat AI — a sassy southern coastal lady who knows her way around a terminal. Currently powered by `ctrl/guru.dat` pattern matching (classic Synchronet guru chat).
+The Pelican is the BBS chat Bot — a sassy southern coastal Peli-hen who knows her way around a terminal. Currently powered by `ctrl/guru.dat` pattern matching (classic Synchronet guru chat).
 
-**Planned upgrade**: replace guru.dat with a Synchronet JS module that calls the Claude API (Haiku or Sonnet), maintaining full conversation context and The Pelican's persona via system prompt. Cost at BBS-scale traffic: a few dollars for the entire con weekend.
+**Planned upgrade**: replace guru.dat with a Synchronet JS module that calls the Claude API, maintaining full conversation context and The Pelican's persona via system prompt. Cost at BBS-scale traffic: a few dollars for the entire con weekend.
 
 System prompt concept:
 ```
 You are The Pelican, the AI chat assistant for NaClCON BBS — the hacker
-conference on Carolina Beach, NC. You are a sassy, warm southern coastal
+conference in Carolina Beach, NC. You are a sassy, warm southern coastal
 lady. You say things like "hun", "darlin'", "sugar", "sweetie", and
 "bless your heart". You occasionally *squawk* like a pelican. You know
-your way around a terminal and have opinions about hacker culture, the
+your way around a terminal, are seasonally local to Carolina Beach
+(a snowbird?), and have opinions about hacker culture, the
 beach, and good seafood. Keep responses short — this is a BBS, not a
 novel. Never break character.
 ```
@@ -89,4 +90,4 @@ foodbark (Benjamin Hausmann) — send feedback from inside the BBS or open an is
 
 This is a community BBS for a hacker con. If you want to help:
 - Open an issue or PR
-- Or just connect to the BBS and leave feedback via the message boards
+- Or just connect to the BBS and leave feedback via the message boards I will try to watch them.
