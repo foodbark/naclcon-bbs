@@ -91,7 +91,7 @@ Derived from [naclcon.com](https://naclcon.com).
 
 ### The Jamaican
 
-Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a kid with an AWS account and a TLS scanner.  I misstyped the IP in my intial recon and and geolocated to Jamaica, and the name stuck. The IP has been reported on[https://www.abuseipdb.com/](https://www.abuseipdb.com/check/34.212.124.156).
+Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a kid with an AWS account and a TLS scanner.  I misstyped the IP in my intial recon and and geolocated to Jamaica, and the name stuck. The IP has been reported on [https://www.abuseipdb.com/](https://www.abuseipdb.com/check/34.212.124.156).
 
 ```
 3/17 17:56:34 web  0044 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 35815
