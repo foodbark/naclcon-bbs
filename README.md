@@ -21,11 +21,12 @@ This repo tracks the NaClCON-specific configuration, branding, and customization
 ## Repo Structure
 
 ```
-ctrl/           # Synchronet config (sbbs.ini, main.ini, modopts.ini, etc.)
-text/           # Display files, banners, filter lists
-text/menu/      # Menu screens (head, logon, simple shell)
-mods/exec/      # JS module overrides (takes precedence over exec/)
-data/msgs/      # Auto-message shown at logon
+ctrl/                   # Synchronet config (sbbs.ini, main.ini, modopts.ini, etc.)
+text/                   # Display files, banners, filter lists
+text/menu/              # Menu screens (head, logon, simple shell)
+mods/                   # JS module overrides (takes precedence over exec/)
+mods/exec/              # One-shot admin scripts (e.g. post_speakers.js)
+data/msgs/              # Auto-message shown at logon
 ```
 
 ## Status
@@ -38,11 +39,10 @@ data/msgs/      # Auto-message shown at logon
 - [x] Security hardening (see below)
 - [x] Shell restricted to Synchronet Classic + Deuce's Lightbar Shell
 - [x] NaClCON color palette applied to both shells
+- [x] The Pelican — Claude-powered AI chat bot (1-on-1 and multinode)
+- [x] Speaker list bulletin and per-speaker message threads
 - [ ] CTF-related content
 - [ ] Custom doors / programs
-- [ ] Con schedule / info in bulletins
-- [ ] ANSI art splash screens
-- [ ] The Pelican — upgrade from guru.dat pattern matching to Claude API (see below)
 
 ## Color Palette
 
@@ -61,7 +61,7 @@ Derived from [naclcon.com](https://naclcon.com).
 
 ### Where each shell uses these
 
-**Deuce's Lightbar Shell (`mods/exec/lbshell.js`)**
+**Deuce's Lightbar Shell (`mods/lbshell.js`)**
 - Top bar: `0x5F` (bright white on magenta)
 - Status bar row 1: `0x5F` — NaClCON BBS, time, node, uptime
 - Status bar row 2: `0x5B` (bright cyan on magenta) — last on, calls, since
@@ -106,21 +106,11 @@ IP added to `text/ip-silent.can`. Connections now dropped silently before Synchr
 
 ## The Pelican
 
-The Pelican is the BBS chat Bot — a sassy southern coastal Peli-hen who knows her way around a terminal. Currently powered by `ctrl/guru.dat` pattern matching (classic Synchronet guru chat).
+The Pelican is the BBS chat bot — a sassy southern coastal Peli-hen who knows her way around a terminal. Powered by the Claude API (Haiku model).
 
-**Planned upgrade**: replace guru.dat with a Synchronet JS module that calls the Claude API, maintaining full conversation context and The Pelican's persona via system prompt. Cost at BBS-scale traffic: a few dollars for the entire con weekend.
+**1-on-1 chat** (`mods/pelican.js`): accessible via the 'T' key in both shells. Maintains per-user conversation history across sessions in `data/user/pelican_NNNN.json`. Config (API key, model, token limits) in `ctrl/pelican.ini` (gitignored).
 
-System prompt concept:
-```
-You are The Pelican, the AI chat assistant for NaClCON BBS — the hacker
-conference in Carolina Beach, NC. You are a sassy, warm southern coastal
-lady. You say things like "hun", "darlin'", "sugar", "sweetie", and
-"bless your heart". You occasionally *squawk* like a pelican. You know
-your way around a terminal, are seasonally local to Carolina Beach
-(a snowbird?), and have opinions about hacker culture, the
-beach, and good seafood. Keep responses short — this is a BBS, not a
-novel. Never break character.
-```
+**Multinode chat** (`mods/multichat_pelican.js`): a full JS reimplementation of Synchronet's built-in multinode chat that layers in Pelican responses. She chimes in when addressed by name (`pelican` / `peli`) or when there are 3 or fewer users in the channel. Shared channel history in `data/user/pelican_chan.json`.
 
 ## Sysop
 
