@@ -46,7 +46,7 @@
 nhr-------------------------------------------------------------------------------
 nw  [ ] CTF-related content
 nw  [ ] Custom doors / programs
-nw  [ ] Con schedule and info in bulletins
+nw  [x] Speaker list and bios in bulletins
 nw  [ ] ANSI art splash screens
 nw  [ ] The Pelican -- upgrade from guru.dat to Claude API
 

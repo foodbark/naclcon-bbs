@@ -2375,7 +2375,7 @@ function show_chatmenu()
 				return;
 			case 'M':
 				menu_opt(function() {
-					bbs.multinode_chat();
+					load({}, "multichat_pelican.js");
 				});
 				break;
 			case 'P':
@@ -2386,12 +2386,12 @@ function show_chatmenu()
 			case 'C':
 				menu_opt(function() {
 					if(!bbs.page_sysop())
-						bbs.page_guru();
+						load({}, "pelican.js");
 				});
 				break;
 			case 'T':
 				menu_opt(function() {
-					bbs.page_guru();
+					load({}, "pelican.js");
 				});
 				break;
 			case 'F':
