@@ -14,7 +14,7 @@ New users can register on connect. No invite needed.
 
 ## What This Is
 
-A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees — message boards, file areas, chat, doors, and The Pelican.
+A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees: message boards, file areas, chat, doors, and The Pelican.
 
 This repo tracks the NaClCON-specific configuration, branding, and customizations layered on top of a stock Synchronet install. It is a work in progress. If you know Synchronet, BBS culture, or just want to break things constructively PRs are welcome.
 
@@ -41,6 +41,7 @@ data/msgs/              # Auto-message shown at logon
 - [x] NaClCON color palette applied to both shells
 - [x] The Pelican — Claude-powered AI chat bot (1-on-1 and multinode)
 - [x] Speaker list bulletin and per-speaker message threads
+- [ ] NaClCon ansi and splash pages
 - [ ] CTF-related content
 - [ ] Custom doors / programs
 
@@ -106,7 +107,7 @@ IP added to `text/ip-silent.can`. Connections now dropped silently before Synchr
 
 ## The Pelican
 
-The Pelican is the BBS chat bot — a sassy southern coastal Peli-hen who knows her way around a terminal. Powered by the Claude API (Haiku model).
+The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her way around a terminal. Powered by the Claude API (Haiku model).
 
 **1-on-1 chat** (`mods/pelican.js`): accessible via the 'T' key in both shells. Maintains per-user conversation history across sessions in `data/user/pelican_NNNN.json`. Config (API key, model, token limits) in `ctrl/pelican.ini` (gitignored).
 
@@ -114,7 +115,7 @@ The Pelican is the BBS chat bot — a sassy southern coastal Peli-hen who knows 
 
 ## Sysop
 
-foodbark (Benjamin Hausmann) — send feedback from inside the BBS or open an issue here.
+foodbark (Benjamin Hausmann): send feedback from inside the BBS or open an issue here.
 
 ## Contributing
 
