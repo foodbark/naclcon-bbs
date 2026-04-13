@@ -6,28 +6,35 @@ Bulletin board sytem for [NaClCON 2026](https://naclcon.com) hacker conference i
 
 ## Connect
 
-```sh
-ssh -p 2222 <yourname>@34.229.165.250
+```
+ssh bbs.naclcon.com -p 2222
 ```
 
-New users can register on connect. No invite needed.
+> DNS pending. Current IP: **34.229.165.250**
 
-## What This Is
+## Server
 
 A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees: message boards, file areas, chat, doors, and The Pelican.
 
-This repo tracks the NaClCON-specific configuration, branding, and customizations layered on top of a stock Synchronet install. It is a work in progress. If you know Synchronet, BBS culture, or just want to break things constructively PRs are welcome.
+- **Nodes**: 20 (supports 20 concurrent users) — upgrade instance to t3.medium before the con
+- **Sysop**: foodbark
 
-## Repo Structure
+## AWS Security Group — Required Open Ports
 
-```
-ctrl/                   # Synchronet config (sbbs.ini, main.ini, modopts.ini, etc.)
-text/                   # Display files, banners, filter lists
-text/menu/              # Menu screens (head, logon, simple shell)
-mods/                   # JS module overrides (takes precedence over exec/)
-mods/exec/              # One-shot admin scripts (e.g. post_speakers.js)
-data/msgs/              # Auto-message shown at logon
-```
+| Port | Protocol | Service | Notes |
+|------|----------|---------|-------|
+| 22 | TCP | OS SSH | Restrict to sysop IP only |
+| 2222 | TCP | BBS SSH (public) | Open to all |
+| 80 | TCP | HTTP | Open to all |
+| 443 | TCP | HTTPS | Open to all |
+| 21 | TCP | FTP | Open to all |
+| 70 | TCP | Gopher | Open to all |
+| 119 | TCP | NNTP | Open to all |
+| 1123 | TCP | WebSocket | Open to all |
+| 11235 | TCP | WebSocket TLS | Open to all |
+
+> Note: Gopher (70) and NNTP (119) are configured but currently disabled in
+> `ctrl/services.ini` (`Enabled=false`). Open the ports when you enable them.
 
 ## Status
 
@@ -45,29 +52,25 @@ data/msgs/              # Auto-message shown at logon
 - [ ] CTF-related content
 - [ ] Custom doors / programs
 
-## Color Palette
+## Color Scheme
 
-Derived from [naclcon.com](https://naclcon.com).
+NaClCON brand palette mapped to CGA 16-color terminal codes:
 
-| Role | Web hex | ANSI 16-color | Ctrl-A / attr |
-|---|---|---|---|
-| Background | `#1F1346` (deep purple) | Black (0) | `\x010` / `0x0_` |
-| Bar / box background | `#2f1c6a` → magenta | Magenta bg (5) | `\x015` / `0x5_` |
-| Primary text | white | Bright white (F) | `\x01h\x01w` / `0x5F` |
-| BBS name / hotkeys | `#8c85ff` → yellow | Bright yellow (E) | `\x01h\x01y` |
-| Box borders | `#673de6` → magenta | Bright magenta (D) | `\x01h\x01m` / `0x0D` |
-| Info labels | white | White (7) | `\x01w` |
-| Info values / secondary | teal `#00b090` → cyan | Cyan (3) / Bright cyan (B) | `\x01c` / `\x01h\x01c` |
-| Command prompt | — | Bright magenta (D) | `0x0D` |
+| Color | CGA Index | Escape Code | Use |
+|-------|-----------|-------------|-----|
+| Bright Magenta | 13 | `\x1b[1;35m` | Primary accent |
+| Dark Magenta | 5 | `\x1b[35m` | Secondary accent |
+| Bright Red (hot pink) | 9 | `\x1b[1;31m` | Highlight |
+| Dark Red | 1 | `\x1b[31m` | Dim highlight |
+| Bright Yellow | 11 | `\x1b[1;33m` | Info / emphasis |
+| Dark Yellow | 3 | `\x1b[33m` | Dim info |
+| Bright White | 15 | `\x1b[1;37m` | Body text |
+| Light Gray | 7 | `\x1b[37m` | Dim text |
+| Dark Gray | 8 | `\x1b[1;30m` | Subtle / borders |
+| Black | 0 | `\x1b[30m` | Background |
 
-### Where each shell uses these
-
-**Deuce's Lightbar Shell (`mods/lbshell.js`)**
-- Top bar: `0x5F` (bright white on magenta)
-- Status bar row 1: `0x5F` — NaClCON BBS, time, node, uptime
-- Status bar row 2: `0x5B` (bright cyan on magenta) — last on, calls, since
-- Content area: `0x07` (white on black)
-- Command prompt: `0x0D` (bright magenta)
+In Synchronet `\x01` (Ctrl-A) color codes: `\x01h\x01m` = bright magenta,
+`\x01h\x01r` = hot pink, `\x01h\x01y` = bright yellow.
 
 **Synchronet Classic — header (`text/menu/head.msg`)**
 - Box borders: `\x01h\x01m` (bright magenta)
@@ -87,8 +90,8 @@ Derived from [naclcon.com](https://naclcon.com).
 
 ### Hardening Applied
 - AWS Security Group: port 22 (OS SSH) restricted to sysop IP only
-- `ufw` enabled with default-deny inbound, rate limiting on ports 443 and 2222
-- Synchronet login throttling tightened (hack threshold: 5, temp ban: 1h, auto-filter after 25 attempts)
+- `ufw` enabled with default-deny inbound, rate limiting on port 443
+- Synchronet login throttling: hack threshold 5, temp ban threshold 20 / duration 15m, filter after 50 attempts
 
 ### The Jamaican
 

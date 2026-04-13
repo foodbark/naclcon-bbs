@@ -549,9 +549,6 @@ function Chatmenu()
 	this.add("|Private Node to Node Chat","P",width);
 	this.add("|Chat With The SysOp","C",width);
 	this.add("|Talk With The Pelican","T",width);
-	this.add("|Finger A Remote User/System","F",width);
-	this.add("I|RC Chat","R",width);
-	this.add("InterBBS |Instant Messages","I",width);
 	this.add(format_opt("|Settings",width,true),"S",width);
 	this.add(bottom_bar(width),undefined,undefined,"","");
 }
@@ -627,7 +624,7 @@ function Infomenu()
 	this.ypos=2;
 	this.add("\xda\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xbf",undefined,undefined,"","");
 	this.add("System |Information","I",25);
-	this.add("NaClCON |Version Info","V",25);
+	this.add("Synchronet |Version Info","V",25);
 	this.add("Info on |Sub-Board","S",25);
 	this.add("|Your Statistics","Y",25);
 	this.add("< |User Lists","U",25);
