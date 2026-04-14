@@ -48,7 +48,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 - [x] NaClCON color palette applied to both shells
 - [x] The Pelican — Claude-powered AI chat bot (1-on-1 and multinode)
 - [x] Speaker list bulletin and per-speaker message threads
-- [x] Terminal-adaptive splash art at logon (wide ANSI art for SyncTERM/large terminals, narrow art for 80-col; see `mods/logon.js`)
+- [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
 - [ ] CTF-related content
 - [ ] Custom doors / programs
 
@@ -131,6 +131,25 @@ The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her
 **1-on-1 chat** (`mods/pelican.js`): accessible via the 'T' key in both shells. Maintains per-user conversation history across sessions in `data/user/pelican_NNNN.json`. Config (API key, model, token limits) in `ctrl/pelican.ini` (gitignored).
 
 **Multinode chat** (`mods/multichat_pelican.js`): a full JS reimplementation of Synchronet's built-in multinode chat that layers in Pelican responses. She chimes in when addressed by name (`pelican` / `peli`) or when there are 3 or fewer users in the channel. Shared channel history in `data/user/pelican_chan.json`.
+
+## Logon Splash Art
+
+At logon, `mods/logon.js` displays a random piece of ANSI art chosen based on the user's terminal width:
+
+- **>80 columns** — a random `random_wide*` file is served via `cat` (using `EX_STDIO | EX_NATIVE` so the raw bytes pass through unmodified)
+- **≤80 columns** (e.g. SyncTERM, standard 80-col terminals) — a random `random_narrow*` file is served via `bbs.menu()`
+
+Art files live in `text/menu/` and deploy to `/sbbs/text/menu/` via rsync:
+
+| File | Type |
+|------|------|
+| `random_narrow_closeup02.ans` | Narrow |
+| `random_narrow_logo.ans` | Narrow |
+| `random_wide_1XXXX.ans` | Wide |
+| `random_wide_XXXXX.ans` | Wide |
+| `random_wide_closeup.ans` | Wide |
+
+Source art files (pre-rename) are in `art/`. To add more, drop a file matching `random_wide*` or `random_narrow*` into `text/menu/` and rsync to deploy — the logon module picks from all matching files at random.
 
 ## Sysop
 
