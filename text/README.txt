@@ -48,9 +48,11 @@ CRITICAL FIXES
 HARDENING APPLIED
 =================
 - AWS Security Group: Port 22 restricted to sysop IP only
+- OS SSH: password authentication disabled (key-only)
 - ufw enabled (default deny inbound) with rate limiting on 443 and 2222
-- Synchronet login attempt thresholds tightened (hack threshold: 10->5,
-  temp ban duration: 10m->1h, auto-filter after 25 attempts for 24h)
+- fail2ban running with four jails: sshd, sbbs-passwd, sbbs-scanner, sbbs-shadow
+- Synchronet login throttling: 5s delay between attempts, hack threshold 5,
+  temp ban after 20 attempts (15 min), permanent filter after 50 attempts (24h)
 
 SYSOP QUICK REF
 ===============
