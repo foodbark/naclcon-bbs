@@ -48,7 +48,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 - [x] NaClCON color palette applied to both shells
 - [x] The Pelican — Claude-powered AI chat bot (1-on-1 and multinode)
 - [x] Speaker list bulletin and per-speaker message threads
-- [ ] NaClCon ansi and splash pages
+- [x] Terminal-adaptive splash art at logon (wide ANSI art for SyncTERM/large terminals, narrow art for 80-col; see `mods/logon.js`)
 - [ ] CTF-related content
 - [ ] Custom doors / programs
 
@@ -90,8 +90,24 @@ In Synchronet `\x01` (Ctrl-A) color codes: `\x01h\x01m` = bright magenta,
 
 ### Hardening Applied
 - AWS Security Group: port 22 (OS SSH) restricted to sysop IP only
+- OS SSH: password authentication disabled (key-only)
 - `ufw` enabled with default-deny inbound, rate limiting on port 443
-- Synchronet login throttling: hack threshold 5, temp ban threshold 20 / duration 15m, filter after 50 attempts
+- `fail2ban` running with four jails: `sshd`, `sbbs-passwd`, `sbbs-scanner`, `sbbs-shadow`
+- Synchronet login throttling (`ctrl/sbbs.ini`):
+  - Delay between attempts: 5s; per-attempt throttle: 2s
+  - Hack threshold: 5 attempts
+  - Temp ban: after 20 attempts, 15 min duration
+  - Permanent filter: after 50 attempts, 24h duration
+- IP blocklist: `text/ip-silent.can` — connections silently dropped before Synchronet wakes up
+
+### Logs
+
+| File | Contents |
+|------|----------|
+| `/sbbs/data/logs/MMDDYY.log` | Daily BBS activity (logins, sessions, events) |
+| `/sbbs/data/logs/MMDDYY.lol` | Daily session summary (user, node, times, stats) |
+| `/sbbs/data/hack.log` | HTTP/HTTPS hack attempts (path traversal, `/bin/sh`, etc.) |
+| `/sbbs/data/hungup.log` | Users who disconnected mid-session |
 
 ### The Jamaican
 
