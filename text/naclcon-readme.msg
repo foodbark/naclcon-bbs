@@ -41,21 +41,21 @@
 nw  [x] Chat, file areas, external doors
 nw  [x] Security hardening (rate limiting, IP bans, login throttling)
 nw  [x] Shell restricted to Synchronet Classic + Deuce's Lightbar Shell
+nw  [x] Speaker list and per-speaker message threads
+nw  [x] ANSI art splash screens (terminal-adaptive)
+nw  [x] The Pelican -- Claude-powered AI chat bot (1-on-1 and multinode)
 
 nhyWhat's Coming
 nhr-------------------------------------------------------------------------------
 nw  [ ] CTF-related content
 nw  [ ] Custom doors / programs
-nw  [x] Speaker list and bios in bulletins
-nw  [ ] ANSI art splash screens
-nw  [ ] The Pelican -- upgrade from guru.dat to Claude API
 
 nhyThe Pelican
 nhr-------------------------------------------------------------------------------
 nwThe Pelican is the BBS chat bot -- a sassy southern coastal Peli-hen who
 nwknows her way around a terminal. She has opinions about hacker culture,
-nwthe beach, and good seafood. Currently powered by Synchronet's classic
-nwguru.dat pattern matching. A Claude API upgrade is planned.
+nwthe beach, and good seafood. Powered by the Claude API (Haiku model).
+nwChat 1-on-1 from the Chat menu, or find her in multinode chat.
 
 nhySysop
 nhr-------------------------------------------------------------------------------
