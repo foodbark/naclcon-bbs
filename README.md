@@ -10,7 +10,7 @@ Bulletin board sytem for [NaClCON 2026](https://naclcon.com) hacker conference i
 ssh bbs.naclcon.com -p 2222
 ```
 
-> DNS pending. Current IP: **34.229.165.250**
+> DNS pending. Current IP: **100.51.222.185**
 
 ## Server
 
@@ -27,14 +27,12 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 | 2222 | TCP | BBS SSH (public) | Open to all |
 | 80 | TCP | HTTP | Open to all |
 | 443 | TCP | HTTPS | Open to all |
-| 21 | TCP | FTP | Open to all |
-| 70 | TCP | Gopher | Open to all |
-| 119 | TCP | NNTP | Open to all |
 | 1123 | TCP | WebSocket | Open to all |
 | 11235 | TCP | WebSocket TLS | Open to all |
 
-> Note: Gopher (70) and NNTP (119) are configured but currently disabled in
-> `ctrl/services.ini` (`Enabled=false`). Open the ports when you enable them.
+> FTP (21), Gopher (70), and NNTP (119) are configured but currently disabled.
+> To re-enable: set `AutoStart = true` (FTP, `ctrl/sbbs.ini`) or `Enabled=false` → `true`
+> (Gopher/NNTP, `ctrl/services.ini`), then open the corresponding port in the Security Group.
 
 ## Status
 
@@ -51,6 +49,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 - [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
 - [ ] CTF-related content
 - [ ] Custom doors / programs
+- [ ] Browser terminal (fTelnet): wire into webv4 so users can connect from a browser without an SSH client
 
 ## Color Scheme
 
@@ -104,10 +103,19 @@ In Synchronet `\x01` (Ctrl-A) color codes: `\x01h\x01m` = bright magenta,
 
 | File | Contents |
 |------|----------|
-| `/sbbs/data/logs/MMDDYY.log` | Daily BBS activity (logins, sessions, events) |
+| `/sbbs/data/logs/MMDDYY.log` | Daily BBS activity (logins, sessions, file transfers, events) |
 | `/sbbs/data/logs/MMDDYY.lol` | Daily session summary (user, node, times, stats) |
+| `/sbbs/data/logs/http-MMDDYY.log` | HTTP access log (one line per web request) |
 | `/sbbs/data/hack.log` | HTTP/HTTPS hack attempts (path traversal, `/bin/sh`, etc.) |
 | `/sbbs/data/hungup.log` | Users who disconnected mid-session |
+| `/var/log/auth.log` | OS SSH logins, sudo, PAM authentication |
+| `/var/log/ufw.log` | Firewall blocks and allows |
+| `/var/log/fail2ban.log` | Brute-force attempts and bans |
+| `/var/log/syslog` | General OS events |
+
+BBS logs (`*.log`, `*.lol`, `http-*.log`) and system logs are synced to S3 every minute via `/home/ubuntu/bin/s3_log_sync.sh` (cron). S3 bucket: `s3://naclcon-bbs-dead-drop/`. BBS logs land in `bbs-logs/`, system logs in `system-logs/<hostname>/`. An Elastic Stack instance on a separate EC2 ingests from S3 for dashboards and alerting.
+
+Log verbosity: the terminal server (`[BBS]`) logs at `Debugging` level to capture file transfer details. All other servers (Web, Services) log at `Info`.
 
 ### The Jamaican
 

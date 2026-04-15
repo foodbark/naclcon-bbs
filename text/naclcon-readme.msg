@@ -3,8 +3,8 @@
 
 nhm                   _  _    __    ___  __    ___  _____  _  _                   
 nhm                  ( \( )  /__\  / __)(  )  / __)(  _  )( \( )                  
-nhm                   )  (  /(__)\ ( (__  )(__( (__  )(_)(  )  (                   
-nhm                  (_)\_)(__)(__) \___)(____) \___)(_____)(_)\_)                  
+nhm                   )  (  /(__)\( (__  )(__( (__  )(_)(  )  (                   
+nhm                  (_)\_)(__)(__)\___)(____)\___)(_____)(_)\_)                  
 
 nhy                  T h e   H i s t o r y   o f   H a c k i n g                  
 
@@ -29,7 +29,7 @@
 nhyHow to Connect
 nhr-------------------------------------------------------------------------------
 nw  SSH on port 2222:
-nc    ssh -p 2222 <yourname>@34.229.165.250
+nc    ssh -p 2222 <yourname>@100.51.222.185
 nw  New users can register on connect. No invite needed.
 
 nhyWhat's Here
@@ -49,6 +49,7 @@
 nhr-------------------------------------------------------------------------------
 nw  [ ] CTF-related content
 nw  [ ] Custom doors / programs
+nw  [ ] Browser terminal -- connect from a web browser, no SSH client needed
 
 nhyThe Pelican
 nhr-------------------------------------------------------------------------------
