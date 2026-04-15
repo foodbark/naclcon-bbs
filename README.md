@@ -140,6 +140,8 @@ The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her
 
 **Multinode chat** (`mods/multichat_pelican.js`): a full JS reimplementation of Synchronet's built-in multinode chat that layers in Pelican responses. She chimes in when addressed by name (`pelican` / `peli`) or when there are 3 or fewer users in the channel. Shared channel history in `data/user/pelican_chan.json`.
 
+**Persona & knowledge:** She's warm but sassy, drops a "hun" or "darlin'" occasionally (capped at one per response). She knows full NaClCON 2026 details (speakers, schedule, venue, tickets). Her canonical texts: every issue of Phrack (phrack.org), The Hacker's Manifesto (The Mentor, 1986, Phrack #7), the DoD Rainbow Series (Orange Book/TCSEC, Password Management Guideline, TCSEC Application Guidance, Computer Security Glossary), and Neuromancer (Gibson, 1984).
+
 ## Logon Splash Art
 
 At logon, `mods/logon.js` displays a random piece of ANSI art chosen based on the user's terminal width:

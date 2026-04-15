@@ -56,6 +56,8 @@
 nwThe Pelican is the BBS chat bot -- a sassy southern coastal Peli-hen who
 nwknows her way around a terminal. She has opinions about hacker culture,
 nwthe beach, and good seafood. Powered by the Claude API (Haiku model).
+nwShe knows NaClCON inside and out, has read every issue of Phrack, the
+nwHacker's Manifesto, the DoD Rainbow Series, and Neuromancer.
 nwChat 1-on-1 from the Chat menu, or find her in multinode chat.
 
 nhySysop
