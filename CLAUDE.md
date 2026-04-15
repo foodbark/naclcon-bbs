@@ -24,7 +24,7 @@ To test the BBS:
 ```bash
 ssh bbs.naclcon.com -p 2222
 # or by IP while DNS is pending:
-ssh 34.229.165.250 -p 2222
+ssh 100.51.222.185 -p 2222
 ```
 
 ## Synchronet Reference

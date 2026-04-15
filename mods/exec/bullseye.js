@@ -41,15 +41,24 @@ if(bull.length < 1) {
 // Display menu, list bulletins, display prompt, etc.
 
 while(bbs.online && !js.terminated) {
-	if(bbs.menu("../bullseye", P_NOERROR)) {
-	console.newline();
-	console.mnemonics(gettext("Enter number of bulletin or [~Quit]: ", "choose_bulletin"));
-		b = console.getnum(bull.length);
-	} else {
-		for(i = 0; i < bull.length; ++i)
-			console.uselect(i + 1, "Bulletin", file_getname(bull[i]));
-		b = console.uselect();
+	console.clear(LIGHTGRAY);
+	console.print("\x01n\x01h\x01r===============================================================================\x01n\r\n");
+	console.print("\r\n");
+	console.print("\x01n\x01h\x01m                   _  _    __    ___  __    ___  _____  _  _                   \x01n\r\n");
+	console.print("\x01n\x01h\x01m                  ( \\( )  /__\\  / __)(  )  / __)(  _  )( \\( )                  \x01n\r\n");
+	console.print("\x01n\x01h\x01m                   )  (  /(__)\\( (__  )(__( (__  )(_)(  )  (                   \x01n\r\n");
+	console.print("\x01n\x01h\x01m                  (_)\\_)(__)(__)\\___)(____)\\___)(_____)(_)\\_)                  \x01n\r\n");
+	console.print("\r\n");
+	console.print("\x01n\x01h\x01y                            B u l l e t i n s                                   \x01n\r\n");
+	console.print("\x01n\x01h\x01r-------------------------------------------------------------------------------\x01n\r\n");
+	console.print("\r\n");
+	for(i = 0; i < bull.length; ++i) {
+		var name = file_getname(bull[i]).replace(/\.[^.]+$/, '');
+		console.print("\x01n\x01h\x01y  " + (i + 1) + "\x01n\x01w  " + name + "\r\n");
 	}
+	console.print("\r\n");
+	console.mnemonics("\x01n\x01wEnter number or [\x01h\x01yQ\x01n\x01wuit]: ");
+	b = console.getnum(bull.length);
 	if(b < 1)
 		break;
 	if(b > bull.length) {

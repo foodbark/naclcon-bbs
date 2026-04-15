@@ -7,12 +7,12 @@
 nhy ctf. badges. talks. shenanigans.
 
 nhw what's here:
-nw   message boards  |  file areas  |  chat  |  doors  |  The Pelican
+nw   message boards  |  file areas  |  chat  |  doors  |  The Pelican  |  speaker list
 
 nhw what's coming:
-nw   ctf content  |  con schedule  |  custom doors  |  ansi art  |  Pelican AI upgrade
+nw   ctf content  |  con schedule  |  custom doors
 
-nw ncssh -p 2222 <yourname>@34.229.165.250nw  --  new users register on connect.
+nw ncssh -p 2222 <yourname>@100.51.222.185nw  --  new users register on connect.
 
 nhy full info available in nhwBullsEye!nhy under External Programs.
 
