@@ -117,6 +117,18 @@ BBS logs (`*.log`, `*.lol`, `http-*.log`) and system logs are synced to S3 every
 
 Log verbosity: the terminal server (`[BBS]`) logs at `Debugging` level to capture file transfer details. All other servers (Web, Services) log at `Info`.
 
+### SSH Login Behavior (SSH_ANYAUTH)
+
+`SSH_ANYAUTH` is currently enabled in `ctrl/sbbs.ini`. This makes the SSH server accept any credentials without checking them, which means every user — new and returning — goes through the full BBS login sequence (username/password prompt + logon screens).
+
+**Before this change:** `ssh username@host -p 2222` auto-logged returning users in at the SSH layer. No BBS login prompt.
+
+**Why it was added:** New users connecting via SSH were being rejected before reaching the BBS because their SSH clients weren't sending credentials the server would accept.
+
+**Trade-off:** New user signup works reliably. Returning users have a clunkier experience.
+
+**TODO:** Figure out the root cause of the new-login failures without `SSH_ANYAUTH`, then revert. Returning users with BBS credentials provided at the SSH level (or SSH pubkeys registered in their BBS account) should auto-login without it.
+
 ### The Jamaican
 
 Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a kid with an AWS account and a TLS scanner.  I misstyped the IP in my intial recon and geolocated to Jamaica and the name stuck. The IP has been reported on [https://www.abuseipdb.com/](https://www.abuseipdb.com/check/34.212.124.156).
