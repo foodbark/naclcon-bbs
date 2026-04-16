@@ -144,6 +144,19 @@ Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2
 
 IP added to `text/ip-silent.can`. Connections now dropped silently before Synchronet wakes up.
 
+### fail2ban
+
+Four jails are active, configured in `/etc/fail2ban/jail.d/sbbs.conf`:
+
+| Jail | Watches | Trigger | Ban |
+|------|---------|---------|-----|
+| `sshd` | `/var/log/auth.log` | OS SSH brute force (default Debian config) | default |
+| `sbbs-passwd` | `/sbbs/data/hack.log` | HTTP request for `/etc/passwd` | 1 hit → 1hr |
+| `sbbs-shadow` | `/sbbs/data/hack.log` | HTTP request for `/etc/shadow` | 1 hit → 24hr |
+| `sbbs-scanner` | `/sbbs/data/hack.log` | Any other web path traversal outside web root | 3 hits/week → 24hr |
+
+The three `sbbs-*` jails key off Synchronet's `hack.log`, which records all HTTP requests that escape the web root. Filters are in `/etc/fail2ban/filter.d/sbbs-{passwd,shadow,scanner}.conf`.
+
 ## The Pelican
 
 The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her way around a terminal. Powered by the Claude API (Haiku model).
