@@ -87,6 +87,23 @@ In Synchronet `\x01` (Ctrl-A) color codes: `\x01h\x01m` = bright magenta,
 
 ## Security
 
+### The Jamaican
+
+Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number of simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a kid with an AWS account and a TLS scanner. I misstyped the IP in my initial recon and geolocated to Jamaica and the name stuck. The IP has been reported on [abuseipdb.com](https://www.abuseipdb.com/check/34.212.124.156).
+
+```
+3/17 17:56:34 web  0044 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 35815
+3/17 17:56:34 web  0045 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 25147
+3/17 17:56:34 web  0046 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 33376
+3/17 17:56:34 web  0044 TLS WARNING 'Server sent handshake for the obsolete SSLv2 protocol' (-13) setting session active
+3/17 17:56:34 web  0046 TLS WARNING 'Invalid version number 3.1, should be at least 3.3' (-32) setting session active
+3/17 17:56:34 web  0050 TLS info 'No encryption mechanism compatible with the remote system could be found' (-20) setting session active
+```
+
+IP added to `text/ip-silent.can`. Connections now dropped silently before Synchronet wakes up.
+
+Of course, this incident was followed by significant system hardening.
+
 ### Hardening Applied
 - AWS Security Group: port 22 (OS SSH) restricted to sysop IP only
 - OS SSH: password authentication disabled (key-only)
@@ -99,7 +116,22 @@ In Synchronet `\x01` (Ctrl-A) color codes: `\x01h\x01m` = bright magenta,
   - Permanent filter: after 50 attempts, 24h duration
 - IP blocklist: `text/ip-silent.can` — connections silently dropped before Synchronet wakes up
 
+### fail2ban
+
+Four jails are active, configured in `/etc/fail2ban/jail.d/sbbs.conf`:
+
+| Jail | Watches | Trigger | Ban |
+|------|---------|---------|-----|
+| `sshd` | `/var/log/auth.log` | OS SSH brute force (default Debian config) | default |
+| `sbbs-passwd` | `/sbbs/data/hack.log` | HTTP request for `/etc/passwd` | 1 hit → 1hr |
+| `sbbs-shadow` | `/sbbs/data/hack.log` | HTTP request for `/etc/shadow` | 1 hit → 24hr |
+| `sbbs-scanner` | `/sbbs/data/hack.log` | Any other web path traversal outside web root | 3 hits/week → 24hr |
+
+The three `sbbs-*` jails key off Synchronet's `hack.log`, which records all HTTP requests that escape the web root. Filters are in `/etc/fail2ban/filter.d/sbbs-{passwd,shadow,scanner}.conf`.
+
 ### Logs
+
+To stay on top of activity without being logged into the server, all logs are synced off-box to S3 every minute via `/home/ubuntu/bin/s3_log_sync.sh` (cron). S3 bucket: `s3://naclcon-bbs-dead-drop/`. BBS logs land in `bbs-logs/`, system logs in `system-logs/<hostname>/`. An Elastic Stack instance on a separate EC2 ingests from S3 for dashboards and alerting.
 
 | File | Contents |
 |------|----------|
@@ -112,8 +144,6 @@ In Synchronet `\x01` (Ctrl-A) color codes: `\x01h\x01m` = bright magenta,
 | `/var/log/ufw.log` | Firewall blocks and allows |
 | `/var/log/fail2ban.log` | Brute-force attempts and bans |
 | `/var/log/syslog` | General OS events |
-
-BBS logs (`*.log`, `*.lol`, `http-*.log`) and system logs are synced to S3 every minute via `/home/ubuntu/bin/s3_log_sync.sh` (cron). S3 bucket: `s3://naclcon-bbs-dead-drop/`. BBS logs land in `bbs-logs/`, system logs in `system-logs/<hostname>/`. An Elastic Stack instance on a separate EC2 ingests from S3 for dashboards and alerting.
 
 Log verbosity: the terminal server (`[BBS]`) logs at `Debugging` level to capture file transfer details. All other servers (Web, Services) log at `Info`.
 
@@ -128,34 +158,6 @@ Log verbosity: the terminal server (`[BBS]`) logs at `Debugging` level to captur
 **Trade-off:** New user signup works reliably. Returning users have a clunkier experience.
 
 **TODO:** Figure out the root cause of the new-login failures without `SSH_ANYAUTH`, then revert. Returning users with BBS credentials provided at the SSH level (or SSH pubkeys registered in their BBS account) should auto-login without it.
-
-### The Jamaican
-
-Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a kid with an AWS account and a TLS scanner.  I misstyped the IP in my intial recon and geolocated to Jamaica and the name stuck. The IP has been reported on [https://www.abuseipdb.com/](https://www.abuseipdb.com/check/34.212.124.156).
-
-```
-3/17 17:56:34 web  0044 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 35815
-3/17 17:56:34 web  0045 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 25147
-3/17 17:56:34 web  0046 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 33376
-3/17 17:56:34 web  0044 TLS WARNING 'Server sent handshake for the obsolete SSLv2 protocol' (-13) setting session active
-3/17 17:56:34 web  0046 TLS WARNING 'Invalid version number 3.1, should be at least 3.3' (-32) setting session active
-3/17 17:56:34 web  0050 TLS info 'No encryption mechanism compatible with the remote system could be found' (-20) setting session active
-```
-
-IP added to `text/ip-silent.can`. Connections now dropped silently before Synchronet wakes up.
-
-### fail2ban
-
-Four jails are active, configured in `/etc/fail2ban/jail.d/sbbs.conf`:
-
-| Jail | Watches | Trigger | Ban |
-|------|---------|---------|-----|
-| `sshd` | `/var/log/auth.log` | OS SSH brute force (default Debian config) | default |
-| `sbbs-passwd` | `/sbbs/data/hack.log` | HTTP request for `/etc/passwd` | 1 hit → 1hr |
-| `sbbs-shadow` | `/sbbs/data/hack.log` | HTTP request for `/etc/shadow` | 1 hit → 24hr |
-| `sbbs-scanner` | `/sbbs/data/hack.log` | Any other web path traversal outside web root | 3 hits/week → 24hr |
-
-The three `sbbs-*` jails key off Synchronet's `hack.log`, which records all HTTP requests that escape the web root. Filters are in `/etc/fail2ban/filter.d/sbbs-{passwd,shadow,scanner}.conf`.
 
 ## The Pelican
 
