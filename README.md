@@ -10,6 +10,10 @@ Semi-official bulletin board system for [NaClCON 2026](https://naclcon.com) hack
 ssh naclconbbs.net -p 2222
 ```
 
+```
+telnet naclconbbs.net
+```
+
 ## Server
 
 A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees: message boards, file areas, chat, doors, and The Pelican.
@@ -22,6 +26,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 | Port | Protocol | Service | Notes |
 |------|----------|---------|-------|
 | 22 | TCP | OS SSH | Restrict to sysop IP only |
+| 23 | TCP | Telnet (public) | Open to all |
 | 2222 | TCP | BBS SSH (public) | Open to all |
 | 80 | TCP | HTTP | Open to all |
 | 443 | TCP | HTTPS | Open to all |
@@ -35,6 +40,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 ## Status
 
 - [x] SSH access on port 2222
+- [x] Telnet access on port 23
 - [x] New user registration
 - [x] NaClCON branding throughout
 - [x] Local message boards
