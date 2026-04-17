@@ -1,6 +1,6 @@
 Welcome to NaClCON BBS, @ALIAS@!
 
-You've landed on the official BBS for NaClCON — the hacker conference on the
+You've landed on the semi-official BBS for NaClCON — the hacker conference on the
 coast of Carolina Beach, NC (May 31 - June 2, 2026).
 
 -------------------------------------------------------------------------------

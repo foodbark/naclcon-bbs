@@ -21,7 +21,7 @@
 n@TRUNCOFF@@WORDWRAP@
 nhyAbout This BBS
 nhr-------------------------------------------------------------------------------
-nwNaClCON BBS is the official community hub for NaClCON 2026 -- the hacker
+nwNaClCON BBS is the semi-official community hub for NaClCON 2026 -- the hacker
 nwconference on the coast of Carolina Beach, NC. Running Synchronet v3.21 on AWS.
 nwConnect before, during, and after the con. Message boards, file areas, chat,
 nwexternal doors, and The Pelican.
