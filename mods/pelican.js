@@ -168,14 +168,27 @@ function clean_input(s) {
 	        .replace(/^\s+|\s+$/g, "");
 }
 
-// Print a Pelican response correctly: label on its own line so the response
-// starts at column 0, then normalize bare \n to \r\n so the BBS terminal
-// handles line endings properly.
+function word_wrap(text, width) {
+	var lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+	var result = [];
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		while (line.length > width) {
+			var cut = width;
+			while (cut > 0 && line[cut] !== " ") cut--;
+			if (cut === 0) cut = width;
+			result.push(line.substring(0, cut));
+			line = line.substring(cut).replace(/^ /, "");
+		}
+		result.push(line);
+	}
+	return result.join("\r\n");
+}
+
 function print_response(label_color, label, text) {
 	writeln(label_color + label + "\x01n");
-	// Normalize line endings so Synchronet outputs proper CRLF
-	var out = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").replace(/\n/g, "\r\n");
-	write(out + "\r\n");
+	var width = (console.screen_columns || 80) - 1;
+	write(word_wrap(text, width) + "\r\n");
 }
 
 // ── Chat UI ───────────────────────────────────────────────────────────────────
