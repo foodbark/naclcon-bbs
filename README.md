@@ -1,6 +1,6 @@
 # NaClCON BBS
 
-Bulletin board sytem for [NaClCON 2026](https://naclcon.com) hacker conference in Carolina Beach, NC. May 31 - June 2, 2026.
+Semi-official bulletin board system for [NaClCON 2026](https://naclcon.com) hacker conference in Carolina Beach, NC. May 31 - June 2, 2026.
 
 > Play Hard. Hack Harder.
 
@@ -44,6 +44,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 - [x] NaClCON color palette applied to both shells
 - [x] The Pelican — Claude-powered AI chat bot (1-on-1 and multinode)
 - [x] Speaker list bulletin and per-speaker message threads
+- [x] Pre-login NaClCON banner shown at connect (before login prompt, via `mods/login.js`)
 - [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
 - [ ] CTF-related content
 - [ ] Custom doors / programs
