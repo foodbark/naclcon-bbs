@@ -113,7 +113,7 @@ Of course, this incident was followed by significant system hardening.
 - AWS Security Group: port 22 (OS SSH) restricted to sysop IP only
 - OS SSH: password authentication disabled (key-only)
 - `ufw` enabled with default-deny inbound, rate limiting on port 443
-- `fail2ban` running with four jails: `sshd`, `sbbs-passwd`, `sbbs-scanner`, `sbbs-shadow`
+- `fail2ban` running with five jails: `sshd`, `sbbs-passwd`, `sbbs-scanner`, `sbbs-shadow`, `sbbs-web404`
 - Synchronet login throttling (`ctrl/sbbs.ini`):
   - Delay between attempts: 5s; per-attempt throttle: 2s
   - Hack threshold: 5 attempts
@@ -123,7 +123,7 @@ Of course, this incident was followed by significant system hardening.
 
 ### fail2ban
 
-Four jails are active, configured in `/etc/fail2ban/jail.d/sbbs.conf`:
+Five jails are active, configured in `/etc/fail2ban/jail.d/sbbs.conf`:
 
 | Jail | Watches | Trigger | Ban |
 |------|---------|---------|-----|
@@ -131,8 +131,9 @@ Four jails are active, configured in `/etc/fail2ban/jail.d/sbbs.conf`:
 | `sbbs-passwd` | `/sbbs/data/hack.log` | HTTP request for `/etc/passwd` | 1 hit → 1hr |
 | `sbbs-shadow` | `/sbbs/data/hack.log` | HTTP request for `/etc/shadow` | 1 hit → 24hr |
 | `sbbs-scanner` | `/sbbs/data/hack.log` | Any other web path traversal outside web root | 3 hits/week → 24hr |
+| `sbbs-web404` | systemd journal (`_COMM=synchronet`) | 5+ HTTP 404s in 1hr (bot probes, scanner sweeps) | 5 hits/hr → 24hr |
 
-The three `sbbs-*` jails key off Synchronet's `hack.log`, which records all HTTP requests that escape the web root. Filters are in `/etc/fail2ban/filter.d/sbbs-{passwd,shadow,scanner}.conf`.
+The `sbbs-passwd/shadow/scanner` jails key off Synchronet's `hack.log` (path traversal attempts outside the web root). `sbbs-web404` reads directly from the systemd journal and catches the lower-level bot activity that never reaches `hack.log` — scanners probing for `/admin/`, `/.git/config`, `serverConfig.json`, etc. Filter is in `/etc/fail2ban/filter.d/sbbs-web404.conf`.
 
 The idea is slap on the wrist for looking around, harder slap if you are after /etc/shadow, full ban if you are trying to bruteforce the OS.
 
@@ -153,6 +154,8 @@ To stay on top of activity without being logged into the server, all logs are sy
 | `/var/log/syslog` | General OS events |
 
 Log verbosity: the terminal server (`[BBS]`) logs at `Debugging` level to capture file transfer details. All other servers (Web, Services) log at `Info`.
+
+The systemd journal is capped at **50M / 2-day retention** (`/etc/systemd/journald.conf`) — logs are shipped to S3 so there is no reason to keep them on disk long-term. Bot traffic (web 404 probes) was the primary journal bloat driver before `sbbs-web404` was added.
 
 ### SSH Login Behavior (SSH_ANYAUTH)
 
