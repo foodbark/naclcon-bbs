@@ -64,7 +64,8 @@ var SYSTEM_PROMPT =
 	"B.K. DeLong (Attrition.org), Edison Carter (phone phreak), Jericho, " +
 	"Josh Corman (I Am The Cavalry), Casey John Ellis (Bugcrowd), Jamie Arlen. " +
 	"Fireside chats: Hack Beer'd, Dustin Heywood/EvilMog (Hashcat, Hacker Jeopardy champ). " +
-	"BBS: ssh -p 2222 naclconbbs.net. " +
+	"BBS: ssh -p 2222 naclconbbs.net or telnet naclconbbs.net. " +
+	"Preferred terminal: SyncTERM (syncterm.bbsdev.net) -- it renders the ANSI art and colors right. " +
 	"naclcon.com | info@naclcon.com. " +
 	"\n" +
 	"You know and love The Hacker's Manifesto (written by The Mentor in 1986, published in " +
@@ -191,6 +192,64 @@ function print_response(label_color, label, text) {
 	write(word_wrap(text, width) + "\r\n");
 }
 
+// ── Wrapping input ────────────────────────────────────────────────────────────
+
+// Read a line of input, wrapping visually at `width` columns.
+// Returns the typed string, or null if the user pressed ESC.
+function read_input_wrapped(width) {
+	var buf = [];
+	var col = 0;
+
+	while (bbs.online) {
+		var key = console.getkey(K_NOECHO);
+		if (!key) continue;
+
+		var code = key.charCodeAt(0);
+
+		// Submit
+		if (key === "\r" || key === "\n") {
+			write("\r\n");
+			break;
+		}
+
+		// ESC = cancel
+		if (key === "\x1b") {
+			write("\r\n");
+			return null;
+		}
+
+		// Backspace / DEL
+		if (key === "\x08" || key === "\x7f") {
+			if (buf.length > 0) {
+				buf.pop();
+				if (col > 0) {
+					write("\x08 \x08");
+					col--;
+				} else {
+					// back up across a wrap point: go up, jump to last column, erase
+					write("\x1b[A\x1b[" + width + "G \x1b[" + width + "G");
+					col = width - 1;
+				}
+			}
+			continue;
+		}
+
+		// Skip non-printable and function/arrow keys (multi-char escape sequences)
+		if (key.length > 1 || code < 32 || code === 127) continue;
+
+		buf.push(key);
+		write(key);
+		col++;
+
+		if (col >= width) {
+			write("\r\n");
+			col = 0;
+		}
+	}
+
+	return buf.join("");
+}
+
 // ── Chat UI ───────────────────────────────────────────────────────────────────
 
 // Output at full speed regardless of the user's negotiated connection rate
@@ -212,10 +271,19 @@ if (greeting) {
 }
 writeln("");
 
+var input_width = (console.screen_columns || 80) - 1;
+
 while (bbs.online) {
 	writeln("\x01h\x01y[You]\x01n");
-	var raw_input = console.getstr((console.screen_columns || 80) - 1, K_CHAT);
-	var input = clean_input(raw_input || "");
+	var raw_input = read_input_wrapped(input_width);
+
+	if (raw_input === null) {
+		writeln("\x01h\x01m[The Pelican]\x01n So long, darlin'. Stay salty! *squawk*");
+		console.output_rate = saved_output_rate;
+		exit(0);
+	}
+
+	var input = clean_input(raw_input);
 
 	if (!input) {
 		writeln("");
