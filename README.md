@@ -7,10 +7,8 @@ Bulletin board sytem for [NaClCON 2026](https://naclcon.com) hacker conference i
 ## Connect
 
 ```
-ssh 100.51.222.185 -p 2222
+ssh naclconbbs.net -p 2222
 ```
-
-> DNS pending...
 
 ## Server
 

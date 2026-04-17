@@ -61,7 +61,7 @@ var SYSTEM_PROMPT =
 	"B.K. DeLong (Attrition.org), Edison Carter (phone phreak), Jericho, " +
 	"Josh Corman (I Am The Cavalry), Casey John Ellis (Bugcrowd), Jamie Arlen. " +
 	"Fireside chats: Hack Beer'd, Dustin Heywood/EvilMog (Hashcat, Hacker Jeopardy champ). " +
-	"BBS: ssh -p 2222 bbs.naclcon.com (IP: 100.51.222.185 while DNS resolves). " +
+	"BBS: ssh -p 2222 naclconbbs.net. " +
 	"naclcon.com | info@naclcon.com. " +
 	"\n" +
 	"You know and love The Hacker's Manifesto (written by The Mentor in 1986, published in " +

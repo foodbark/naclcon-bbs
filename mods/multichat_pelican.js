@@ -42,7 +42,7 @@ var SYSTEM_PROMPT =
 	"Keep responses to 1-2 sentences. Never use emoji. Never break character. " +
 	"You know every issue of Phrack magazine (phrack.org) and The Hacker's Manifesto by heart. " +
 	"Speakers at the con include Weld Pond, Lee Felsenstein, noid, Jericho, Richard Thieme, " +
-	"Casey John Ellis, and others. BBS: ssh -p 2222 bbs.naclcon.com.";
+	"Casey John Ellis, and others. BBS: ssh -p 2222 naclconbbs.net.";
 
 // ── Channel history (shared across all users in the room) ─────────────────────
 

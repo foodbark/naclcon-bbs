@@ -12,7 +12,7 @@
 nhw what's coming:
 nw   ctf content  |  con schedule  |  custom doors
 
-nw ncssh -p 2222 <yourname>@100.51.222.185nw  --  new users register on connect.
+nw ncssh -p 2222 <yourname>@naclconbbs.netnw  --  new users register on connect.
 
 nhy full info available in nhwBullsEye!nhy under External Programs.
 

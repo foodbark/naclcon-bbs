@@ -29,7 +29,7 @@
 nhyHow to Connect
 nhr-------------------------------------------------------------------------------
 nw  SSH on port 2222:
-nc    ssh -p 2222 <yourname>@100.51.222.185
+nc    ssh -p 2222 <yourname>@naclconbbs.net
 nw  New users can register on connect. No invite needed.
 
 nhyWhat's Here
