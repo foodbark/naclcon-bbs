@@ -7,16 +7,16 @@ Bulletin board sytem for [NaClCON 2026](https://naclcon.com) hacker conference i
 ## Connect
 
 ```
-ssh bbs.naclcon.com -p 2222
+ssh 100.51.222.185 -p 2222
 ```
 
-> DNS pending. Current IP: **100.51.222.185**
+> DNS pending...
 
 ## Server
 
 A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees: message boards, file areas, chat, doors, and The Pelican.
 
-- **Nodes**: 20 (supports 20 concurrent users) — upgrade instance to t3.medium before the con
+- **Nodes**: 20 (supports 20 concurrent users), currently on a t3.medium
 - **Sysop**: foodbark
 
 ## AWS Security Group — Required Open Ports
@@ -89,7 +89,7 @@ In Synchronet `\x01` (Ctrl-A) color codes: `\x01h\x01m` = bright magenta,
 
 ### The Jamaican
 
-Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number of simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a kid with an AWS account and a TLS scanner. I misstyped the IP in my initial recon and geolocated to Jamaica and the name stuck. The IP has been reported on [abuseipdb.com](https://www.abuseipdb.com/check/34.212.124.156).
+Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number of simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a scriptkiddy with an AWS account and a TLS scanner. I fat-fingered the IP in my initial recon and geolocated to Jamaica. The IP has been reported on [abuseipdb.com](https://www.abuseipdb.com/check/34.212.124.156).
 
 ```
 3/17 17:56:34 web  0044 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 35815
@@ -129,6 +129,8 @@ Four jails are active, configured in `/etc/fail2ban/jail.d/sbbs.conf`:
 
 The three `sbbs-*` jails key off Synchronet's `hack.log`, which records all HTTP requests that escape the web root. Filters are in `/etc/fail2ban/filter.d/sbbs-{passwd,shadow,scanner}.conf`.
 
+The idea is slap on the wrist for looking around, harder slap if you are after /etc/shadow, full ban if you are trying to bruteforce the OS.
+
 ### Logs
 
 To stay on top of activity without being logged into the server, all logs are synced off-box to S3 every minute via `/home/ubuntu/bin/s3_log_sync.sh` (cron). S3 bucket: `s3://naclcon-bbs-dead-drop/`. BBS logs land in `bbs-logs/`, system logs in `system-logs/<hostname>/`. An Elastic Stack instance on a separate EC2 ingests from S3 for dashboards and alerting.
@@ -149,13 +151,13 @@ Log verbosity: the terminal server (`[BBS]`) logs at `Debugging` level to captur
 
 ### SSH Login Behavior (SSH_ANYAUTH)
 
-`SSH_ANYAUTH` is currently enabled in `ctrl/sbbs.ini`. This makes the SSH server accept any credentials without checking them, which means every user — new and returning — goes through the full BBS login sequence (username/password prompt + logon screens).
+`SSH_ANYAUTH` is currently enabled in `ctrl/sbbs.ini`. This makes the SSH server accept any credentials without checking them, which means every user, new and returning, goes through the full BBS login sequence (username/password prompt + logon screens).
 
 **Before this change:** `ssh username@host -p 2222` auto-logged returning users in at the SSH layer. No BBS login prompt.
 
 **Why it was added:** New users connecting via SSH were being rejected before reaching the BBS because their SSH clients weren't sending credentials the server would accept.
 
-**Trade-off:** New user signup works reliably. Returning users have a clunkier experience.
+**Trade-off:** New user signup works reliably. Returning users have a clunkier experience (no fast logon).
 
 **TODO:** Figure out the root cause of the new-login failures without `SSH_ANYAUTH`, then revert. Returning users with BBS credentials provided at the SSH level (or SSH pubkeys registered in their BBS account) should auto-login without it.
 
@@ -173,7 +175,7 @@ The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her
 
 At logon, `mods/logon.js` displays a random piece of ANSI art chosen based on the user's terminal width:
 
-- **>80 columns** — a random `random_wide*` file is served via `cat` (using `EX_STDIO | EX_NATIVE` so the raw bytes pass through unmodified)
+- **>80 columns**  a random `random_wide*` file is served via `cat` (using `EX_STDIO | EX_NATIVE` so the raw bytes pass through unmodified)
 - **≤80 columns** (e.g. SyncTERM, standard 80-col terminals) — a random `random_narrow*` file is served via `bbs.menu()`
 
 Art files live in `text/menu/` and deploy to `/sbbs/text/menu/` via rsync:
@@ -186,7 +188,7 @@ Art files live in `text/menu/` and deploy to `/sbbs/text/menu/` via rsync:
 | `random_wide_XXXXX.ans` | Wide |
 | `random_wide_closeup.ans` | Wide |
 
-Source art files (pre-rename) are in `art/`. To add more, drop a file matching `random_wide*` or `random_narrow*` into `text/menu/` and rsync to deploy — the logon module picks from all matching files at random.
+Source art files (pre-rename) are in `art/`. To add more, drop a file matching `random_wide*` or `random_narrow*` into `text/menu/` and rsync to deploy. The logon module picks from all matching files at random.
 
 ## Sysop
 
