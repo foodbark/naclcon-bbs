@@ -213,8 +213,8 @@ if (greeting) {
 writeln("");
 
 while (bbs.online) {
-	write("\x01h\x01y[You]\x01n ");
-	var raw_input = console.getstr(256, K_CHAT);
+	writeln("\x01h\x01y[You]\x01n");
+	var raw_input = console.getstr((console.screen_columns || 80) - 1, K_CHAT);
 	var input = clean_input(raw_input || "");
 
 	if (!input) {
