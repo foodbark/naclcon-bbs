@@ -14,6 +14,8 @@ ssh naclconbbs.net -p 2222
 telnet naclconbbs.net
 ```
 
+> **Note (2026-04-17):** The BBS SSH host key on port 2222 was rotated. If your client warns about a changed host key, clear the old entry and re-trust. New fingerprint: `SHA256:YA9XC+4vgn0pAfe62evti5b2QnPQN4OIHo25QFUHvF0`
+
 ## Server
 
 A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees: message boards, file areas, chat, doors, and The Pelican.
@@ -113,7 +115,8 @@ Of course, this incident was followed by significant system hardening.
 - AWS Security Group: port 22 (OS SSH) restricted to sysop IP only
 - OS SSH: password authentication disabled (key-only)
 - `ufw` enabled with default-deny inbound, rate limiting on port 443
-- `fail2ban` running with five jails: `sshd`, `sbbs-passwd`, `sbbs-scanner`, `sbbs-shadow`, `sbbs-web404`
+- `fail2ban` running with six jails: `sshd`, `sbbs-passwd`, `sbbs-scanner`, `sbbs-shadow`, `sbbs-web404`, `synchronet-bbs`
+- UFW manual blocks (positions 1–4): four confirmed scanner IPs that never authenticated — `194.26.192.152`, `34.6.93.227`, `223.123.124.177`, `141.98.11.181`
 - Synchronet login throttling (`ctrl/sbbs.ini`):
   - Delay between attempts: 5s; per-attempt throttle: 2s
   - Hack threshold: 5 attempts
@@ -123,7 +126,7 @@ Of course, this incident was followed by significant system hardening.
 
 ### fail2ban
 
-Five jails are active, configured in `/etc/fail2ban/jail.d/sbbs.conf`:
+Six jails are active. The original five are configured in `/etc/fail2ban/jail.d/sbbs.conf`; `synchronet-bbs` is in `/etc/fail2ban/jail.d/synchronet.conf`:
 
 | Jail | Watches | Trigger | Ban |
 |------|---------|---------|-----|
@@ -132,6 +135,7 @@ Five jails are active, configured in `/etc/fail2ban/jail.d/sbbs.conf`:
 | `sbbs-shadow` | `/sbbs/data/hack.log` | HTTP request for `/etc/shadow` | 1 hit → 24hr |
 | `sbbs-scanner` | `/sbbs/data/hack.log` | Any other web path traversal outside web root | 3 hits/week → 24hr |
 | `sbbs-web404` | systemd journal (`_COMM=synchronet`) | 5+ HTTP 404s in 1hr (bot probes, scanner sweeps) | 5 hits/hr → 24hr |
+| `synchronet-bbs` | `/var/log/syslog` | SSH session establishment failures (BBS port 2222) | 10 hits/2min → 24hr |
 
 The `sbbs-passwd/shadow/scanner` jails key off Synchronet's `hack.log` (path traversal attempts outside the web root). `sbbs-web404` reads directly from the systemd journal and catches the lower-level bot activity that never reaches `hack.log` — scanners probing for `/admin/`, `/.git/config`, `serverConfig.json`, etc. Filter is in `/etc/fail2ban/filter.d/sbbs-web404.conf`.
 
