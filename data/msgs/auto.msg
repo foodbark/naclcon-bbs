@@ -13,7 +13,8 @@
 nhw what's coming:
 nw   ctf content  |  con schedule  |  custom doors
 
-nw ncssh -p 2222 <yourname>@naclconbbs.netnw  --  new users register on connect.
+nw  ssh: ncssh -p 2222 <yourname>@naclconbbs.netnw  |  telnet: nctelnet naclconbbs.net
+nw  new users register on connect -- no invite needed.
 
 nhy full info available in nhwBullsEye!nhy under External Programs.
 

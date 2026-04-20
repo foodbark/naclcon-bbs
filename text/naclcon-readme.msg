@@ -28,13 +28,16 @@
 
 nhyHow to Connect
 nhr-------------------------------------------------------------------------------
-nw  SSH on port 2222:
+nw  SSH (port 2222):
 nc    ssh -p 2222 <yourname>@naclconbbs.net
+nw  Telnet (port 23):
+nc    telnet naclconbbs.net
 nw  New users can register on connect. No invite needed.
 
 nhyWhat's Here
 nhr-------------------------------------------------------------------------------
 nw  [x] SSH access on port 2222
+nw  [x] Telnet access on port 23
 nw  [x] New user registration
 nw  [x] NaClCON branding throughout
 nw  [x] Local message boards
