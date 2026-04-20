@@ -100,7 +100,7 @@ In Synchronet `\x01` (Ctrl-A) color codes: `\x01h\x01m` = bright magenta,
 
 ### The Jamaican
 
-Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number of simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a scriptkiddy with an AWS account and a TLS scanner. I fat-fingered the IP in my initial recon and geolocated to Jamaica. The IP has been reported on [abuseipdb.com](https://www.abuseipdb.com/check/34.212.124.156).
+Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2.compute.amazonaws.com`) opened a number of simultaneous HTTPS connections in a single second, probing for weak TLS (SSLv2, TLSv1.0, TLSv1.1). Synchronet rejected all of them: no downgrade was possible. Seems like a scriptkiddy with an AWS account and a TLS scanner. I fat-fingered the IP in my initial recon and geolocated to Jamaica. I looked up the IP and it had already been reported on [abuseipdb.com](https://www.abuseipdb.com/check/34.212.124.156).
 
 ```
 3/17 17:56:34 web  0044 HTTPS [34.212.124.156] Connection accepted on 172.31.24.94 port 443 from port 35815
@@ -113,7 +113,7 @@ Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2
 
 IP added to `text/ip-silent.can`. Connections now dropped silently before Synchronet wakes up.
 
-Of course, this incident was followed by significant system hardening.
+Of course, this incident was just the begining.  While it has been followed by significant system hardening, the server continutes to be hammered by bots.
 
 ### Hardening Applied
 - AWS Security Group: port 22 (OS SSH) restricted to sysop IP only
@@ -163,7 +163,7 @@ To stay on top of activity without being logged into the server, all logs are sy
 
 Log verbosity: the terminal server (`[BBS]`) logs at `Debugging` level to capture file transfer details. All other servers (Web, Services) log at `Info`.
 
-The systemd journal is capped at **50M / 2-day retention** (`/etc/systemd/journald.conf`) — logs are shipped to S3 so there is no reason to keep them on disk long-term. Bot traffic (web 404 probes) was the primary journal bloat driver before `sbbs-web404` was added.
+The systemd journal is capped at **50M / 2-day retention** (`/etc/systemd/journald.conf`). Logs are shipped to S3 for further analyis so there is no reason to keep them on disk long-term. Bot traffic (web 404 probes) was the primary journal bloat driver before `sbbs-web404` was added.
 
 ### SSH Login Behavior (SSH_ANYAUTH)
 
