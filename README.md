@@ -1,5 +1,7 @@
 # NaClCON BBS
 
+![NaClCON BBS](screenshot.png)
+
 Semi-official bulletin board system for [NaClCON 2026](https://naclcon.com) hacker conference in Carolina Beach, NC. May 31 - June 2, 2026.
 
 > Play Hard. Hack Harder.
