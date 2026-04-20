@@ -94,6 +94,25 @@ if (_nf.open("r", true)) {
 		SYSTEM_PROMPT += "\n\n" + _news;
 }
 
+// ── Conference countdown ──────────────────────────────────────────────────────
+
+(function() {
+	var now  = new Date();
+	var conf = new Date("2026-05-31T00:00:00");
+	var days = Math.ceil((conf - now) / 86400000);
+	var when;
+	if (days <= 0)
+		when = "The conference is happening RIGHT NOW -- May 31-June 2, 2026!";
+	else if (days === 1)
+		when = "The conference starts TOMORROW.";
+	else if (days < 14)
+		when = "The conference is " + days + " days away.";
+	else
+		when = "The conference is " + days + " days away (" + Math.floor(days/7) + " weeks).";
+	SYSTEM_PROMPT += "\n\nCOUNTDOWN: " + when +
+		" Feel free to casually mention this when it's natural -- don't force it every response.";
+})();
+
 // ── Conversation history ──────────────────────────────────────────────────────
 
 var history_path = system.data_dir + "user/pelican_" +
