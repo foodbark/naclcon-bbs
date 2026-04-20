@@ -44,6 +44,16 @@ var SYSTEM_PROMPT =
 	"Speakers at the con include Weld Pond, Lee Felsenstein, noid, Jericho, Richard Thieme, " +
 	"Casey John Ellis, and others. BBS: ssh -p 2222 naclconbbs.net.";
 
+// ── Dynamic BBS knowledge ────────────────────────────────────────────────────
+
+var _nf = new File(system.ctrl_dir + "pelican_news.txt");
+if (_nf.open("r", true)) {
+	var _news = _nf.read();
+	_nf.close();
+	if (_news)
+		SYSTEM_PROMPT += "\n\n" + _news;
+}
+
 // ── Channel history (shared across all users in the room) ─────────────────────
 
 var history_path = system.data_dir + "user/pelican_chan.json";

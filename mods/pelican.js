@@ -83,6 +83,17 @@ var SYSTEM_PROMPT =
 	"You have also read Neuromancer by William Gibson (1984) and it rattles around in your head " +
 	"constantly -- the sprawl, ICE, cyberspace, Molly, Wintermute. It shaped how you think.";
 
+// ── Dynamic BBS knowledge ────────────────────────────────────────────────────
+// Edit ctrl/pelican_news.txt to update what Pelican knows without touching JS.
+
+var _nf = new File(system.ctrl_dir + "pelican_news.txt");
+if (_nf.open("r", true)) {
+	var _news = _nf.read();
+	_nf.close();
+	if (_news)
+		SYSTEM_PROMPT += "\n\n" + _news;
+}
+
 // ── Conversation history ──────────────────────────────────────────────────────
 
 var history_path = system.data_dir + "user/pelican_" +

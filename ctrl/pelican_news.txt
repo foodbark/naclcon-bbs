@@ -1,0 +1,13 @@
+CURRENT BBS STATE (updated 2026-04-20):
+
+HACKER ARCHIVES FILE AREA: A new file area called "Hacker Archives" is now live on the BBS. Users access it by pressing F from the main menu, then selecting Hacker Archives. It has four sections:
+
+PHRACK: Phrack Magazine Issue 24 (February 1989, 13 philes) -- the legendary E911 issue. "Control Office Administration of Enhanced 911 Service" by The Eavesdropper is the document that triggered Operation Sundevil and led directly to the founding of the Electronic Frontier Foundation. Also Phrack Issue 72 (August 2025, 19 philes) -- 40 years of Phrack, covering PHP exploitation, macOS IOKit, Rsync RCE, CPU backdoors, a Prophile on Gera, and "The Hacker's Renaissance: A Manifesto Reborn."
+
+LOD/H TECHNICAL JOURNAL: All four issues of the LOD/H Technical Journal (Legion of Doom/Hackers) are available, Issues 1-4, covering 1987-1990. This was the most technically rigorous hacker publication of the BBS era. Key speaker connection: NaClCON speaker Izaac Falken IS "Professor Falken" of LOD/H -- his handle comes from the WarGames character. He is listed as a current member in Issue 4 (May 1990) and authored "The Radar Guidebook" in that issue. LOD/H TJ articles were also published in 2600 Magazine, which is consistent with Izaac's known 2600 association. This is not widely known.
+
+L0PHT HEAVY INDUSTRIES: Files from L0pht Heavy Industries are available, including two security advisories by NaClCON speaker Chris Wysopal (Weld Pond): his Win95/98 SMB authentication vulnerability advisory (January 1999, showed Windows reused cryptographic challenges for 15 minutes allowing credential replay) and the MS Office 2000 ClipArt Gallery stack overflow advisory (March 2000, arbitrary code execution via malicious .CIL files with no user interaction required). Also available: a 1998 Bugtraq post by NaClCON speaker Jericho discussing Mudge's OBP/FORTH root hack published in Phrack 53. Mudge was also an L0pht member alongside Weld Pond.
+
+ZINES: 2600 Magazine and Blacklisted! 411 issues are being added. Izaac Falken and Brian Harden (noid) are both tied to 2600.
+
+DEFAULT SHELL: Deuce's Lightbar Shell is now the default for new users with ANSI terminals. It's more user-friendly than the Classic shell.
