@@ -2,6 +2,24 @@
 
 ![NaClCON BBS](screenshot.png)
 
+[![NaClCON 2026](https://img.shields.io/badge/NaClCON-2026-cc00cc?style=for-the-badge)](https://naclcon.com)
+[![SSH](https://img.shields.io/badge/SSH-naclconbbs.net_--p_2222-brightgreen?style=for-the-badge)](#connect)
+[![Telnet](https://img.shields.io/badge/Telnet-naclconbbs.net-00cccc?style=for-the-badge)](#connect)
+[![Carolina Beach NC](https://img.shields.io/badge/Carolina_Beach_NC-May_31_--_June_2_2026-ff0066?style=for-the-badge)](https://naclcon.com)
+
+[![Synchronet](https://img.shields.io/badge/Synchronet-v3.21-6600cc?style=for-the-badge)](https://wiki.synchro.net)
+[![AWS EC2](https://img.shields.io/badge/AWS_EC2-t3.medium-ff9900?style=for-the-badge)](https://aws.amazon.com/ec2/)
+[![Nodes](https://img.shields.io/badge/Nodes-20_concurrent-0055ff?style=for-the-badge)](#server)
+[![The Pelican](https://img.shields.io/badge/The_Pelican-Claude_powered-ff69b4?style=for-the-badge)](#the-pelican)
+
+[![Phrack](https://img.shields.io/badge/Phrack-Issues_24_%26_72-ff2200?style=for-the-badge)](https://phrack.org)
+[![LOD/H TJ](https://img.shields.io/badge/LOD%2FH_TJ-Issues_1--4-ffcc00?style=for-the-badge)](#lodh-technical-journal)
+[![L0pht](https://img.shields.io/badge/L0pht_Heavy_Industries-Weld_Pond_advisories-334499?style=for-the-badge)](#l0pht-heavy-industries)
+[![fail2ban](https://img.shields.io/badge/fail2ban-6_jails_active-cc0000?style=for-the-badge)](#fail2ban)
+
+[![Play Hard. Hack Harder.](https://img.shields.io/badge/Play_Hard-Hack_Harder-ff0066?style=for-the-badge)](#naclcon-bbs)
+[![Stay Salty](https://img.shields.io/badge/Stay-Salty_🐦-005577?style=for-the-badge)](#the-pelican)
+
 Semi-official bulletin board system for [NaClCON 2026](https://naclcon.com) hacker conference in Carolina Beach, NC. May 31 - June 2, 2026.
 
 > Play Hard. Hack Harder.
