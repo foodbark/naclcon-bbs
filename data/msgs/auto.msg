@@ -8,6 +8,7 @@
 
 nhw what's here:
 nw   message boards  |  file areas  |  chat  |  doors  |  The Pelican  |  speaker list
+nw   nhy Hacker Archives nhw(F > Hacker Archives): Phrack  |  LOD/H TJ  |  L0pht  |  Zines
 
 nhw what's coming:
 nw   ctf content  |  con schedule  |  custom doors

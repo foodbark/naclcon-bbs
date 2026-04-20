@@ -22,6 +22,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 
 - **Nodes**: 20 (supports 20 concurrent users), currently on a t3.medium
 - **Sysop**: foodbark
+- **Library path**: `/sbbs/exec` is registered in `/etc/ld.so.conf.d/sbbs.conf` so `sbbs` can start via systemd. The binary has `$ORIGIN` in its RUNPATH but that expansion is unreliable for PIE binaries under systemd — the ldconfig entry is the fix.
 
 ## AWS Security Group — Required Open Ports
 
@@ -48,12 +49,13 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 - [x] Local message boards
 - [x] Chat, file areas, external doors
 - [x] Security hardening (see below)
-- [x] Shell restricted to Synchronet Classic + Deuce's Lightbar Shell
+- [x] Shell restricted to Synchronet Classic + Deuce's Lightbar Shell; **Lightbar Shell is the default** for new users (ANSI/80-col terminals; others fall back to Classic)
 - [x] NaClCON color palette applied to both shells
 - [x] The Pelican — Claude-powered AI chat bot (1-on-1 and multinode)
 - [x] Speaker list bulletin and per-speaker message threads
 - [x] Pre-login NaClCON banner shown at connect (before login prompt, via `mods/login.js`)
 - [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
+- [x] Hacker Archives file area (F → Hacker Archives): Phrack 24 + 72, LOD/H Technical Journal Issues 1–4, L0pht/Weld Pond advisories (see below)
 - [ ] CTF-related content
 - [ ] Custom doors / programs
 - [ ] Browser terminal (fTelnet): wire into webv4 so users can connect from a browser without an SSH client
@@ -172,6 +174,43 @@ The systemd journal is capped at **50M / 2-day retention** (`/etc/systemd/journa
 **Trade-off:** New user signup works reliably. Returning users have a clunkier experience (no fast logon).
 
 **TODO:** Figure out the root cause of the new-login failures without `SSH_ANYAUTH`, then revert. Returning users with BBS credentials provided at the SSH level (or SSH pubkeys registered in their BBS account) should auto-login without it.
+
+## Hacker Archives
+
+A file area accessible via **F → Hacker Archives** from the main menu. Files are viewable inline (V) or downloadable. Promoted via the welcome screen (`data/msgs/auto.msg`), the BullsEye bulletin (`text/hacker_archives.msg`), and a sysop post in LOCAL-NOTICES.
+
+The file area config lives in `/sbbs/ctrl/file.ini` (not in this repo — edit directly on the server). Files are stored under `/sbbs/data/dirs/`. Use `/sbbs/exec/jsexec addfiles.js -lib="Hacker Archives" FILES.BBS -v` to register new files after dropping them in a directory.
+
+### Phrack Magazine
+
+| Directory | Content |
+|-----------|---------|
+| `phrack/` | Issue 24 (Feb 1989) — 13 philes including the legendary E911 article ("Control Office Administration of Enhanced 911 Service" by The Eavesdropper) that triggered Operation Sundevil and the founding of the EFF |
+| `phrack/` | Issue 72 (Aug 2025) — 19 philes: PHP exploitation, macOS IOKit, Rsync RCE, CPU backdoors, Gera prophile, Hacker's Renaissance manifesto |
+
+Downloaded via `https://archives.phrack.org/tgz/phrack{N}.tar.gz`.
+
+### LOD/H Technical Journal
+
+Issues 1–4 complete (1987–1990). The most technically rigorous hacker publication of the BBS era.
+
+**NaClCON speaker connection:** NaClCON speaker **Izaac Falken** is **Professor Falken** of LOD/H. Issue 4 contains his article "The Radar Guidebook." His handle comes from the WarGames character. LOD/H TJ articles were also published in 2600 Magazine, where Izaac is also credited.
+
+Key extracts available as standalone files:
+- `lodh4_03_radar_guidebook_professor_falken.txt` — authored by NaClCON speaker Izaac Falken
+- `lodh4_06_history_of_lodh.txt` — LOD/H retrospective
+- `lodh3_10_clearing_up_busts.txt` — debunking the mythical LOD/H busts
+
+### L0pht Heavy Industries
+
+NaClCON speaker **Chris Wysopal (Weld Pond)** was a core L0pht member. Files:
+- `weld_pond_smb_auth_vuln_1999.txt` — Win95/98 SMB challenge-reuse authentication vulnerability (Bugtraq, Jan 1999)
+- `weld_pond_clipart_overflow_2000.txt` — MS Office 2000 ClipArt Gallery stack overflow (Bugtraq, Mar 2000)
+- `jericho_mudge_obp_forth_phrack53_1998.txt` — Jericho's post on Mudge's Sun OBP/FORTH root hack from Phrack 53 (Bugtraq, Jul 1998). Jericho is also a NaClCON speaker.
+
+### Zines
+
+2600 Magazine and Blacklisted! 411 issues — being populated. Izaac Falken and Brian Harden (noid) are both tied to 2600.
 
 ## The Pelican
 
