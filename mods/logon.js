@@ -8,6 +8,27 @@
 
 require("sbbsdefs.js", 'SS_RLOGIN');
 require("nodedefs.js", 'NODE_QUIET');
+
+// Rescue terminals whose ESC[6n response loses the race with answer.cpp's 5s
+// window (Terminology, mosh, tmux-wrapped SSH, some mobile clients). If auto-
+// detect produced no-ANSI/no-color but the SSH-reported TERM looks modern,
+// trust it. UTF-8 is enabled alongside ANSI because every terminal in the
+// allowlist defaults to UTF-8 — legacy CP437-native clients (SyncTERM etc.)
+// respond to the probe in time and don't fall into this branch.
+(function terminal_rescue() {
+	if (console.term_supports(USER_ANSI)) return;
+	if (client.protocol !== "SSH" && client.protocol !== "RLogin") return;
+	var rescue_term = (console.terminal || "").toLowerCase();
+	if (!/^(xterm|screen|tmux|vt\d|ansi|linux|rxvt|konsole|terminology|putty|alacritty|kitty|wezterm|foot|st-|mosh|eterm)/.test(rescue_term))
+		return;
+	var add = USER_ANSI | USER_COLOR | USER_UTF8;
+	bbs.log_str(format("term-rescue: enabling ANSI+COLOR+UTF8 for user #%d (TERM='%s')\r\n"
+		, user.number, rescue_term));
+	user.settings = (user.settings | add) & ~USER_NO_EXASCII;
+	console.autoterm = (console.autoterm | add) & ~USER_NO_EXASCII;
+	console.term_updated();
+})();
+
 if(!bbs.mods.avatar_lib)
 	bbs.mods.avatar_lib = load({}, 'avatar_lib.js');
 if(!bbs.mods.logonlist_lib)
