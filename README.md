@@ -84,14 +84,14 @@ NaClCON brand palette mapped to CGA 16-color terminal codes:
 In Synchronet `\x01` (Ctrl-A) color codes: `\x01h\x01m` = bright magenta,
 `\x01h\x01r` = hot pink, `\x01h\x01y` = bright yellow.
 
-**Synchronet Classic — header (`text/menu/head.msg`)**
+**Synchronet Classic: header (`text/menu/head.msg`)**
 - Box borders: `\x01h\x01m` (bright magenta)
 - BBS name: `\x01h\x01y` (bright yellow)
 - Time/date: `\x01h\x01w` (bright white)
 - Labels: `\x01h\x01w` (bright white)
 - Values (last on, uptime): `\x01c` (cyan)
 
-**Simple Shell menus (`text/menu/simple/`)**
+**Duce's Simple Shell menus (`text/menu/simple/`)**
 - Box borders: `\x01h\x01m` (bright magenta)
 - BBS name: `\x01h\x01y` (bright yellow)
 - Hotkeys: `\x01h\x01y` (bright yellow)
@@ -115,7 +115,7 @@ Shortly after the BBS went live, `34.212.124.156` (`ec2-34-212-124-156.us-west-2
 
 IP added to `text/ip-silent.can`. Connections now dropped silently before Synchronet wakes up.
 
-Of course, this incident was just the begining.  While it has been followed by significant system hardening, the server continutes to be hammered by bots.
+Of course, this incident was just the begining.  While it has been followed by significant system hardening the server continutes to be hammered by bots.
 
 ### Hardening Applied
 - AWS Security Group: port 22 (OS SSH) restricted to sysop IP only
