@@ -183,14 +183,14 @@ The systemd journal is capped at **50M / 2-day retention** (`/etc/systemd/journa
 
 A file area accessible via **F → Hacker Archives** from the main menu. Files are viewable inline (V) or downloadable. Promoted via the welcome screen (`data/msgs/auto.msg`), the BullsEye bulletin (`text/hacker_archives.msg`), and a sysop post in LOCAL-NOTICES.
 
-The file area config lives in `/sbbs/ctrl/file.ini` (not in this repo — edit directly on the server). Files are stored under `/sbbs/data/dirs/`. Use `/sbbs/exec/jsexec addfiles.js -lib="Hacker Archives" FILES.BBS -v` to register new files after dropping them in a directory.
+The file area config lives in `/sbbs/ctrl/file.ini` (not in this repo: edit directly on the server). Files are stored under `/sbbs/data/dirs/`. Use `/sbbs/exec/jsexec addfiles.js -lib="Hacker Archives" FILES.BBS -v` to register new files after dropping them in a directory.
 
 ### Phrack Magazine
 
 | Directory | Content |
 |-----------|---------|
-| `phrack/` | Issue 24 (Feb 1989) — 13 philes including the legendary E911 article ("Control Office Administration of Enhanced 911 Service" by The Eavesdropper) that triggered Operation Sundevil and the founding of the EFF |
-| `phrack/` | Issue 72 (Aug 2025) — 19 philes: PHP exploitation, macOS IOKit, Rsync RCE, CPU backdoors, Gera prophile, Hacker's Renaissance manifesto |
+| `phrack/` | Issue 24 (Feb 1989):  13 philes including the legendary E911 article ("Control Office Administration of Enhanced 911 Service" by The Eavesdropper) that triggered Operation Sundevil and the founding of the EFF |
+| `phrack/` | Issue 72 (Aug 2025): 19 philes including PHP exploitation, macOS IOKit, Rsync RCE, CPU backdoors, Gera prophile, Hacker's Renaissance manifesto |
 
 Downloaded via `https://archives.phrack.org/tgz/phrack{N}.tar.gz`.
 
@@ -210,11 +210,11 @@ Key extracts available as standalone files:
 NaClCON speaker **Chris Wysopal (Weld Pond)** was a core L0pht member. Files:
 - `weld_pond_smb_auth_vuln_1999.txt` — Win95/98 SMB challenge-reuse authentication vulnerability (Bugtraq, Jan 1999)
 - `weld_pond_clipart_overflow_2000.txt` — MS Office 2000 ClipArt Gallery stack overflow (Bugtraq, Mar 2000)
-- `jericho_mudge_obp_forth_phrack53_1998.txt` — Jericho's post on Mudge's Sun OBP/FORTH root hack from Phrack 53 (Bugtraq, Jul 1998). Jericho is also a NaClCON speaker.
+- `jericho_mudge_obp_forth_phrack53_1998.txt`: Jericho's post on Mudge's Sun OBP/FORTH root hack from Phrack 53 (Bugtraq, Jul 1998). Jericho is also a NaClCON speaker.
 
 ### Zines
 
-2600 Magazine and Blacklisted! 411 issues — being populated. Izaac Falken and Brian Harden (noid) are both tied to 2600.
+2600 Magazine and Blacklisted! 411 issues: being populated. Izaac Falken and Brian Harden (noid) are both tied to 2600 but it's hard to find text versions of them.
 
 ## The Pelican
 
