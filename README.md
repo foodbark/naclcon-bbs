@@ -42,6 +42,8 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 > To re-enable: set `AutoStart = true` (FTP, `ctrl/sbbs.ini`) or `Enabled=false` → `true`
 > (Gopher/NNTP, `ctrl/services.ini`), then open the corresponding port in the Security Group.
 
+Also considering adding email server back in (can of worms though it is) as it is prominently featured in Synchronet and in the default shell.
+
 ## Status
 
 - [x] SSH access on port 2222
