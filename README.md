@@ -24,7 +24,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 
 - **Nodes**: 20 (supports 20 concurrent users), currently on a t3.medium
 - **Sysop**: foodbark
-- **Library path**: `/sbbs/exec` is registered in `/etc/ld.so.conf.d/sbbs.conf` so `sbbs` can start via systemd. The binary has `$ORIGIN` in its RUNPATH but that expansion is unreliable for PIE binaries under systemd — the ldconfig entry is the fix.
+- **Library path**: `/sbbs/exec` is registered in `/etc/ld.so.conf.d/sbbs.conf` so `sbbs` can start via systemd. The binary has `$ORIGIN` in its RUNPATH but that expansion is unreliable for PIE binaries under systemd, leading to "library not found" errors. The ldconfig entry is the fix for this.
 
 ## AWS Security Group — Required Open Ports
 
