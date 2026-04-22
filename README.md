@@ -61,7 +61,8 @@ Also considering adding email server back in (can of worms though it is) as it i
 - [x] Pre-login NaClCON banner shown at connect (before login prompt, via `mods/login.js`)
 - [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
 - [x] Hacker Archives file area (F → Hacker Archives): Phrack 24 + 72, LOD/H Technical Journal Issues 1–4, L0pht/Weld Pond advisories (see below)
-- [x] External doors: **NaClCON Arcade** (15 doors: Synchronet Minesweeper + 14 A-Net classics) and **Apps & Info** (Weather, X-News, NewsCenter); see below
+- [x] External doors — **NaClCON Arcade** (15 doors: Synchronet Minesweeper + 14 A-Net classics) and **Apps & Info** (Weather, X-News, NewsCenter); see below
+- [x] **BBSes We Like** — curated connect menu (`mods/exec/bbslike.js`) that telnet-gateways into a handpicked list of other boards from inside NaClCON
 - [x] `naclconbbs.net` DNS live (A → static Elastic IP)
 - [ ] fsxNet (Zone 21) FTN integration: application sent, awaiting node assignment; will bring echomail + netmail (see below)
 - [ ] CTF-related content
@@ -248,7 +249,11 @@ The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her
 
 **Multinode chat** (`mods/multichat_pelican.js`): a full JS reimplementation of Synchronet's built-in multinode chat that layers in Pelican responses. She chimes in when addressed by name (`pelican` / `peli`) or when there are 3 or fewer users in the channel. Shared channel history in `data/user/pelican_chan.json`.
 
-**Persona & knowledge:** She's warm but sassy, drops a "hun" or "darlin'" occasionally (hard cap: one per response, skipped in most). She knows full NaClCON 2026 details (speakers, schedule, venue, tickets). Her canonical texts: every issue of Phrack (phrack.org), The Hacker's Manifesto (The Mentor, 1986, Phrack #7), the DoD Rainbow Series (Orange Book/TCSEC, Password Management Guideline, TCSEC Application Guidance, Computer Security Glossary), and Neuromancer (Gibson, 1984).
+**Persona & knowledge:** She's warm but sassy, drops a "hun" or "darlin'" occasionally (hard cap: one per response, skipped in most). She knows full NaClCON 2026 details (speakers, schedule, venue, tickets), the NaClCON Arcade door lineup, and the BBSes We Like curated list. Her canonical texts: every issue of Phrack (phrack.org), The Hacker's Manifesto (The Mentor, 1986, Phrack #7), the DoD Rainbow Series (Orange Book/TCSEC, Password Management Guideline, TCSEC Application Guidance, Computer Security Glossary), and Neuromancer (Gibson, 1984).
+
+**Dynamic knowledge surfaces** (appended to her system prompt every chat session):
+- `ctrl/pelican_news.txt` — static BBS-state facts (Hacker Archives, Arcade, BBSes We Like, menu layout). Hand-edited.
+- `ctrl/pelican_weather.txt` — live NWS weather forecast + NOAA tide predictions for Carolina Beach, refreshed every 30 minutes by `scripts/pelican_weather_tides.py` (cron). Gitignored. She references current conditions organically when asked — the system prompt specifically instructs her not to recite unprompted.
 
 ## Logon Splash Art
 
