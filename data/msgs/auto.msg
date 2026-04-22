@@ -7,11 +7,12 @@
 nhy ctf. badges. talks. shenanigans.
 
 nhw what's here:
-nw   message boards  |  file areas  |  chat  |  doors  |  The Pelican  |  speaker list
+nw   message boards  |  file areas  |  chat  |  The Pelican  |  speaker list
+nw   nhy NaClCON Arcade nhw(External Programs): LORD  |  Trade Wars  |  OOKII  |  NetHack  |  Netrunner ...
 nw   nhy Hacker Archives nhw(F > Hacker Archives): Phrack  |  LOD/H TJ  |  L0pht  |  Zines
 
 nhw what's coming:
-nw   ctf content  |  con schedule  |  custom doors
+nw   ctf content  |  con schedule  |  fsxNet echomail
 
 nw  ssh: ncssh -p 2222 <yourname>@naclconbbs.netnw  |  telnet: nctelnet naclconbbs.net
 nw  new users register on connect -- no invite needed.
