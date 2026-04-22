@@ -37,7 +37,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 | 443 | TCP | HTTPS | Open to all |
 | 1123 | TCP | WebSocket | Open to all |
 | 11235 | TCP | WebSocket TLS | Open to all |
-| 24554 | TCP | BinkP (FTN mailer) | Open for fsxNet inbound — service activates after node assignment |
+| 24554 | TCP | BinkP (FTN mailer) | Open for fsxNet inbound. Service activates after node assignment |
 
 > FTP (21), Gopher (70), and NNTP (119) are configured but currently disabled.
 > To re-enable: set `AutoStart = true` (FTP, `ctrl/sbbs.ini`) or `Enabled=false` → `true`
@@ -61,9 +61,9 @@ Also considering adding email server back in (can of worms though it is) as it i
 - [x] Pre-login NaClCON banner shown at connect (before login prompt, via `mods/login.js`)
 - [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
 - [x] Hacker Archives file area (F → Hacker Archives): Phrack 24 + 72, LOD/H Technical Journal Issues 1–4, L0pht/Weld Pond advisories (see below)
-- [x] External doors — **NaClCON Arcade** (15 doors: Synchronet Minesweeper + 14 A-Net classics) and **Apps & Info** (Weather, X-News, NewsCenter); see below
+- [x] External doors: **NaClCON Arcade** (15 doors: Synchronet Minesweeper + 14 A-Net classics) and **Apps & Info** (Weather, X-News, NewsCenter); see below
 - [x] `naclconbbs.net` DNS live (A → static Elastic IP)
-- [ ] fsxNet (Zone 21) FTN integration — application sent, awaiting node assignment; will bring echomail + netmail (see below)
+- [ ] fsxNet (Zone 21) FTN integration: application sent, awaiting node assignment; will bring echomail + netmail (see below)
 - [ ] CTF-related content
 - [ ] Local custom doors (The Clans port)
 - [ ] Browser terminal (fTelnet): wire into webv4 so users can connect from a browser without an SSH client
@@ -126,13 +126,13 @@ Of course, this incident was just the begining.  While it has been followed by s
 - OS SSH: password authentication disabled (key-only)
 - `ufw` enabled with default-deny inbound, rate limiting on port 443
 - `fail2ban` running with six jails: `sshd`, `sbbs-passwd`, `sbbs-scanner`, `sbbs-shadow`, `sbbs-web404`, `synchronet-bbs`
-- UFW manual blocks (positions 1–4): four confirmed scanner IPs that never authenticated — `194.26.192.152`, `34.6.93.227`, `223.123.124.177`, `141.98.11.181`
+- UFW manual blocks (positions 1–4): four confirmed scanner IPs that never authenticated: `194.26.192.152`, `34.6.93.227`, `223.123.124.177`, `141.98.11.181`
 - Synchronet login throttling (`ctrl/sbbs.ini`):
   - Delay between attempts: 5s; per-attempt throttle: 2s
   - Hack threshold: 5 attempts
   - Temp ban: after 20 attempts, 15 min duration
   - Permanent filter: after 50 attempts, 24h duration
-- IP blocklist: `text/ip-silent.can` — connections silently dropped before Synchronet wakes up
+- IP blocklist: `text/ip-silent.can` connections silently dropped before Synchronet wakes up
 
 ### fail2ban
 
@@ -147,7 +147,7 @@ Six jails are active. The original five are configured in `/etc/fail2ban/jail.d/
 | `sbbs-web404` | systemd journal (`_COMM=synchronet`) | 5+ HTTP 404s in 1hr (bot probes, scanner sweeps) | 5 hits/hr → 24hr |
 | `synchronet-bbs` | `/var/log/syslog` | SSH session establishment failures (BBS port 2222) | 10 hits/2min → 24hr |
 
-The `sbbs-passwd/shadow/scanner` jails key off Synchronet's `hack.log` (path traversal attempts outside the web root). `sbbs-web404` reads directly from the systemd journal and catches the lower-level bot activity that never reaches `hack.log` — scanners probing for `/admin/`, `/.git/config`, `serverConfig.json`, etc. Filter is in `/etc/fail2ban/filter.d/sbbs-web404.conf`.
+The `sbbs-passwd/shadow/scanner` jails key off Synchronet's `hack.log` (path traversal attempts outside the web root). `sbbs-web404` reads directly from the systemd journal and catches the lower-level bot activity that never reaches `hack.log`  scanners probing for `/admin/`, `/.git/config`, `serverConfig.json`, etc. Filter is in `/etc/fail2ban/filter.d/sbbs-web404.conf`.
 
 The idea is slap on the wrist for looking around, harder slap if you are after /etc/shadow, full ban if you are trying to bruteforce the OS.
 
@@ -205,15 +205,15 @@ Issues 1–4 complete (1987–1990). The most technically rigorous hacker public
 **NaClCON speaker connection:** NaClCON speaker **Izaac Falken** is **Professor Falken** of LOD/H. Issue 4 contains his article "The Radar Guidebook." His handle comes from the WarGames character. LOD/H TJ articles were also published in 2600 Magazine, where Izaac is also credited.
 
 Key extracts available as standalone files:
-- `lodh4_03_radar_guidebook_professor_falken.txt` — authored by NaClCON speaker Izaac Falken
-- `lodh4_06_history_of_lodh.txt` — LOD/H retrospective
-- `lodh3_10_clearing_up_busts.txt` — debunking the mythical LOD/H busts
+- `lodh4_03_radar_guidebook_professor_falken.txt`: authored by NaClCON speaker Izaac Falken
+- `lodh4_06_history_of_lodh.txt`: LOD/H retrospective
+- `lodh3_10_clearing_up_busts.txt`: debunking the mythical LOD/H busts
 
 ### L0pht Heavy Industries
 
 NaClCON speaker **Chris Wysopal (Weld Pond)** was a core L0pht member. Files:
-- `weld_pond_smb_auth_vuln_1999.txt` — Win95/98 SMB challenge-reuse authentication vulnerability (Bugtraq, Jan 1999)
-- `weld_pond_clipart_overflow_2000.txt` — MS Office 2000 ClipArt Gallery stack overflow (Bugtraq, Mar 2000)
+- `weld_pond_smb_auth_vuln_1999.txt`:  Win95/98 SMB challenge-reuse authentication vulnerability (Bugtraq, Jan 1999)
+- `weld_pond_clipart_overflow_2000.txt`:  MS Office 2000 ClipArt Gallery stack overflow (Bugtraq, Mar 2000)
 - `jericho_mudge_obp_forth_phrack53_1998.txt`: Jericho's post on Mudge's Sun OBP/FORTH root hack from Phrack 53 (Bugtraq, Jul 1998). Jericho is also a NaClCON speaker.
 
 ### Zines
@@ -222,7 +222,7 @@ NaClCON speaker **Chris Wysopal (Weld Pond)** was a core L0pht member. Files:
 
 ## External Doors (A-Net Online Passthrough)
 
-Classic BBS door games via rlogin passthrough to [A-Net Online](https://a-net-online.lol/gameserver) — a dedicated door hub with 450+ games at `game.a-net-online.lol:513`. No local install; games run on A-Net and state (scores, characters) lives there. Each door is wired as a Synchronet external program in `ctrl/xtrn.ini` that rlogins with our BBS tag `-s-nacl`.
+Classic BBS door games via rlogin passthrough to [A-Net Online](https://a-net-online.lol/gameserver): a dedicated door hub with 450+ games at `game.a-net-online.lol:513`. No local install; games run on A-Net and state (scores, characters) lives there. Each door is wired as a Synchronet external program in `ctrl/xtrn.ini` that rlogins with our BBS tag `-s-nacl`.
 
 Two sections are exposed from the **External Programs** menu:
 
@@ -230,15 +230,15 @@ Two sections are exposed from the **External Programs** menu:
 
 **Apps & Info**: Weather Center, X-News, NewsCenter.
 
-To add more entries, append `[prog:ARCADE:CODE]` (or `APPS`) blocks to `ctrl/xtrn.ini` using the existing template — full A-Net game code list at https://a-net-online.lol/gameserver.
+To add more entries, append `[prog:ARCADE:CODE]` (or `APPS`) blocks to `ctrl/xtrn.ini` using the existing template: full A-Net game code list at https://a-net-online.lol/gameserver.
 
-## fsxNet — FidoNet-Style Echomail
+## fsxNet - FidoNet-Style Echomail
 
-NaClCON BBS is joining [fsxNet](https://fsxnet.nz/) — the **F**un, **S**imple, e**X**perimental FTN network in Zone 21. Open-enrollment and retro-adjacent, it fits the con's ethos better than real FidoNet Zone 1 (which would require Policy4 commitment and weeks of coordinator back-and-forth).
+NaClCON BBS is joining [fsxNet](https://fsxnet.nz/) - the **F**un, **S**imple, e**X**perimental FTN network in Zone 21. Open-enrollment and retro-adjacent, it fits the con's ethos better than real FidoNet Zone 1 (which would require Policy4 commitment and weeks of coordinator back-and-forth).
 
 **Status (2026-04-22):** Application sent to Paul Hayton (Avon, `avon@bbs.nz`). CRASH mode. BinkP on `naclconbbs.net:24554` (UFW and AWS SG both open). Awaiting node assignment.
 
-**Once active**, the BBS will carry a curated set of echomail areas: `FSX_GEN`, `FSX_BBS`, `FSX_RETRO`, `FSX_CRY`, `FSX_TST`. Netmail will flow both ways. Scaffolding happens via `/sbbs/exec/init-fidonet.js 21` once credentials are in hand — it creates the FidoNet message group in SCFG, downloads the fsxNet echolist, installs `binkit.js` as an event, and fires off an AreaFix subscription netmail.
+**Once active**, the BBS will carry a curated set of echomail areas: `FSX_GEN`, `FSX_BBS`, `FSX_RETRO`, `FSX_CRY`, `FSX_TST`. Netmail will flow both ways. Scaffolding happens via `/sbbs/exec/init-fidonet.js 21` once I get the creditials creating the FidoNet message group in SCFG, downloads the fsxNet echolist, installs `binkit.js` as an event, and fires off an AreaFix subscription netmail.
 
 ## The Pelican
 
@@ -255,7 +255,7 @@ The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her
 At logon, `mods/logon.js` displays a random piece of ANSI art chosen based on the user's terminal width:
 
 - **>80 columns**  a random `random_wide*` file is served via `cat` (using `EX_STDIO | EX_NATIVE` so the raw bytes pass through unmodified)
-- **≤80 columns** (e.g. SyncTERM, standard 80-col terminals) — a random `random_narrow*` file is served via `bbs.menu()`
+- **≤80 columns** (e.g. SyncTERM, standard 80-col terminals): a random `random_narrow*` file is served via `bbs.menu()`
 
 Art files live in `text/menu/` and deploy to `/sbbs/text/menu/` via rsync:
 
