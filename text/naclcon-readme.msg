@@ -47,7 +47,7 @@
 nw  [x] Speaker list and per-speaker message threads
 nw  [x] ANSI art splash screens (terminal-adaptive)
 nw  [x] The Pelican -- Claude-powered AI chat bot (1-on-1 and multinode)
-nw  [x] NaClCON Arcade -- 14 classic doors (LORD, Trade Wars, OOKII,
+nw  [x] NaClCON Arcade -- 15 doors: Minesweeper, LORD, Trade Wars,
 nw      NetHack, Synchronetris, Netrunner, Drug Lord, and more)
 nw  [x] Apps & Info -- Weather Center, X-News, NewsCenter
 
