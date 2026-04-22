@@ -325,7 +325,7 @@ function Mainbar()
 	this.add("|Email","E",undefined,undefined,undefined,bbs.compare_ars("REST SE"));
 	this.add("|Chat","C",undefined,undefined,undefined,bbs.compare_ars("REST C"));
 	this.add("|Settings","S");
-	this.add("E|xternals","x",undefined,undefined,undefined,bbs.compare_ars("REST X"));
+	this.add("Games & |Apps","A",undefined,undefined,undefined,bbs.compare_ars("REST X"));
 	this.add("|View","V");
 	this.add("|Goodbye","G");
 	this.add("Commands",";");
