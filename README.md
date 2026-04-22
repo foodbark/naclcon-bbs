@@ -56,7 +56,7 @@ Also considering adding email server back in (can of worms though it is) as it i
 - [x] Security hardening (see below)
 - [x] Shell restricted to Synchronet Classic + Deuce's Lightbar Shell; **Lightbar Shell is the default** for new users (ANSI/80-col terminals; others fall back to Classic)
 - [x] NaClCON color palette applied to both shells
-- [x] The Pelican — Claude-powered AI chat bot (1-on-1 and multinode)
+- [x] The Pelican: Claude-powered AI chat bot (1-on-1 and multinode)
 - [x] Speaker list bulletin and per-speaker message threads
 - [x] Pre-login NaClCON banner shown at connect (before login prompt, via `mods/login.js`)
 - [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
