@@ -61,7 +61,7 @@ Also considering adding email server back in (can of worms though it is) as it i
 - [x] Pre-login NaClCON banner shown at connect (before login prompt, via `mods/login.js`)
 - [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
 - [x] Hacker Archives file area (F → Hacker Archives): Phrack 24 + 72, LOD/H Technical Journal Issues 1–4, L0pht/Weld Pond advisories (see below)
-- [x] External doors via A-Net Online passthrough — **NaClCON Arcade** (14 classic doors) and **Apps & Info** (Weather, X-News, NewsCenter); see below
+- [x] External doors — **NaClCON Arcade** (15 doors: Synchronet Minesweeper + 14 A-Net classics) and **Apps & Info** (Weather, X-News, NewsCenter); see below
 - [x] `naclconbbs.net` DNS live (A → static Elastic IP)
 - [ ] fsxNet (Zone 21) FTN integration — application sent, awaiting node assignment; will bring echomail + netmail (see below)
 - [ ] CTF-related content
@@ -226,7 +226,7 @@ Classic BBS door games via rlogin passthrough to [A-Net Online](https://a-net-on
 
 Two sections are exposed from the **External Programs** menu:
 
-**NaClCON Arcade** (14 doors): LORD 4.08, NukeWars 3.8, Buccaneer, Darkness, Netrunner, High Seas, Synchronetris, Operation Overkill II (Omega & Deathland), Trade Wars 2002, Drug Lord, Video Poker, The Clans (777 InterBBS), NetHack.
+**NaClCON Arcade** (15 doors): Synchronet Minesweeper (local), LORD 4.08, NukeWars 3.8, Buccaneer, Darkness, Netrunner, High Seas, Synchronetris, Operation Overkill II (Omega & Deathland), Trade Wars 2002, Drug Lord, Video Poker, The Clans (777 InterBBS), NetHack.
 
 **Apps & Info**: Weather Center, X-News, NewsCenter.
 
