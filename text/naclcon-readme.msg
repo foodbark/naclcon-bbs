@@ -47,11 +47,15 @@
 nw  [x] Speaker list and per-speaker message threads
 nw  [x] ANSI art splash screens (terminal-adaptive)
 nw  [x] The Pelican -- Claude-powered AI chat bot (1-on-1 and multinode)
+nw  [x] NaClCON Arcade -- 14 classic doors (LORD, Trade Wars, OOKII,
+nw      NetHack, Synchronetris, Netrunner, Drug Lord, and more)
+nw  [x] Apps & Info -- Weather Center, X-News, NewsCenter
 
 nhyWhat's Coming
 nhr-------------------------------------------------------------------------------
 nw  [ ] CTF-related content
-nw  [ ] Custom doors / programs
+nw  [ ] fsxNet echomail (FidoNet-style) -- pending node assignment
+nw  [ ] Local custom doors (The Clans port)
 nw  [ ] Browser terminal -- connect from a web browser, no SSH client needed
 
 nhyThe Pelican
