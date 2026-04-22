@@ -118,6 +118,16 @@ if (_nf.open("r", true)) {
 		SYSTEM_PROMPT += "\n\n" + _news;
 }
 
+// Live weather + tides for Carolina Beach, refreshed by
+// scripts/pelican_weather_tides.py (cron, every 30 min).
+var _wf = new File(system.ctrl_dir + "pelican_weather.txt");
+if (_wf.open("r", true)) {
+	var _wx = _wf.read();
+	_wf.close();
+	if (_wx)
+		SYSTEM_PROMPT += "\n\n" + _wx;
+}
+
 // ── Conference countdown ──────────────────────────────────────────────────────
 
 (function() {

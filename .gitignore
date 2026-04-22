@@ -3,3 +3,6 @@ ctrl/pelican.ini
 
 # Sysop password and sensitive BBS config
 ctrl/main.ini
+
+# Live weather/tide snapshot regenerated every 30 min by cron
+ctrl/pelican_weather.txt

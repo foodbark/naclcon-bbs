@@ -11,3 +11,30 @@ L0PHT HEAVY INDUSTRIES: Files from L0pht Heavy Industries are available, includi
 ZINES: 2600 Magazine and Blacklisted! 411 issues are being added. Izaac Falken and Brian Harden (noid) are both tied to 2600.
 
 DEFAULT SHELL: Deuce's Lightbar Shell is now the default for new users with ANSI terminals. It's more user-friendly than the Classic shell.
+
+NACLCON ARCADE (door games): From the main menu, "Games & Apps" (hotkey A) opens a submenu. Under "NaClCON Arcade" are 15 classic BBS door games. All except Minesweeper are rlogin passthroughs to A-Net Online (game.a-net-online.lol:513, 450+ games), so characters/scores persist on A-Net, not on NaClCON. The lineup:
+- Synchronet Minesweeper: local, graphical, ANSI-mouse-aware
+- LORD 4.08 (Legend of the Red Dragon): the legendary BBS RPG by Seth Able Robinson, 1989 -- fight dragons, flirt with Violet, save the kingdom
+- NukeWars 3.8: Cold War strategy game, build up and annihilate your neighbors
+- Buccaneer: pirate trader/combat on a fantasy Caribbean
+- Darkness: dark-fantasy RPG, one of the grimmer LORD clones
+- Netrunner: cyberpunk door, corporate espionage and break-ins -- fits the con
+- High Seas: naval combat and treasure hunting in the age of sail
+- Synchronetris: Tetris for the BBS, networked high scores
+- Operation Overkill II (Omega and Deathland worlds): Amish Dave's sci-fi post-apoc RPG, 1996 -- turn-based combat, big community
+- Trade Wars 2002: the classic space-trading door, by Gary Martin, 1984/1986 -- still runs InterBBS universes
+- Drug Lord: street-economy sim, run from dens to the ports
+- Video Poker: exactly what it says
+- The Clans (777 InterBBS): Allen Ussher's multi-player fantasy RPG, being modernized by Deuce (Synchronet team). This is the InterBBS version on fsxNet's 777 X-League, not the local build.
+- NetHack: classic roguelike. Not a door in the classic sense -- an A-Net passthrough. Included because, come on.
+
+BBSES WE LIKE: From the main menu, "BBSes We Like" opens a curated connect menu -- six handpicked boards reachable via Synchronet's telnet gateway (Ctrl-] to bail out of a session). If someone asks for a recommendation, pick from these:
+- 20 for Beers (telnet 20forbeers.com): chill sysop-run board for beer nerds. Low-key, friendly.
+- ACiD Underworld (telnet blackflag.acid.org): ACiD Productions, the ANSI art collective that defined 90s underground visual style. If someone wants to see ANSI done right, send them here.
+- Bottomless Abyss (ssh bbs.bottomlessabyss.net -p 2222): long-running Synchronet BBS. SSH-only, so users have to connect externally (NaClCON has no outbound SSH client).
+- Al's Geek Lab (telnet bbs.alsgeeklab.com -p 2323): Al of YouTube fame. Retro computing and BBS hobbyist hub. Good introduction for newcomers.
+- Telehack (telnet telehack.com): a simulated 80s ARPANET. Play with VAXen, mail old ghosts, find usenet relics. An endless toy -- great for history nerds.
+- Particles! BBS (telnet particlesbbs.dyndns.org -p 6400): modern Mystic BBS, active doors, active sysop.
+Etiquette: every BBS is someone else's house. Register as yourself, read the rules, say hi to the sysop, and post.
+
+MAIN MENU RENAME: "External Programs" (hotkey x) is now "Games & Apps" (hotkey A). The submenu has "NaClCON Arcade" and "Apps & Info" (Weather Center, X-News, NewsCenter).
