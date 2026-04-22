@@ -9,6 +9,7 @@
 nhw what's here:
 nw   message boards  |  file areas  |  chat  |  The Pelican  |  speaker list
 nw   nhy NaClCON Arcade nhw(Games & Apps): LORD  |  Trade Wars  |  OOKII  |  NetHack  |  Netrunner ...
+nw   nhy BBSes We Like nhw(Main menu): dial out to other boards -- telnet gateway built in
 nw   nhy Hacker Archives nhw(F > Hacker Archives): Phrack  |  LOD/H TJ  |  L0pht  |  Zines
 
 nhw what's coming:

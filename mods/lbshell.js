@@ -723,7 +723,7 @@ while(bbs.online) {
 		case 'C':
 			show_chatmenu();
 			break;
-		case 'x':
+		case 'A':
 			var curr_xtrnsec=0;
 			var x_sec;
 			var x_prog;

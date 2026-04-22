@@ -50,6 +50,7 @@
 nw  [x] NaClCON Arcade -- 15 doors: Minesweeper, LORD, Trade Wars,
 nw      NetHack, Synchronetris, Netrunner, Drug Lord, and more)
 nw  [x] Apps & Info -- Weather Center, X-News, NewsCenter
+nw  [x] BBSes We Like -- curated connect menu to other BBSes (Main)
 
 nhyWhat's Coming
 nhr-------------------------------------------------------------------------------
@@ -65,6 +66,8 @@
 nwthe beach, and good seafood. Powered by the Claude API (Haiku model).
 nwShe knows NaClCON inside and out, has read every issue of Phrack, the
 nwHacker's Manifesto, the DoD Rainbow Series, and Neuromancer.
+nwShe also tracks live weather and tides for Carolina Beach, so when she
+nwmentions the chop at Snows Cut or what the wind's doing, she means it.
 nwChat 1-on-1 from the Chat menu, or find her in multinode chat.
 
 nhySysop
