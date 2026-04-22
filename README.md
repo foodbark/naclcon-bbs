@@ -37,6 +37,7 @@ A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a communi
 | 443 | TCP | HTTPS | Open to all |
 | 1123 | TCP | WebSocket | Open to all |
 | 11235 | TCP | WebSocket TLS | Open to all |
+| 24554 | TCP | BinkP (FTN mailer) | Open for fsxNet inbound — service activates after node assignment |
 
 > FTP (21), Gopher (70), and NNTP (119) are configured but currently disabled.
 > To re-enable: set `AutoStart = true` (FTP, `ctrl/sbbs.ini`) or `Enabled=false` → `true`
@@ -60,8 +61,11 @@ Also considering adding email server back in (can of worms though it is) as it i
 - [x] Pre-login NaClCON banner shown at connect (before login prompt, via `mods/login.js`)
 - [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
 - [x] Hacker Archives file area (F → Hacker Archives): Phrack 24 + 72, LOD/H Technical Journal Issues 1–4, L0pht/Weld Pond advisories (see below)
+- [x] External doors via A-Net Online passthrough — **NaClCON Arcade** (14 classic doors) and **Apps & Info** (Weather, X-News, NewsCenter); see below
+- [x] `naclconbbs.net` DNS live (A → static Elastic IP)
+- [ ] fsxNet (Zone 21) FTN integration — application sent, awaiting node assignment; will bring echomail + netmail (see below)
 - [ ] CTF-related content
-- [ ] Custom doors / programs
+- [ ] Local custom doors (The Clans port)
 - [ ] Browser terminal (fTelnet): wire into webv4 so users can connect from a browser without an SSH client
 
 ## Color Scheme
@@ -215,6 +219,26 @@ NaClCON speaker **Chris Wysopal (Weld Pond)** was a core L0pht member. Files:
 ### Zines
 
 2600 Magazine and Blacklisted! 411 issues: being populated. Izaac Falken and Brian Harden (noid) are both tied to 2600 but it's hard to find text versions of them.
+
+## External Doors (A-Net Online Passthrough)
+
+Classic BBS door games via rlogin passthrough to [A-Net Online](https://a-net-online.lol/gameserver) — a dedicated door hub with 450+ games at `game.a-net-online.lol:513`. No local install; games run on A-Net and state (scores, characters) lives there. Each door is wired as a Synchronet external program in `ctrl/xtrn.ini` that rlogins with our BBS tag `-s-nacl`.
+
+Two sections are exposed from the **External Programs** menu:
+
+**NaClCON Arcade** (14 doors): LORD 4.08, NukeWars 3.8, Buccaneer, Darkness, Netrunner, High Seas, Synchronetris, Operation Overkill II (Omega & Deathland), Trade Wars 2002, Drug Lord, Video Poker, The Clans (777 InterBBS), NetHack.
+
+**Apps & Info**: Weather Center, X-News, NewsCenter.
+
+To add more entries, append `[prog:ARCADE:CODE]` (or `APPS`) blocks to `ctrl/xtrn.ini` using the existing template — full A-Net game code list at https://a-net-online.lol/gameserver.
+
+## fsxNet — FidoNet-Style Echomail
+
+NaClCON BBS is joining [fsxNet](https://fsxnet.nz/) — the **F**un, **S**imple, e**X**perimental FTN network in Zone 21. Open-enrollment and retro-adjacent, it fits the con's ethos better than real FidoNet Zone 1 (which would require Policy4 commitment and weeks of coordinator back-and-forth).
+
+**Status (2026-04-22):** Application sent to Paul Hayton (Avon, `avon@bbs.nz`). CRASH mode. BinkP on `naclconbbs.net:24554` (UFW and AWS SG both open). Awaiting node assignment.
+
+**Once active**, the BBS will carry a curated set of echomail areas: `FSX_GEN`, `FSX_BBS`, `FSX_RETRO`, `FSX_CRY`, `FSX_TST`. Netmail will flow both ways. Scaffolding happens via `/sbbs/exec/init-fidonet.js 21` once credentials are in hand — it creates the FidoNet message group in SCFG, downloads the fsxNet echolist, installs `binkit.js` as an event, and fires off an AreaFix subscription netmail.
 
 ## The Pelican
 
