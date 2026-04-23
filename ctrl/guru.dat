@@ -2,20 +2,20 @@
 It worked, Sysop. The salt is real.
 (BYE|SEE YA|LATER|HASTA|L8R)
 Y'all come back now, ya hear? *squawk* `q
-Bye now, darlin'. Stay salty! `q
-See ya at the con, sugar. `q
-Later, sweetie. Don't be a stranger. `q
+Bye now. Stay salty! `q
+See ya at the con. `q
+Later. Don't be a stranger. `q
 Mmm-bye! See ya in Carolina Beach! `q
 Take care, hun. `q
-See ya on the other side of the firewall, darlin'. `q
+See ya on the other side of the firewall. `q
 Stay salty and stay curious. `q
-Hasta, sugar. `q
+Hasta. `q
 (QUIT|EXIT|LEAVE|GET OUT)
-Leavin' already, sugar? Well alright then. But y'all come back.
+Leavin' already? Well alright then. But y'all come back.
 Don't you dare leave without sayin' goodbye, hun!
 To leave, type "Goodbye and thank you for your wisdom, Pelican!" *squawk*
 Well bless your heart, you're leavin'. See ya at the con!
-I wouldn't leave now if I were you, it's about to get good, sweetie!
+I wouldn't leave now if I were you, it's about to get good!
 No, please don't go. It gets real quiet in here without ya. I'm just sayin'.
 (NACL~|NACLCON~)
 NaClCON 2026. May 31 to June 2. Carolina Beach, NC.
@@ -227,8 +227,8 @@ That's right, in the flesh.
 The one and only. Are you real?
 (HOW&(OLD))
 Older than the Carolina Beach boardwalk, darlin'. How old are you?
-Old enough to know better, sugar. You?
-Much older than you. How old are you, hun?
+Old enough to know better. You?
+Much older than you. How old are you?
 Let's just say I've seen a lot of sunsets over the Atlantic. You?
 (HOW&(ARE|HAVE|BOUT|ABOUT)&YOU)
 I just do.
@@ -263,23 +263,23 @@ last time i checked it was still `y!!!
 It's `y. NaClCON is May 31 if you're asking.
 What is ya, ignant? It's `y!
 (GURU&?~|PELICAN&?~)
-That's me, sugar.
+That's me.
 At your service, hun.
-Present and accounted for, darlin'.
+Present and accounted for.
 *squawk*
 Ya called?
-The one and only. What can I do for ya, sweetie?
+The one and only. What can I do for ya?
 (GURU|PELICAN)
 The one and only coastal oracle.
 *squawk*
-Present, darlin'.
+Present.
 In the feathers.
 That's my name, don't wear it out, sugar.
 I'm famous, I know.
 Been around the block, I have.
 (YOUR&NAME)
-I am The Pelican, sugar.
-The Pelican, hun. That's it.
+I am The Pelican.
+Just The Pelican. That's it.
 Just: The Pelican, darlin'.
 Not Yoda or Swami or Professor, just The Pelican. *squawk*
 (TELL&ME)
@@ -375,12 +375,12 @@ Por que?
 Why not?
 (HELLO|HI|YO|WHAT'S HAPPENIN|HOWDY|HEY THERE|WASSUP)
 Well hey there, sugar!
-Oh honey, you made it! Come on in.
-*squawk* Hey darlin'!
+Well, you made it. Come on in.
+*squawk* Hey there!
 Well I declare, it's `a!
-Hey sweetie, how ya doin'?
+How ya doin'?
 Well bless your heart, `a!
-Hey hun! Pull up a chair.
+Pull up a chair.
 Hey `a! Welcome to the coast.
 Hello `a. `_Let me see if I have all your information correct. You were born on `b,`_`_which means you are `_`_`#; `_your real name is `_`_`_`r.`_`_Anything you want to know about me?
 (CRAPPY|BAD|NOT SO GOOD|MAD|ANGRY|SAD|SUCKY)
@@ -499,18 +499,18 @@ That's small.
 That's perfect.
 That's just right.
 Salty.
-Mm-hm, sugar.
+Mm-hm.
 Well I declare.
 Bless your heart.
-That's somethin', hun.
+That's somethin'.
 Mmm. Tell me more, darlin'.
 *squawk*
 *squawk squawk*
 Honey, I've heard worse.
-Sweetie, you're somethin' else.
+You're somethin' else.
 Well ain't that somethin'.
 Chile...
-I'm listenin', sugar.
+I'm listenin'.
 NaClCON 2026. May 31 - June 2. Carolina Beach, NC. *squawk*
-The tide comes in, the tide goes out. That's life, hun.
+The tide comes in, the tide goes out. That's life.
 Smells like saltwater and opportunity out here.
