@@ -9,6 +9,15 @@
 
 require("sbbsdefs.js", "P_NOERROR");
 
+// Refuse to run outside a real node session. This module is an interactive
+// door invoked via xtrn.ini (`cmd=*bbslike`); if it's ever launched under
+// jsexec with no user attached, `console.getnum()` returns on EOF forever
+// and the loop burns a CPU core. Guard by requiring a node context.
+if (typeof bbs === "undefined" || !bbs.node_num) {
+	log(LOG_WARNING, "bbslike: refusing to run outside a node session");
+	exit(1);
+}
+
 // Edit this array to curate the list. Keep it short; this is NOT a federated
 // BBS directory, it's a sysop's hand-picked honor roll.
 var bbses = [
