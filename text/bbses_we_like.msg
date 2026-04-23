@@ -12,7 +12,7 @@
 nhw             D i a l   I n .   S p r e a d   O u t .
 nhr-------------------------------------------------------------------------------
 
-nw  The net never died -- it just moved. NaClCON BBS is part of a living
+nw  The net never died it just moved deeper underground. We are part of a
 nw  scene of sysops, ANSI artists, and weirdos still running boards in 2026.
 nw  Here are some we like. Jump in from inside NaClCON:
 
@@ -26,16 +26,16 @@
 
 nhw  20 for Beers
 nhk  telnet 20forbeers.com
-nc  Chill sysop-run board for beer nerds and regulars.
+nc  Paulie420beer pushing the limits of of ANSI can do.
 
 nhw  ACiD Underworld
 nhk  telnet blackflag.acid.org
-nc  ACiD Productions -- the ANSI art collective that practically invented
+nc  ACiD Productions: the ANSI art collective that practically invented
 nc      the visual language of 90s underground BBSes.
 
 nhw  Bottomless Abyss
 nhk  ssh bbs.bottomlessabyss.net -p 2222
-nc  Long-running Synchronet BBS (SSH only -- connect externally).
+nc  Long-running Synchronet BBS (SSH only: connect externally).
 
 nhw  Al's Geek Lab
 nhk  telnet bbs.alsgeeklab.com -p 2323
@@ -56,13 +56,13 @@
 
 nw  These are other sysops' houses. Be a good guest:
 
-nw    nhy* nwRegister as yourself -- dont spam signups.
+nw    nhy* nwRegister as yourself. Don't spam signups.
 nw    nhy* nwRead the rules. Every board has them.
 nw    nhy* nwSay hi to the sysop when you make an account.
 nw    nhy* nwPost. A BBS with no posts is a ghost town.
 
-nw  If you find other good boards, tell the sysop (nhyfoodbarknw) -- we
-nw  can add them to the list.
+nw  If you find other good boards, tell the sysop (nhyfoodbarknw) so
+nw  we can add them to the list.
 
 nhr===============================================================================
 n
