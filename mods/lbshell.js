@@ -1664,7 +1664,7 @@ function show_filemenu()
 							break;
 						case 'H':
 							menu_opt(function() {
-								bbs.exec("?filearea-lb ARCH_PHRACK");
+								bbs.exec("?filearea-lb ARCH_");
 							});
 							break;
 						case KEY_RIGHT:

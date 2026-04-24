@@ -767,6 +767,31 @@ var init = function() {
 		state.lib = file_area.dir[gStartupDirCode].lib_index;
 		state.browse = BROWSE_FILES;
 	}
+	else if (gStartupDirCode != "")
+	{
+		// Not a dir code. Try to match a library by code_prefix or name so
+		// callers can drop users directly into a library's directory chooser.
+		var argUpper = gStartupDirCode.toUpperCase();
+		var libIdx = -1;
+		for (var li = 0; li < file_area.lib_list.length; li++) {
+			var lib = file_area.lib_list[li];
+			var prefix = (lib.code_prefix || "").toUpperCase();
+			var name = (lib.name || "").toUpperCase();
+			if ((prefix && (prefix == argUpper || prefix == argUpper + "_")) ||
+			    name == argUpper)
+			{
+				libIdx = li;
+				break;
+			}
+		}
+		if (libIdx >= 0) {
+			state.lib = libIdx;
+			state.browse = BROWSE_DIRS;
+			dirChooser(libIdx);
+		} else {
+			libraryChooser();
+		}
+	}
 	else
 		libraryChooser();
 }
