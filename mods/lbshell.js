@@ -1560,6 +1560,7 @@ function show_filemenu()
 				typemenu.add('|Directory Info','D',width);
 				typemenu.add('|Users with Access to Dir','U',width);
 				typemenu.add('Your File Transfer |Statistics','S',width);
+				typemenu.add('|Hacker Archives Browser','H',width);
 				typemenu.add(bottom_bar(width),undefined,undefined,"","");
 				menus_displayed.push(typemenu);
 				while(bbs.online) {
@@ -1659,6 +1660,11 @@ function show_filemenu()
 								bbs.user_info();
 								console.crlf();
 								console.pause();
+							});
+							break;
+						case 'H':
+							menu_opt(function() {
+								bbs.exec("?filearea-lb ARCH_PHRACK");
 							});
 							break;
 						case KEY_RIGHT:

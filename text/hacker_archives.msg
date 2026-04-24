@@ -12,8 +12,21 @@
 nhw             P l a y   H a r d .   H a c k   H a r d e r .
 nhr-------------------------------------------------------------------------------
 
-nw  Classic texts from the underground. Return to the main menu and press
-nw  nhyFnw to enter Files, then select nhyHacker Archivesnw to browse.
+nw  Classic texts from the underground. Four collections, one browser.
+
+nhw  How to browse: nwfrom the main menu press nhyFnw (Files), then nhyVnw
+nw  (View), then nhyHnw (Hacker Archives Browser). A lightbar tree opens
+nw  across nhyPhracknw / nhyLODnw / nhyL0phtnw / nhyZinesnw -- arrow keys
+nw  navigate, Enter opens a file, Q or ESC exits.
+
+nhw  Classic shell: nwuse nhyXnw nhk->nw nhyMainnw nhk->nw nhyHacker Archives Browsernw
+nw  to reach the same tree from the External Programs section.
+
+nhw  What is where:
+nhk    nhyPhracknhk     33 philes  nwIssues 24 (1989, E911) + 72 (Aug 2025)
+nhk    nhyLODnhk        10 philes  nwLOD/H Technical Journal Issues 1-4
+nhk    nhyL0phtnhk       4 philes  nwWeld Pond advisories + Jericho
+nhk    nhyZinesnhk       2 philes  nw2600 / Blacklisted! 411 (growing)
 
 nhr===============================================================================
 nhyPhrack Magazine
