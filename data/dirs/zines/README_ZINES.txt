@@ -8,7 +8,7 @@ This area will contain classic hacker/phreaker zines including:
                            with 2600), Brian Harden/noid (ran LA 2600
                            meetings in the 90s)
 
-  Blacklisted! 411       - Underground news and hacking articles
+  411                    - Underground news and hacking articles
 
 Additional issues being added. Check back for updates.
 
