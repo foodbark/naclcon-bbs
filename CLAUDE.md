@@ -12,6 +12,7 @@ rsync -av /home/ubuntu/naclcon-bbs/mods/ /sbbs/mods/
 rsync -av /home/ubuntu/naclcon-bbs/text/ /sbbs/text/
 rsync -av /home/ubuntu/naclcon-bbs/data/ /sbbs/data/
 rsync -av /home/ubuntu/naclcon-bbs/scripts/ /sbbs/scripts/
+rsync -av /home/ubuntu/naclcon-bbs/webv4/   /sbbs/webv4/
 ```
 
 Synchronet picks up most JS module changes on next execution without a full restart. Config (`.ini`) changes may require a reload from the sysop menu (`!` in the BBS).
@@ -59,6 +60,7 @@ To override a stock Synchronet module (e.g. `exec/logon.js`): copy it to `mods/l
 - `mods/load/` — Auto-loaded utility modules.
 - `text/` — ANSI art, menus, and message text files displayed to users.
 - `data/` — Runtime data (message bases, per-user history). `data/user/pelican_*.json` are created at runtime.
+- `webv4/` — NaClCON branding overrides for the Synchronet web frontend. Mirrors the layout under `/sbbs/webv4/`. Use the override hooks rather than forking stock files: `webv4/root/css/custom.css` is auto-linked by `index.xjs` after `style.css`, and `webv4/mods/components/header.xjs` is auto-loaded by `loadComponent()` ahead of stock `webv4/components/`. The web frontend depends on user #2 (`Guest`) being **active** — if the home page renders empty, `journalctl -u sbbs` will show `!DELETED OR INACTIVE USER #2: Guest`; clear `USER_INACTIVE` via jsexec.
 
 ### The Pelican (Claude AI Integration)
 

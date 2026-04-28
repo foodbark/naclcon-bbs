@@ -1,0 +1,15 @@
+<?xjs
+// NaClCON branded header. Loaded by index.xjs via loadComponent('header.xjs').
+// Stock webv4 has no header.xjs, so this is a pure addition (not a fork).
+?>
+<div class="container<?xjs if (settings.layout_full_width) write('-fluid'); ?>">
+<pre class="naclcon-banner">
+  _  _    __    ___  __    ___  _____  _  _
+ ( \( )  /__\  / __)(  )  / __)(  _  )( \( )
+  )  (  /(__)\( (__  )(__( (__  )(_)(  )  (
+ (_)\_)(__)(__)\___)(____)\___)(_____)(_)\_)
+</pre>
+<p class="naclcon-tagline">
+  The History of Hacking &nbsp;&middot;&nbsp; May 31 &ndash; June 2, 2026 &nbsp;&middot;&nbsp; Carolina Beach, NC
+</p>
+</div>

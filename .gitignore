@@ -6,3 +6,13 @@ ctrl/main.ini
 
 # Live weather/tide snapshot regenerated every 30 min by cron
 ctrl/pelican_weather.txt
+
+# QWKnet hub passwords (qnet-ftp.ini under ctrl/modopts.d/)
+ctrl/modopts.d/qnet-ftp.ini
+
+# Let's Encrypt ACME state (managed by exec/letsyncrypt.js — writes [State] + [key_id] back)
+ctrl/letsyncrypt.ini
+
+# TLS keyset (Let's Encrypt cert + private key in cryptlib format)
+ctrl/ssl.cert
+ctrl/letsyncrypt.key

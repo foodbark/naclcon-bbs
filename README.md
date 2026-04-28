@@ -8,9 +8,19 @@ Semi-official bulletin board system for [NaClCON 2026](https://naclcon.com) hack
 
 ## Connect
 
+In your browser (no client needed — embedded fTelnet over WebSocket):
+
+```
+https://naclconbbs.net/
+```
+
+Via SSH:
+
 ```
 ssh naclconbbs.net -p 2222
 ```
+
+Via telnet:
 
 ```
 telnet naclconbbs.net
@@ -64,10 +74,12 @@ Also considering adding email server back in (can of worms though it is) as it i
 - [x] External doors — **NaClCON Arcade** (15 doors: Synchronet Minesweeper + 14 A-Net classics) and **Apps & Info** (Weather, X-News, NewsCenter); see below
 - [x] **BBSes We Like** — curated connect menu (`mods/exec/bbslike.js`) that telnet-gateways into a handpicked list of other boards from inside NaClCON
 - [x] `naclconbbs.net` DNS live (A → static Elastic IP)
+- [x] **Web frontend** (Synchronet webv4) live at `https://naclconbbs.net/` with NaClCON branding (custom CSS, header, dark mode default, favicon pulled from naclcon.com)
+- [x] **HTTPS** via Let's Encrypt — issued and renewed by Synchronet's built-in `exec/letsyncrypt.js` (HTTP-01 webroot challenge); daily cron at 04:17 UTC, no-ops until cert has <1/3 lifetime left
+- [x] **Browser terminal (fTelnet)** embedded on the home page, connects via WebSocket over TLS to port 11235
 - [ ] fsxNet (Zone 21) FTN integration: application sent, awaiting node assignment; will bring echomail + netmail (see below)
 - [ ] CTF-related content
 - [ ] Local custom doors (The Clans port)
-- [ ] Browser terminal (fTelnet): wire into webv4 so users can connect from a browser without an SSH client
 
 ## Color Scheme
 

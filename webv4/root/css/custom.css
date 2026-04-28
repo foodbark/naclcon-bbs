@@ -1,0 +1,160 @@
+/* NaClCON brand overrides for webv4. Loaded by index.xjs after style.css.
+   Palette mirrors ctrl/main.ini Ctrl-A scheme:
+     bright magenta #ff5fff   primary accents, borders
+     hot pink       #ff5f5f   highlights
+     bright yellow  #ffff5f   nav text, hotkeys
+     bright white   #ffffff   body text
+     dark gray      #2a2a2a   panels
+     near-black     #0a0a0a   page bg                                       */
+
+/* ---- Page chrome (applies whether or not .dark is on) ---- */
+body {
+	background: #0a0a0a;
+	color: #ffffff;
+	font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', monospace;
+}
+
+a, a:visited { color: #ffff5f; }
+a:hover, a:focus { color: #ff5f5f; text-decoration: underline; }
+
+hr { border-top: 1px solid #ff5fff; opacity: 0.4; }
+
+/* NaClCON ASCII banner block (rendered by mods/components/header.xjs) */
+pre.naclcon-banner {
+	color: #ff5fff;
+	background: transparent;
+	border: 0;
+	margin: 1em 0 0.25em 0;
+	padding: 0;
+	font-size: 12px;
+	line-height: 1.05;
+	text-align: center;
+	white-space: pre;
+	overflow-x: auto;
+}
+pre.naclcon-banner .accent { color: #ffff5f; }
+.naclcon-tagline {
+	text-align: center;
+	color: #ff5f5f;
+	letter-spacing: 0.3em;
+	margin-bottom: 1em;
+	font-size: 0.85em;
+	text-transform: uppercase;
+}
+
+/* fTelnet container — magenta frame so it reads as the centerpiece */
+.fTelnetContainer {
+	border: 1px solid #ff5fff;
+	box-shadow: 0 0 12px rgba(255, 95, 255, 0.35);
+	margin: 0.75em auto;
+}
+
+/* ---- Dark mode overrides (default — modopts darkmode_on=true) ---- */
+.dark { background: #0a0a0a; }
+.dark a { color: #ffff5f; }
+.dark a:hover { color: #ff5f5f; }
+
+.dark .navbar,
+.dark .navbar-default {
+	background-color: #0a0a0a;
+	border-bottom: 1px solid #ff5fff;
+}
+.dark .navbar-brand,
+.dark .navbar-default .navbar-brand {
+	color: #ffff5f;
+	font-weight: bold;
+	letter-spacing: 0.05em;
+}
+.dark .navbar-brand:hover { color: #ff5f5f; }
+
+.dark .navbar-default .navbar-nav > li > a { color: #ffffff; }
+.dark .navbar-default .navbar-nav > li > a:hover,
+.dark .navbar-default a:hover {
+	color: #ff5fff !important;
+	background-color: transparent !important;
+}
+.dark .navbar-default .navbar-nav > .open > a,
+.dark .navbar-default .navbar-nav > .open > a:focus,
+.dark .navbar-default .navbar-nav > .open > a:hover {
+	background-color: #1a1a1a;
+	color: #ffff5f;
+}
+
+.dark .dropdown-menu {
+	background-color: #1a1a1a;
+	border: 1px solid #ff5fff;
+}
+.dark .dropdown-menu li a { color: #ffffff; }
+.dark .dropdown-menu li a:hover {
+	background-color: #2a2a2a;
+	color: #ff5fff;
+}
+
+/* Sidebar panels */
+.dark .panel,
+.dark .panel-default {
+	background-color: #141414;
+	border: 1px solid #ff5fff;
+}
+.dark .panel-heading,
+.dark .panel-default > .panel-heading {
+	background-color: #1a1a1a;
+	color: #ffff5f;
+	border-bottom: 1px solid #ff5fff;
+}
+.dark .panel-body { color: #ffffff; }
+
+/* Tables / lists */
+.dark .striped:nth-of-type(even),
+.dark .table-striped > tbody > tr:nth-child(odd) > td,
+.dark .table-striped > tbody > tr:nth-child(odd) > th {
+	background: #161616;
+}
+.dark .list-group-item {
+	background-color: #141414;
+	border-color: #2a2a2a;
+	color: #ffffff;
+}
+.dark a.list-group-item:hover,
+.dark a.list-group-item:active {
+	background-color: #1f1f1f;
+	color: #ffff5f;
+}
+.dark a.unread { background: #1a1a1a; }
+.dark a.read { background: #141414; color: #cccccc; }
+
+/* Badges */
+.dark span.badge.new,
+.dark span.badge.scanned {
+	background-color: #ff5fff;
+	color: #0a0a0a;
+}
+
+/* Buttons */
+.dark .btn-primary {
+	background-color: #ff5fff;
+	border-color: #ff5fff;
+	color: #0a0a0a;
+}
+.dark .btn-primary:hover,
+.dark .btn-primary:focus {
+	background-color: #ffff5f;
+	border-color: #ffff5f;
+	color: #0a0a0a;
+}
+.dark .btn-default {
+	background-color: #1a1a1a;
+	border-color: #ff5fff;
+	color: #ffff5f;
+}
+.dark .btn-default:hover { background-color: #2a2a2a; color: #ff5fff; }
+
+/* Footer */
+.dark footer,
+.dark footer p { color: #888888; }
+
+/* Quoted text in messages */
+.dark blockquote {
+	border-left: 5px solid #ff5fff;
+	color: #cccccc;
+}
