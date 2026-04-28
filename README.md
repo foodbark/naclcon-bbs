@@ -8,7 +8,7 @@ Semi-official bulletin board system for [NaClCON 2026](https://naclcon.com) hack
 
 ## Connect
 
-In your browser (no client needed — embedded fTelnet over WebSocket):
+In your browser (no client needed: embedded fTelnet over WebSocket):
 
 ```
 https://naclconbbs.net/
