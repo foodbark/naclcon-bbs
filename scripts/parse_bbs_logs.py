@@ -72,6 +72,30 @@ def flush(session, out):
     if s["stats"]:
         doc["bbs"]["stats"] = s["stats"]
 
+    if s["protocol"]:
+        proto = s["protocol"].lower()
+        doc["bbs"]["server"] = proto if proto in ("ssh", "telnet", "rlogin", "web") else "other"
+
+    dur = s["duration_minutes"]
+    if s["crashed"]:
+        reason, action, outcome = "crash", "session_crashed", "failure"
+    elif s["inactivity"]:
+        reason, action, outcome = "inactivity", "session_inactivity_timeout", "failure"
+    elif not s["user_name"] and dur is not None and dur < 1:
+        reason, action, outcome = "anonymous_drop", "session_anonymous_drop", "failure"
+    elif dur is not None and dur < 1:
+        reason, action, outcome = "early", "session_early_disconnect", "success"
+    else:
+        reason, action, outcome = "normal", "session_complete", "success"
+
+    doc["bbs"]["disconnect_reason"] = reason
+    doc["event"] = {
+        "kind":     "event",
+        "category": ["session"],
+        "action":   action,
+        "outcome":  outcome,
+    }
+
     # drop empty dicts
     if not doc["source"]:
         del doc["source"]
