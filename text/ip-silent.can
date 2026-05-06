@@ -4,3 +4,6 @@
 
 ; ec2-34-212-124-156.us-west-2 - TLS scanner, 7 simultaneous probes 2026-03-17
 34.212.124.156
+
+; ns2.vps.olwm.com (DigitalOcean) - 4 connections camped on telnet login prompt 2026-05-01
+107.170.255.217	t=2026-05-01T00:00:00Z	e=2026-05-08T00:00:00Z	r=stuck-at-login	h=ns2.vps.olwm.com	q=1

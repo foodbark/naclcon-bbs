@@ -230,6 +230,10 @@ if (!(bbs.sys_status&SS_RLOGIN) || options.rlogin_xtrn_logon !== false) {
 		} else
 			bbs.menu("random_narrow*");
 
+		// Hold splash up to 2.5s, advance early on any keypress.
+		console.inkey(K_NONE, 2500);
+		load("oneliner_wall.js");
+
 		console.clear(LIGHTGRAY);
 		bbs.user_event(EVENT_LOGON);
 	}
