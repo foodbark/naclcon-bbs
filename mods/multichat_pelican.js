@@ -115,6 +115,37 @@ function save_history() {
 	if (f.open("w", true)) { f.write(JSON.stringify(history)); f.close(); }
 }
 
+// ── Persistent chat scrollback (last N rendered lines) ────────────────────────
+
+var SCROLLBACK_MAX = 90;
+var scrollback_path = system.data_dir + "multichat_scrollback.txt";
+
+function load_scrollback() {
+	var lines = [];
+	var f = new File(scrollback_path);
+	if (f.open("r", true)) {
+		var content = f.read();
+		f.close();
+		if (content) {
+			lines = content.split("\r\n");
+			if (lines.length && lines[lines.length - 1] === "") lines.pop();
+		}
+	}
+	return lines;
+}
+
+function persist_line(formatted) {
+	var lines = load_scrollback();
+	lines.push(formatted.replace(/\r\n$/, ""));
+	if (lines.length > SCROLLBACK_MAX)
+		lines = lines.slice(lines.length - SCROLLBACK_MAX);
+	var f = new File(scrollback_path);
+	if (f.open("w", true)) {
+		f.write(lines.join("\r\n") + (lines.length ? "\r\n" : ""));
+		f.close();
+	}
+}
+
 // ── Claude API call ────────────────────────────────────────────────────────────
 
 function ask_pelican(context_msg) {
@@ -174,12 +205,8 @@ function count_channel_users() {
 	return count;
 }
 
-// Format a line matching Synchronet's ChatLineFmt:
-//   \x01_\x01U%-8.8s \x01w%2d: \x01n%s\r\n
 function chat_line(handle, nodenum, text) {
-	var h = handle.substring(0, 8);
-	while (h.length < 8) h += " ";
-	return "\x01_\x01U" + h + "\x01n \x01w" + format("%2d", nodenum) + ": \x01n" +
+	return "\x01_\x01U" + handle + "\x01n \x01w" + format("%2d", nodenum) + ": \x01n" +
 	       text + "\r\n";
 }
 
@@ -228,15 +255,25 @@ for (var i = 0; i < system.node_list.length; i++) {
 	}
 }
 
+// Replay persistent scrollback so joiners can see prior conversation
+var _prev = load_scrollback();
+if (_prev.length) {
+	writeln("\x01h\x01k── scrollback ──\x01n\r");
+	for (var _i = 0; _i < _prev.length; _i++)
+		write(_prev[_i] + "\r\n");
+	writeln("\x01h\x01k── live ──\x01n\r");
+}
+
 writeln("\r\n\x01n\x01m\x01hYou're on the Air!  \x01n\x01mType \x01h/q\x01n\x01m to leave the chat.\x01n\r\n");
 
 // ── Chat loop ─────────────────────────────────────────────────────────────────
 
 var input  = "";
-var my_handle = (user.handle && user.handle.length) ? user.handle : user.alias;
+var my_handle = user.alias;
 
 while (bbs.online) {
 	bbs.node_action = NODE_MCHT;
+	console.line_counter = 0;  // chat never paginates
 
 	var ch = console.inkey(K_NONE, 250);
 
@@ -249,19 +286,84 @@ while (bbs.online) {
 	var code = ch.charCodeAt(0);
 
 	if (ch === '\r' || ch === '\n') {
-		// Submit line
-		writeln("");
-
+		// Submit line — erase what we echoed during typing so the formatted
+		// chat_line replaces it instead of appearing on a separate line.
+		var typed_len = input.length;
 		var line = input.replace(/^\s+|\s+$/g, "");
 		input = "";
 
-		if (!line) continue;
+		if (typed_len > 0)
+			write("\r" + Array(typed_len + 1).join(" ") + "\r");
+		else
+			write("\r");
+
+		if (!line) {
+			writeln("");
+			continue;
+		}
 
 		// Slash commands
-		if (line === "/q" || line === "/Q" || line.toUpperCase() === "QUIT") break;
-		if (line === "/?" || line.toUpperCase() === "/HELP") {
-			writeln("  \x01h/q\x01n  Quit the chat room\r\n" +
-			        "  \x01h/?\x01n  This help\r\n");
+		var lower = line.toLowerCase();
+		if (lower === "/q" || lower === "quit") break;
+		if (lower === "/?" || lower === "/help") {
+			writeln("");
+			bbs.menu("multchat", P_NOERROR);
+			continue;
+		}
+		if (lower === "/l") {
+			writeln("");
+			writeln("\x01h\x01mIn the room:\x01n");
+			var found = 0;
+			for (var ni = 0; ni < system.node_list.length; ni++) {
+				var nn = system.node_list[ni];
+				if (nn.status !== NODE_INUSE) continue;
+				if (nn.action !== NODE_MCHT) continue;
+				var nch = nn.aux & 0xff;
+				if (nch && nch !== channel) continue;
+				var uname = (nn.misc & NODE_ANON) ? "unknown" : nn.name;
+				writeln(format("  \x01h\x01ynode %2d\x01n  \x01h\x01w%s\x01n", ni + 1, uname));
+				found++;
+			}
+			if (!found) writeln("  \x01h\x01k(empty)\x01n");
+			writeln("");
+			continue;
+		}
+		if (lower.indexOf("/w ") === 0) {
+			var rest = line.substring(3).replace(/^\s+/, "");
+			var sp = rest.indexOf(" ");
+			if (sp < 0 || !rest.substring(sp + 1).replace(/^\s+|\s+$/g, "")) {
+				writeln("\x01h\x01rUsage: /W <alias> <text>\x01n\r\n");
+				continue;
+			}
+			var target = rest.substring(0, sp);
+			var wmsg = rest.substring(sp + 1).replace(/^\s+|\s+$/g, "");
+			var unum = system.matchuser(target);
+			if (!unum) {
+				writeln("\x01h\x01rUser not found: " + target + "\x01n\r\n");
+				continue;
+			}
+			if (unum === user.number) {
+				writeln("\x01h\x01rCan't whisper to yourself.\x01n\r\n");
+				continue;
+			}
+			var target_node = 0;
+			for (var wi = 0; wi < system.node_list.length; wi++) {
+				if (system.node_list[wi].status === NODE_INUSE
+					&& system.node_list[wi].useron === unum) {
+					target_node = wi + 1;
+					break;
+				}
+			}
+			if (!target_node) {
+				writeln("\x01h\x01r" + target + " is not online.\x01n\r\n");
+				continue;
+			}
+			var u = new User(unum);
+			var target_alias = u.alias;
+			var inbound  = "\x01h\x01m[whisper from " + my_handle + "]\x01n\x01h\x01w " + wmsg + "\x01n\r\n";
+			var outbound = "\x01h\x01m[whisper to " + target_alias + "]\x01n\x01h\x01w " + wmsg + "\x01n\r\n";
+			bbs.put_node_message(target_node, inbound);
+			write(outbound);
 			continue;
 		}
 
@@ -269,6 +371,7 @@ while (bbs.online) {
 		var formatted = chat_line(my_handle, bbs.node_num, line);
 		write(formatted);
 		broadcast(formatted);
+		persist_line(formatted);
 
 		// ── Pelican trigger ────────────────────────────────────────────────────
 		var mentions_pelican = /\bpelican\b|\bpeli\b/i.test(line);
@@ -283,6 +386,7 @@ while (bbs.online) {
 				var resp_line = chat_line("The Peli", system.nodes + 1, response);
 				write(resp_line);
 				broadcast(resp_line);
+				persist_line(resp_line);
 			}
 		}
 
@@ -293,6 +397,15 @@ while (bbs.online) {
 			input = input.slice(0, -1);
 			write('\b \b');
 		}
+	} else if (code === 0x10 || code === 0x15) {
+		// ^P / ^U — hand off to Synchronet's built-in handlers
+		// (private message / user list).  Erase any in-progress input
+		// first so it doesn't get clobbered, then redraw it after.
+		if (input.length > 0)
+			write("\r" + Array(input.length + 1).join(" ") + "\r");
+		console.handle_ctrlkey(ch);
+		if (input.length > 0)
+			write(input);
 	} else if (ch === '\x1b') {
 		// Swallow ANSI escape sequences (cursor keys, function keys, etc.)
 		var nxt = console.inkey(K_NONE, 50);

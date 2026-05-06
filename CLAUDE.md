@@ -67,13 +67,22 @@ To override a stock Synchronet module (e.g. `exec/logon.js`): copy it to `mods/l
 The AI chatbot is the primary custom feature. It is split across two files:
 
 - **`mods/pelican.js`** — 1-on-1 chat. Each user gets a persistent history file at `data/user/pelican_NNNN.json` (where `NNNN` is the user number). Keeps last 10 exchange pairs. 300-token response limit.
-- **`mods/multichat_pelican.js`** — Full reimplementation of Synchronet's `bbs.multinode_chat()`. Pelican responds when addressed by name (`pelican`/`peli`) or when ≤3 users are in the channel. Shared history at `data/user/pelican_chan.json`, 30-message window, 150-token responses.
+- **`mods/multichat_pelican.js`** — Full reimplementation of Synchronet's `bbs.multinode_chat()`. Pelican responds when addressed by name (`pelican`/`peli`) or when ≤3 users are in the channel. Shared Pelican history at `data/user/pelican_chan.json`, 30-message window, 150-token responses. Public chat is also persisted to `/sbbs/data/multichat_scrollback.txt` (last 90 rendered lines) and replayed under a `── scrollback ──` header on join. Slash commands: `/W <alias> <text>` (whisper to one online user, alias-matched via `system.matchuser`, not persisted), `/L` (list who's in the room), `/Q` (quit), `/?` (re-show menu via `bbs.menu("multchat")`). `^U` and `^P` pass through to Synchronet's built-in user-list and private-message dialogs. Menu file: `text/menu/multchat.msg` (NaClCON-branded).
 
 Both read `ctrl/pelican.ini` for the API key, model (Haiku), and token limits. The Pelican persona is a sassy southern coastal Peli-hen.
 
 ### Chat Section Override
 
 `mods/chat_sec.js` replaces the stock Synchronet chat module. It intercepts the 'T' key (routes to `pelican.js`) and 'J' key (routes to `multichat_pelican.js`), so the AI integration hooks in without modifying Synchronet core.
+
+### New-User Registration Override
+
+`mods/newuser_prompts.js` replaces stock `exec/newuser_prompts.js` for two behaviors stock can't express via `[newuser] questions=` bits:
+
+- Real name accepts blank (no validation loop on empty input).
+- Email accepts blank; `get_netmail_forwarding` only runs if a non-empty address was entered.
+
+The bit field in `ctrl/main.ini` is `questions=0xa4d23` — drops `UQ_HANDLE` (no separate handle prompt; handle auto-fills from alias), drops `UQ_SEX` and `UQ_BIRTH`, sets `UQ_NOUPRLWR` (preserve case in alias/real-name input). Prompt wording for alias / real name / location / email is customized in `ctrl/text.dat` (string IDs 338, 339, 346, 500). text.dat is tracked in the repo specifically because of those four customized strings — most of the file is stock.
 
 ### Shell System
 

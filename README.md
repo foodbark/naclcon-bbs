@@ -59,7 +59,7 @@ Also considering adding email server back in (can of worms though it is) as it i
 
 - [x] SSH access on port 2222
 - [x] Telnet access on port 23
-- [x] New user registration
+- [x] New user registration (custom prompts: handle/alias, optional real name, optional email for password reset / mail forwarding, location, no gender or birthday; case preserved as typed)
 - [x] NaClCON branding throughout
 - [x] Local message boards
 - [x] Chat, file areas, external doors
@@ -259,7 +259,11 @@ The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her
 
 **1-on-1 chat** (`mods/pelican.js`): accessible via the 'T' key in both shells. Maintains per-user conversation history across sessions in `data/user/pelican_NNNN.json`. Config (API key, model, token limits) in `ctrl/pelican.ini` (gitignored). In private chat she gives longer, lore-heavy responses (3-5 sentences) and wraps text to your terminal width.
 
-**Multinode chat** (`mods/multichat_pelican.js`): a full JS reimplementation of Synchronet's built-in multinode chat that layers in Pelican responses. She chimes in when addressed by name (`pelican` / `peli`) or when there are 3 or fewer users in the channel. Shared channel history in `data/user/pelican_chan.json`.
+**Multinode chat** (`mods/multichat_pelican.js`): a full JS reimplementation of Synchronet's built-in multinode chat that layers in Pelican responses. She chimes in when addressed by name (`pelican` / `peli`) or when there are 3 or fewer users in the channel. Shared Pelican history in `data/user/pelican_chan.json`. The chat menu is at `text/menu/multchat.msg` (NaClCON-branded, multi-color).
+
+The room has a rolling **persistent scrollback** of the last 90 broadcast lines, stored at `/sbbs/data/multichat_scrollback.txt` and replayed under a `── scrollback ──` header to anyone who joins, so people drifting in mid-conversation see context. Whispers are private and excluded.
+
+Slash commands: `/W <alias> <text>` whispers to one online user (alias-matched), `/L` lists who's currently in the room, `/Q` exits, `/?` re-shows the menu. `^U` and `^P` pass through to Synchronet's built-in user list and private-message dialogs. Chat scrolls continuously without paginate-prompts.
 
 **Persona & knowledge:** She's warm but sassy, drops a "hun" or "darlin'" occasionally (hard cap: one per response, skipped in most). She knows full NaClCON 2026 details (speakers, schedule, venue, tickets), the NaClCON Arcade door lineup, and the BBSes We Like curated list. Her canonical texts: every issue of Phrack (phrack.org), The Hacker's Manifesto (The Mentor, 1986, Phrack #7), the DoD Rainbow Series (Orange Book/TCSEC, Password Management Guideline, TCSEC Application Guidance, Computer Security Glossary), and Neuromancer (Gibson, 1984).
 
