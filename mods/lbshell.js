@@ -994,6 +994,61 @@ function display_logo()
 	}
 }
 
+function nc_weather_strip()
+{
+	/* Reads /sbbs/data/weather_tides.txt (key=value, refreshed by cron) and
+	 * returns a Ctrl-A coloured single-line strip for the screen_rows-8 slot,
+	 * or null if the file is missing/unreadable. Values are coloured by
+	 * meaning (temperature band, precip likelihood, EPA UV category); brand
+	 * accents — bright yellow location, bright magenta pipes — frame them. */
+	var data={};
+	var f=new File("/sbbs/data/weather_tides.txt");
+	if(!f.open("r")) return null;
+	var lines=f.readAll();
+	f.close();
+	for(var i=0; i<lines.length; i++) {
+		var idx=lines[i].indexOf("=");
+		if(idx>0) data[lines[i].substr(0,idx)]=lines[i].substr(idx+1);
+	}
+	if(data.TEMP_F===undefined && data.HIGH_TIDE===undefined) return null;
+
+	var t=parseInt(data.TEMP_F,10);
+	var p=parseInt(data.PRECIP_PCT,10);
+	var uv=parseInt(data.UV_INDEX,10);
+
+	var temp_c   = isNaN(t) ? "\x01h\x01w" :
+	               t<50  ? "\x01h\x01c" :
+	               t<65  ? "\x01h\x01w" :
+	               t<80  ? "\x01h\x01y" :
+	                       "\x01h\x01r";
+	var precip_c = isNaN(p) ? "\x01h\x01w" :
+	               p<20 ? "\x01h\x01w" :
+	               p<50 ? "\x01h\x01c" :
+	                      "\x01h\x01m";
+	var uv_c     = isNaN(uv) ? "\x01h\x01w" :
+	               uv<=2 ? "\x01h\x01g" :
+	               uv<=5 ? "\x01h\x01y" :
+	               uv<=7 ? "\x01h\x01r" :
+	                       "\x01h\x01m";
+
+	var pipe="\x01h\x01m\xb3";   /* bright magenta CP437 vertical bar */
+	var lbl ="\x01h\x01w";       /* labels: bright white */
+	var loc ="\x01h\x01y"+(data.LOCATION||"Carolina Beach");
+	var temp_s=isNaN(t) ? "--" : (t+"\xf8F");
+	var precip_s=isNaN(p) ? "--" : (p+"%");
+	var uv_s=isNaN(uv) ? "--" : String(uv);
+	var hi=data.HIGH_TIDE||"--:--";
+	var lo=data.LOW_TIDE||"--:--";
+
+	return "  "+loc+
+	       "  "+pipe+"  "+temp_c+temp_s+
+	       "  "+pipe+"  "+lbl+"Precip "+precip_c+precip_s+
+	       "  "+pipe+"  "+lbl+"UV "+uv_c+uv_s+
+	       "  "+pipe+"  "+lbl+"High "+"\x01h\x01c"+hi+
+	       "  "+pipe+"  "+lbl+"Low "+"\x01h\x01w"+lo+
+	       "\x01n";
+}
+
 function draw_main(topline)
 {
 	/*
@@ -2654,8 +2709,17 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 				console.gotoxy(1,y);
 				switch(y) {
 					case console.screen_rows-8:
-						console.attributes=LBShell_Attr;
-						console.cleartoeol();
+						var nc_ws=nc_weather_strip();
+						if(nc_ws) {
+							console.attributes=0x5F;
+							console.cleartoeol();
+							console.putmsg(nc_ws);
+							console.attributes=0x5F;
+							console.cleartoeol();
+						} else {
+							console.attributes=LBShell_Attr;
+							console.cleartoeol();
+						}
 						break;
 					case console.screen_rows-7:
 						console.attributes=0x5F;
@@ -2722,8 +2786,17 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 				console.gotoxy(1,y);
 				switch(y) {
 					case console.screen_rows-8:
-						console.attributes=LBShell_Attr;
-						console.cleartoeol();
+						var nc_ws=nc_weather_strip();
+						if(nc_ws) {
+							console.attributes=0x5F;
+							console.cleartoeol();
+							console.putmsg(nc_ws);
+							console.attributes=0x5F;
+							console.cleartoeol();
+						} else {
+							console.attributes=LBShell_Attr;
+							console.cleartoeol();
+						}
 						break;
 					case console.screen_rows-7:
 						console.attributes=0x5F;
