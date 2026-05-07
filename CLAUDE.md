@@ -13,6 +13,7 @@ rsync -av /home/ubuntu/naclcon-bbs/text/ /sbbs/text/
 rsync -av /home/ubuntu/naclcon-bbs/data/ /sbbs/data/
 rsync -av /home/ubuntu/naclcon-bbs/scripts/ /sbbs/scripts/
 rsync -av /home/ubuntu/naclcon-bbs/webv4/   /sbbs/webv4/
+rsync -av /home/ubuntu/naclcon-bbs/xtrn/    /sbbs/xtrn/
 ```
 
 Synchronet picks up most JS module changes on next execution without a full restart. Config (`.ini`) changes may require a reload from the sysop menu (`!` in the BBS).
