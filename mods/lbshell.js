@@ -529,7 +529,7 @@ function Messagemenu()
 	);
 	this.add("|Post In "+msg_area.grp_list[bbs.curgrp].sub_list[bbs.cursub].name,"P",width,undefined,undefined,bbs.compare_ars("REST P"));
 	if (!msg_area.grp_list[bbs.curgrp].sub_list[bbs.cursub].can_post)
-		this.items[6].disabed=true;
+		this.items[6].disabled=true;
 	this.add("Read/Post |Auto-Message","A",width);
 	this.add("|QWK Packet Transfer Menu","Q",width);
 	this.add("|View Information on Sub","V",width);
@@ -1408,12 +1408,15 @@ function show_filemenu()
 						case 'N':
 							menu_opt(function() {
 								var spec=bbs.get_filespec();
-								bbs.list_file_info(bbs.curdir,spec,FI_DOWNLOAD);
+								if(spec!=null)
+									bbs.list_file_info(file_area.lib_list[bbs.curlib].dir_list[bbs.curdir].number,spec,FI_DOWNLOAD);
 							});
 							break;
 						case 'U':
 							menu_opt(function() {
-								bbs.list_file_info(bbs.curdir,spec,FI_USERXFER);
+								var spec=bbs.get_filespec();
+								if(spec!=null)
+									bbs.list_file_info(file_area.lib_list[bbs.curlib].dir_list[bbs.curdir].number,spec,FI_USERXFER);
 							});
 							break;
 						case KEY_RIGHT:
@@ -2004,7 +2007,7 @@ function show_messagemenu()
 							menu_opt(function() {
 								console.putmsg("\r\n\x01c\x01hYour Message Scan\r\n");
 								for(i=0; i<msg_area.grp_list[bbs.curgrp].sub_list.length; i++)
-									if(msg_area.grp_list[bbs.curgrp].sub_list.scan_cfg&SCAN_CFG_TOYOU
+									if(msg_area.grp_list[bbs.curgrp].sub_list[i].scan_cfg&SCAN_CFG_TOYOU
 									    && !bbs.scan_posts(msg_area.grp_list[bbs.curgrp].sub_list[i].number, SCAN_TOYOU))
 										break;
 							});
