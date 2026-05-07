@@ -6,6 +6,7 @@ ctrl/main.ini
 
 # Live weather/tide snapshot regenerated every 30 min by cron
 ctrl/pelican_weather.txt
+data/weather_tides.txt
 
 # QWKnet hub passwords (qnet-ftp.ini under ctrl/modopts.d/)
 ctrl/modopts.d/qnet-ftp.ini
