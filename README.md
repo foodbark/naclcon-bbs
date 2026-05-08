@@ -270,6 +270,7 @@ Slash commands: `/W <alias> <text>` whispers to one online user (alias-matched),
 **Dynamic knowledge surfaces** (appended to her system prompt every chat session):
 - `ctrl/pelican_news.txt` — static BBS-state facts (Hacker Archives, Arcade, BBSes We Like, menu layout). Hand-edited.
 - `ctrl/pelican_weather.txt` — live NWS weather forecast + NOAA tide predictions for Carolina Beach, refreshed every 30 minutes by `scripts/pelican_weather_tides.py` (cron). Gitignored. She references current conditions organically when asked — the system prompt specifically instructs her not to recite unprompted.
+- `ctrl/pelican_local.txt` — local-expert knowledge: Carolina Beach & Kure restaurants (curated from recent Wilmington-subreddit threads), local secrets and rituals (Venus flytraps at the State Park, Freeman Park 4x4 etiquette, Thursday night fireworks, Sunday movie nights at the Lake), Pleasure Island history (1857 founding, Hurricane Hazel, the boardwalk's golden age, Freeman family legacy at the north end, Fort Fisher), and NC hacker history (Mitnick's 1995 Raleigh capture, the BBS underground, the December 2025 BEC attack on the town itself, NaClCON's "Salt Con" framing). Hand-edited. She picks one or two relevant items rather than reciting.
 
 ## Logon Splash Art
 
