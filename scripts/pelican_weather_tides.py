@@ -40,6 +40,16 @@ SHELL_LIVE_PATH = "/sbbs/data/weather_tides.txt"
 SHELL_LOCATION = "Carolina Beach"
 UV_ZIP = "28428"
 
+# Logon splash files we rewrite with the weather strip appended after the
+# trailing ===... separator. (path, colored?). The plain-ASCII pair is the
+# pre-auth banner; the colored pair is rendered by bbs.menu("logon") post-auth.
+LOGON_SPLASH_FILES = [
+    ("/sbbs/text/logon.asc", False),
+    ("/home/ubuntu/naclcon-bbs/text/logon.asc", False),
+    ("/sbbs/text/menu/logon.asc", True),
+    ("/home/ubuntu/naclcon-bbs/text/menu/logon.asc", True),
+]
+
 HEADERS = {"User-Agent": "NaClCON-BBS (foodbark@gmail.com)"}
 
 
@@ -192,6 +202,118 @@ def write_shell_snapshot():
         os.replace(tmp, path)
 
 
+def _ival(s):
+    try:
+        return int(s)
+    except (TypeError, ValueError):
+        return None
+
+
+def render_weather_strip_color(data):
+    """Ctrl-A coloured strip — mirrors nc_weather_strip() in mods/lbshell.js."""
+    t = _ival(data.get("TEMP_F"))
+    p = _ival(data.get("PRECIP_PCT"))
+    uv = _ival(data.get("UV_INDEX"))
+
+    temp_c = ("\x01h\x01w" if t is None
+              else "\x01h\x01c" if t < 50
+              else "\x01h\x01w" if t < 65
+              else "\x01h\x01y" if t < 80
+              else "\x01h\x01r")
+    precip_c = ("\x01h\x01w" if p is None
+                else "\x01h\x01w" if p < 20
+                else "\x01h\x01c" if p < 50
+                else "\x01h\x01m")
+    uv_c = ("\x01h\x01w" if uv is None
+            else "\x01h\x01g" if uv <= 2
+            else "\x01h\x01y" if uv <= 5
+            else "\x01h\x01r" if uv <= 7
+            else "\x01h\x01m")
+
+    pipe = "\x01h\x01m\xb3"
+    lbl = "\x01h\x01w"
+    loc = "\x01h\x01y" + data.get("LOCATION", "Carolina Beach")
+    temp_s = f"{t}\xf8F" if t is not None else "--"
+    precip_s = f"{p}%" if p is not None else "--"
+    uv_s = str(uv) if uv is not None else "--"
+    hi = data.get("HIGH_TIDE", "--:--")
+    lo = data.get("LOW_TIDE", "--:--")
+
+    return (
+        "  " + loc
+        + "  " + pipe + "  " + temp_c + temp_s
+        + "  " + pipe + "  " + lbl + "Precip " + precip_c + precip_s
+        + "  " + pipe + "  " + lbl + "UV " + uv_c + uv_s
+        + "  " + pipe + "  " + lbl + "High " + "\x01h\x01c" + hi
+        + "  " + pipe + "  " + lbl + "Low " + "\x01h\x01w" + lo
+        + "\x01n"
+    )
+
+
+def render_weather_strip_plain(data):
+    """Plain-ASCII strip for the pre-auth banner (no Ctrl-A processing)."""
+    loc = data.get("LOCATION", "Carolina Beach")
+    t = data.get("TEMP_F")
+    p = data.get("PRECIP_PCT")
+    uv = data.get("UV_INDEX")
+    hi = data.get("HIGH_TIDE", "--:--")
+    lo = data.get("LOW_TIDE", "--:--")
+    temp_s = f"{t}F" if t else "--"
+    precip_s = f"{p}%" if p else "--"
+    uv_s = uv if uv else "--"
+    return f"  {loc}  |  {temp_s}  |  Precip {precip_s}  |  UV {uv_s}  |  High {hi}  |  Low {lo}"
+
+
+def _strip_ctrla(line):
+    """Drop \\x01-prefixed Ctrl-A code pairs so we can inspect the visible chars."""
+    out = []
+    i = 0
+    while i < len(line):
+        if line[i] == "\x01" and i + 1 < len(line):
+            i += 2
+            continue
+        out.append(line[i])
+        i += 1
+    return "".join(out)
+
+
+def write_logon_splash():
+    """Rewrite text/logon.asc + text/menu/logon.asc, replacing anything below the
+    trailing ===... line with a fresh weather strip. Idempotent: each run truncates
+    at the separator and re-emits, so running this 48x/day doesn't grow the file."""
+    data = read_kv(SHELL_LIVE_PATH)
+    if not data:
+        return
+    color_strip = render_weather_strip_color(data)
+    plain_strip = render_weather_strip_plain(data)
+
+    for path, color in LOGON_SPLASH_FILES:
+        # latin-1 round-trips raw bytes 1:1, so CP437 high-bit chars (\xb3 pipe,
+        # \xf8 degree, etc.) survive read+write without UnicodeDecodeError.
+        try:
+            with open(path, encoding="latin-1") as f:
+                content = f.read()
+        except FileNotFoundError:
+            continue
+        lines = content.splitlines()
+        last_sep = None
+        for i, line in enumerate(lines):
+            visible = _strip_ctrla(line).strip()
+            if visible and set(visible) == {"="}:
+                last_sep = i
+        if last_sep is None:
+            continue
+        new_lines = lines[: last_sep + 1]
+        new_lines.append("")
+        new_lines.append(color_strip if color else plain_strip)
+        new_lines.append("")
+        body = "\n".join(new_lines) + "\n"
+        tmp = path + ".tmp"
+        with open(tmp, "w", encoding="latin-1") as f:
+            f.write(body)
+        os.replace(tmp, path)
+
+
 def main():
     try:
         wx = fetch_weather()
@@ -245,6 +367,11 @@ def main():
         write_shell_snapshot()
     except Exception as e:
         print(f"shell snapshot write failed: {e}")
+
+    try:
+        write_logon_splash()
+    except Exception as e:
+        print(f"logon splash write failed: {e}")
 
     print(f"ok ({stamp})")
 
