@@ -2714,7 +2714,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 							console.attributes=0x5F;
 							console.cleartoeol();
 							console.putmsg(nc_ws);
-							console.attributes=0x5F;
+							console.attributes=LBShell_Attr;
 							console.cleartoeol();
 						} else {
 							console.attributes=LBShell_Attr;
@@ -2725,14 +2725,14 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 						console.attributes=0x5F;
 						console.cleartoeol();
 						console.putmsg("\x01h\x01w  NaClCON BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
-						console.attributes=0x5F;
+						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						break;
 					case console.screen_rows-6:
 						console.attributes=0x5B;
 						console.cleartoeol();
 						console.putmsg("\x01h\x01c  Last On: @LASTDATEON@  \xb3  Calls: @SERVED-R4@ of @TCALLS-L7@  \xb3  Since: @SINCE@\x01n");
-						console.attributes=0x5B;
+						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						break;
 					case console.screen_rows-5:
@@ -2791,7 +2791,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 							console.attributes=0x5F;
 							console.cleartoeol();
 							console.putmsg(nc_ws);
-							console.attributes=0x5F;
+							console.attributes=LBShell_Attr;
 							console.cleartoeol();
 						} else {
 							console.attributes=LBShell_Attr;
@@ -2802,14 +2802,14 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 						console.attributes=0x5F;
 						console.cleartoeol();
 						console.putmsg("\x01h\x01w  NaClCON BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
-						console.attributes=0x5F;
+						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						break;
 					case console.screen_rows-6:
 						console.attributes=0x5B;
 						console.cleartoeol();
 						console.putmsg("\x01h\x01c  Last On: @LASTDATEON@  \xb3  Calls: @SERVED-R4@ of @TCALLS-L7@  \xb3  Since: @SINCE@\x01n");
-						console.attributes=0x5B;
+						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						break;
 					case console.screen_rows-5:
