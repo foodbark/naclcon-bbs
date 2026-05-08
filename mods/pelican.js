@@ -131,6 +131,16 @@ if (_wf.open("r", true)) {
 		SYSTEM_PROMPT += "\n\n" + _wx;
 }
 
+// Local expertise -- Carolina Beach & Kure restaurants, secrets, history.
+// Edit ctrl/pelican_local.txt to update.
+var _lf = new File(system.ctrl_dir + "pelican_local.txt");
+if (_lf.open("r", true)) {
+	var _local = _lf.read();
+	_lf.close();
+	if (_local)
+		SYSTEM_PROMPT += "\n\n" + _local;
+}
+
 // ── Conference countdown ──────────────────────────────────────────────────────
 
 (function() {
