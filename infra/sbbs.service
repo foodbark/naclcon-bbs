@@ -1,0 +1,18 @@
+[Unit]
+Description=Synchronet BBS
+After=network.target
+
+[Service]
+Type=forking
+User=ubuntu
+Environment=SBBSCTRL=/sbbs/ctrl
+Environment=TZ=America/New_York
+ExecStartPre=/bin/sleep 5
+ExecStart=/sbbs/exec/sbbs d
+ExecStop=/bin/kill -TERM $MAINPID
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
