@@ -2,9 +2,9 @@
 n                            hcNaClhmConn hyMultinode Chat
 nhr===============================================================================
 
-   hr/W <alias> <text> nhw    Whisper to one user
-   hc/L                nhw    List who's in the room
-   hy/Q                nhw    Quit chat
+   hr/W <alias> <text> nhw    Whisper to one user
+   hc/L                nhw    List who's in the room
+   hy/Q                nhw    Quit chat
 
 nhr-------------------------------------------------------------------------------
 n   Anytime:  hy^Un  Users online        hy^Pn  Private msg

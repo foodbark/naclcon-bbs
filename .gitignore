@@ -8,6 +8,12 @@ ctrl/main.ini
 ctrl/pelican_weather.txt
 data/weather_tides.txt
 
+# naclcon.com mirror, regenerated weekly by pelican_naclcom_scrape.py
+ctrl/pelican_naclcom.txt
+
+# Python bytecode cache
+scripts/__pycache__/
+
 # QWKnet hub passwords (qnet-ftp.ini under ctrl/modopts.d/)
 ctrl/modopts.d/qnet-ftp.ini
 
