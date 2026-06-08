@@ -67,9 +67,9 @@ var speakers = [
 		bio:   "Staff contributor at Attrition.org in the late 1990s and early 2000s. Responsible for capturing, verifying, and archiving web defacements. Catalogued over 15,000 defaced sites. Currently Product Owner and Lead Engineer in Enterprise Vulnerability Management."
 	},
 	{
-		name:  "Edison Carter",
-		talk:  "Digital Hooligan: Origin and Exploits of an Old-School Hacker and Phone Phreak",
-		bio:   "Old-school hacker and phone phreak from the 80s and 90s, active from the mid-80s to the mid-90s."
+		name:  "edison",
+		talk:  "Life in an Early 90's Hacker Group (with Jericho)",
+		bio:   "First exposed to personal computers in the early 1980s and immediately hooked. Self-taught, moving from BASIC straight into Assembly on the Apple ][. Quickly drawn to phone phreaking and hacking. Involved in a number of notable but largely unpublished activities throughout the late 1980s and early 1990s. Brief professional stint in security; hacking has remained primarily a personal pursuit driven by curiosity and exploration."
 	},
 	{
 		name:  "Jericho",
@@ -78,7 +78,7 @@ var speakers = [
 	},
 	{
 		name:  "Josh Corman",
-		talk:  "TBA",
+		talk:  "Smashing the (Policy) Stack for... Public Safety & (Not) Profit?!",
 		bio:   "Thirty years in hacker culture. Philosopher background. Shifted focus to public policy and the public good. Launched \"I am the Cavalry\" in 2013 to address over-dependence on undependable technology. Has held AppSec, CTO, and CSO roles. Designed and implemented the CISA COVID Task Force. Currently driving UnDisruptable27 for Taiwan Conflict disruption preparedness."
 	},
 	{
@@ -93,9 +93,9 @@ var speakers = [
 	}
 ];
 
-var fireside = [
+var turtle_talks = [
 	{
-		name:  "Hack Beer'd",
+		name:  "Cap'n HackBeer'd",
 		talk:  "Avast, ye LAN lubbers! Grab a grog and park yer ParrotOS while cap'n HackBeer'd tells a `tail -f /dev/urandom`.",
 		bio:   "The most infamous hacker buccaneer on the seven networks. Sailed with a crew including Bobby TABLES. Accompanied by a parrot named Pollymorphic."
 	},
@@ -103,6 +103,11 @@ var fireside = [
 		name:  "Dustin Heywood (EvilMog)",
 		talk:  "The Early Hashcat Beta Days, the Rise of the Alberta Hashcat Super Cluster, DROWN, and More",
 		bio:   "Senior Technical Leader at IBM X-Force. Semi-retired Team Hashcat member. Bishop of the Church of Wifi. Multi-time Hacker Jeopardy World Champion. Black Badge collector."
+	},
+	{
+		name:  "Jeff Mann",
+		talk:  "Meanwhile at the NSA",
+		bio:   "Over 40 years in information security. Certified NSA Cryptanalyst. Designed and fielded the first software-based cryptosystem ever produced by NSA, and architected NSA's first penetration testing \"red team.\" Inventor of the \"whiz\" wheel cryptologic cipher used by US Special Forces for over a decade (displayed at the National Cryptologic Museum). Honorary lifetime member of the Special Forces Association. Co-host of Paul's Security Weekly."
 	}
 ];
 
@@ -146,11 +151,11 @@ for (var i = 0; i < speakers.length; i++) {
 	lines.push("  " + speakers[i].talk);
 	lines.push("");
 }
-lines.push("FIRESIDE CHATS");
-lines.push("--------------");
-for (var i = 0; i < fireside.length; i++) {
-	lines.push(fireside[i].name);
-	lines.push("  " + fireside[i].talk);
+lines.push("SALTCON TURTLE TALKS");
+lines.push("--------------------");
+for (var i = 0; i < turtle_talks.length; i++) {
+	lines.push(turtle_talks[i].name);
+	lines.push("  " + turtle_talks[i].talk);
 	lines.push("");
 }
 
@@ -161,7 +166,7 @@ post(NOTICES, "NaClCON 2026 Speaker List", lines.join("\r\n"));
 // -----------------------------------------------------------------------
 print("\nPosting individual speaker threads to " + TALKS + "...");
 
-var all = speakers.concat(fireside);
+var all = speakers.concat(turtle_talks);
 for (var i = 0; i < all.length; i++) {
 	var s = all[i];
 	var body = [];

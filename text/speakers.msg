@@ -109,11 +109,15 @@
 nwover 15,000 defaced sites. Currently Product Owner and Lead Engineer in
 nwEnterprise Vulnerability Management.
 
-nhwEdison Carter
+nhwedison
 nhr-------------------------------------------------------------------------------
-ncDigital Hooligan: Origin and Exploits of an Old-School Hacker and Phone Phreak
-nwOld-school hacker and phone phreak from the 80s and 90s, active from the
-nwmid-80s to the mid-90s.
+ncLife in an Early 90's Hacker Group (with Jericho)
+nwFirst exposed to personal computers in the early 1980s and immediately
+nwhooked. Self-taught, moving from BASIC straight into Assembly on the Apple
+nw][. Quickly drawn to phone phreaking and hacking. Involved in a number of
+nwnotable but largely unpublished activities throughout the late 1980s and
+nwearly 1990s. Brief professional stint in security; hacking has remained
+nwprimarily a personal pursuit driven by curiosity and exploration.
 
 nhwJericho
 nhr-------------------------------------------------------------------------------
@@ -124,6 +128,7 @@
 
 nhwJosh Corman
 nhr-------------------------------------------------------------------------------
+ncSmashing the (Policy) Stack for... Public Safety & (Not) Profit?!
 nwThirty years in hacker culture. Philosopher background. Shifted focus to public
 nwpolicy and the public good. Launched "I am the Cavalry" in 2013 to address
 nwover-dependence on undependable technology. Has held AppSec, CTO, and CSO
@@ -150,10 +155,10 @@
 nwGuidance V4.
 
 nhr===============================================================================
-nhyFireside Chats
+nhySaltcon Turtle Talks
 nhr===============================================================================
 
-nhwHack Beer'd
+nhwCap'n HackBeer'd
 nhr-------------------------------------------------------------------------------
 ncAvast, ye LAN lubbers! Grab a grog and park yer ParrotOS while cap'n
 ncHackBeer'd tells a `tail -f /dev/urandom`.
@@ -168,5 +173,15 @@
 nwBishop of the Church of Wifi. Multi-time Hacker Jeopardy World Champion.
 nwBlack Badge collector.
 
+nhwJeff Mann
+nhr-------------------------------------------------------------------------------
+ncMeanwhile at the NSA
+nwOver 40 years in information security. Certified NSA Cryptanalyst. Designed
+nwand fielded the first software-based cryptosystem ever produced by NSA, and
+nwarchitected NSA's first penetration testing "red team." Inventor of the
+nw"whiz" wheel cryptologic cipher used by US Special Forces for over a decade
+nw(displayed at the National Cryptologic Museum). Honorary lifetime member of
+nwthe Special Forces Association. Co-host of Paul's Security Weekly.
+n
 nhr===============================================================================
 n

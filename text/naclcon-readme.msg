@@ -51,13 +51,12 @@
 nw      NetHack, Synchronetris, Netrunner, Drug Lord, and more)
 nw  [x] Apps & Info -- Weather Center, X-News, NewsCenter
 nw  [x] BBSes We Like -- curated connect menu to other BBSes (Main)
+nw  [x] DOVE-Net -- live QWK message network (23 subs, hub at Vertrauen)
+nw  [x] Browser terminal -- fTelnet at https://naclconbbs.net/, no client needed
 
 nhyWhat's Coming
 nhr-------------------------------------------------------------------------------
-nw  [ ] CTF-related content
-nw  [ ] fsxNet echomail (FidoNet-style) -- pending node assignment
 nw  [ ] Local custom doors (The Clans port)
-nw  [ ] Browser terminal -- connect from a web browser, no SSH client needed
 
 nhyThe Pelican
 nhr-------------------------------------------------------------------------------

@@ -12,4 +12,7 @@
 <p class="naclcon-tagline">
   The History of Hacking &nbsp;&middot;&nbsp; May 31 &ndash; June 2, 2026 &nbsp;&middot;&nbsp; Carolina Beach, NC
 </p>
+<p class="naclcon-connect">
+  Connect from your terminal: <code>telnet naclconbbs.net 23</code> &nbsp;|&nbsp; <code>ssh naclconbbs.net -p 2222</code>
+</p>
 </div>

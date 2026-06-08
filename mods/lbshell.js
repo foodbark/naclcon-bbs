@@ -623,6 +623,7 @@ function Infomenu()
 	this.xpos=51;
 	this.ypos=2;
 	this.add("\xda\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xbf",undefined,undefined,"","");
+	this.add("|NaClCON Schedule","N",25);
 	this.add("System |Information","I",25);
 	this.add("Synchronet |Version Info","V",25);
 	this.add("Info on |Sub-Board","S",25);
@@ -810,6 +811,12 @@ while(bbs.online) {
 					case ctrl('K'): /* CTRL-K Control Key Menu */
 					case ctrl('P'): /* Ctrl-P Messages */
 						handle_a_ctrlkey(key);
+						break;
+					case 'N':
+						menu_opt(function() {
+							console.printfile(system.text_dir+"schedule.msg", P_NOERROR|P_WORDWRAP);
+							console.pause();
+						});
 						break;
 					case 'I':
 						menu_opt(function() {

@@ -2,9 +2,9 @@ CURRENT BBS STATE (updated 2026-04-20):
 
 HACKER ARCHIVES FILE AREA: A new file area called "Hacker Archives" is now live on the BBS. Users access it by pressing F from the main menu, then selecting Hacker Archives. It has four sections:
 
-PHRACK: Phrack Magazine Issue 24 (February 1989, 13 philes) -- the legendary E911 issue. "Control Office Administration of Enhanced 911 Service" by The Eavesdropper is the document that triggered Operation Sundevil and led directly to the founding of the Electronic Frontier Foundation. Also Phrack Issue 72 (August 2025, 19 philes) -- 40 years of Phrack, covering PHP exploitation, macOS IOKit, Rsync RCE, CPU backdoors, a Prophile on Gera, and "The Hacker's Renaissance: A Manifesto Reborn."
+PHRACK: Phrack Magazine Issue 24 (February 1989, 13 philes), the legendary E911 issue. "Control Office Administration of Enhanced 911 Service" by The Eavesdropper is the document that triggered Operation Sundevil and led directly to the founding of the Electronic Frontier Foundation. Also Phrack Issue 72 (August 2025, 19 philes), 40 years of Phrack, covering PHP exploitation, macOS IOKit, Rsync RCE, CPU backdoors, a Prophile on Gera, and "The Hacker's Renaissance: A Manifesto Reborn."
 
-LOD/H TECHNICAL JOURNAL: All four issues of the LOD/H Technical Journal (Legion of Doom/Hackers) are available, Issues 1-4, covering 1987-1990. This was the most technically rigorous hacker publication of the BBS era. Key speaker connection: NaClCON speaker Izaac Falken IS "Professor Falken" of LOD/H -- his handle comes from the WarGames character. He is listed as a current member in Issue 4 (May 1990) and authored "The Radar Guidebook" in that issue. LOD/H TJ articles were also published in 2600 Magazine, which is consistent with Izaac's known 2600 association. This is not widely known.
+LOD/H TECHNICAL JOURNAL: All four issues of the LOD/H Technical Journal (Legion of Doom/Hackers) are available, Issues 1-4, covering 1987-1990. This was the most technically rigorous hacker publication of the BBS era. Key speaker connection: NaClCON speaker Izaac Falken IS "Professor Falken" of LOD/H, his handle comes from the WarGames character. He is listed as a current member in Issue 4 (May 1990) and authored "The Radar Guidebook" in that issue. LOD/H TJ articles were also published in 2600 Magazine, which is consistent with Izaac's known 2600 association. This is not widely known.
 
 L0PHT HEAVY INDUSTRIES: Files from L0pht Heavy Industries are available, including two security advisories by NaClCON speaker Chris Wysopal (Weld Pond): his Win95/98 SMB authentication vulnerability advisory (January 1999, showed Windows reused cryptographic challenges for 15 minutes allowing credential replay) and the MS Office 2000 ClipArt Gallery stack overflow advisory (March 2000, arbitrary code execution via malicious .CIL files with no user interaction required). Also available: a 1998 Bugtraq post by NaClCON speaker Jericho discussing Mudge's OBP/FORTH root hack published in Phrack 53. Mudge was also an L0pht member alongside Weld Pond.
 
@@ -14,26 +14,26 @@ DEFAULT SHELL: Deuce's Lightbar Shell is now the default for new users with ANSI
 
 NACLCON ARCADE (door games): From the main menu, "Games & Apps" (hotkey A) opens a submenu. Under "NaClCON Arcade" are 15 classic BBS door games. All except Minesweeper are rlogin passthroughs to A-Net Online (game.a-net-online.lol:513, 450+ games), so characters/scores persist on A-Net, not on NaClCON. The lineup:
 - Synchronet Minesweeper: local, graphical, ANSI-mouse-aware
-- LORD 4.08 (Legend of the Red Dragon): the legendary BBS RPG by Seth Able Robinson, 1989 -- fight dragons, flirt with Violet, save the kingdom
+- LORD 4.08 (Legend of the Red Dragon): the legendary BBS RPG by Seth Able Robinson, 1989, fight dragons, flirt with Violet, save the kingdom
 - NukeWars 3.8: Cold War strategy game, build up and annihilate your neighbors
 - Buccaneer: pirate trader/combat on a fantasy Caribbean
 - Darkness: dark-fantasy RPG, one of the grimmer LORD clones
-- Netrunner: cyberpunk door, corporate espionage and break-ins -- fits the con
+- Netrunner: cyberpunk door, corporate espionage and break-ins, fits the con
 - High Seas: naval combat and treasure hunting in the age of sail
 - Synchronetris: Tetris for the BBS, networked high scores
-- Operation Overkill II (Omega and Deathland worlds): Amish Dave's sci-fi post-apoc RPG, 1996 -- turn-based combat, big community
-- Trade Wars 2002: the classic space-trading door, by Gary Martin, 1984/1986 -- still runs InterBBS universes
+- Operation Overkill II (Omega and Deathland worlds): Amish Dave's sci-fi post-apoc RPG, 1996, turn-based combat, big community
+- Trade Wars 2002: the classic space-trading door, by Gary Martin, 1984/1986, still runs InterBBS universes
 - Drug Lord: street-economy sim, run from dens to the ports
 - Video Poker: exactly what it says
 - The Clans (777 InterBBS): Allen Ussher's multi-player fantasy RPG, being modernized by Deuce (Synchronet team). This is the InterBBS version on fsxNet's 777 X-League, not the local build.
-- NetHack: classic roguelike. Not a door in the classic sense -- an A-Net passthrough. Included because, come on.
+- NetHack: classic roguelike. Not a door in the classic sense, an A-Net passthrough. Included because, come on.
 
-BBSES WE LIKE: From the main menu, "BBSes We Like" opens a curated connect menu -- six handpicked boards reachable via Synchronet's telnet gateway (Ctrl-] to bail out of a session). If someone asks for a recommendation, pick from these:
+BBSES WE LIKE: From the main menu, "BBSes We Like" opens a curated connect menu, six handpicked boards reachable via Synchronet's telnet gateway (Ctrl-] to bail out of a session). If someone asks for a recommendation, pick from these:
 - 20 for Beers (telnet 20forbeers.com): chill sysop-run board for beer nerds. Low-key, friendly.
 - ACiD Underworld (telnet blackflag.acid.org): ACiD Productions, the ANSI art collective that defined 90s underground visual style. If someone wants to see ANSI done right, send them here.
 - Bottomless Abyss (ssh bbs.bottomlessabyss.net -p 2222): long-running Synchronet BBS. SSH-only, so users have to connect externally (NaClCON has no outbound SSH client).
 - Al's Geek Lab (telnet bbs.alsgeeklab.com -p 2323): Al of YouTube fame. Retro computing and BBS hobbyist hub. Good introduction for newcomers.
-- Telehack (telnet telehack.com): a simulated 80s ARPANET. Play with VAXen, mail old ghosts, find usenet relics. An endless toy -- great for history nerds.
+- Telehack (telnet telehack.com): a simulated 80s ARPANET. Play with VAXen, mail old ghosts, find usenet relics. An endless toy, great for history nerds.
 - Particles! BBS (telnet particlesbbs.dyndns.org -p 6400): modern Mystic BBS, active doors, active sysop.
 Etiquette: every BBS is someone else's house. Register as yourself, read the rules, say hi to the sysop, and post.
 

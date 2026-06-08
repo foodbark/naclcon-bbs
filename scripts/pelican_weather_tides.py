@@ -31,6 +31,14 @@ LAT, LON = 34.035, -77.894                 # Carolina Beach, NC
 TIDE_STATION = "8658559"                   # Wilmington Beach, NC — at Carolina Beach (~0.3 mi)
 TIDE_STATION_NAME = "Wilmington Beach"
 
+# NDBC nearshore buoys. 41110 reports wave height/period/direction + water
+# temp; 41037 reports observed wind. Either station's sensors can drop in
+# and out, so we read them independently and only emit fields that arrived.
+NDBC_WAVE_STATION = "41110"
+NDBC_WAVE_STATION_NAME = "Masonboro Inlet"
+NDBC_WIND_STATION = "41037"
+NDBC_WIND_STATION_NAME = "Wrightsville Beach Nearshore"
+
 REPO_PATH = "/home/ubuntu/naclcon-bbs/ctrl/pelican_weather.txt"
 LIVE_PATH = "/sbbs/ctrl/pelican_weather.txt"
 
@@ -57,6 +65,45 @@ def get_json(url, timeout=15):
     req = urllib.request.Request(url, headers=HEADERS)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return json.load(r)
+
+
+def get_text(url, timeout=15):
+    req = urllib.request.Request(url, headers=HEADERS)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8")
+
+
+def deg_to_compass(deg):
+    if deg is None:
+        return None
+    pts = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+           "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+    return pts[int((deg / 22.5) + 0.5) % 16]
+
+
+def parse_ndbc(text):
+    """Parse NDBC realtime2 .txt. Returns rows newest-first; 'MM' becomes None."""
+    headers = None
+    rows = []
+    for line in text.splitlines():
+        if line.startswith("#YY"):
+            headers = line.lstrip("#").split()
+            continue
+        if line.startswith("#") or not headers:
+            continue
+        cols = line.split()
+        if len(cols) != len(headers):
+            continue
+        rows.append({h: (None if v == "MM" else v) for h, v in zip(headers, cols)})
+    return rows
+
+
+def ndbc_first_with(rows, fields):
+    """Return the newest row where every named field is present (not MM)."""
+    for r in rows:
+        if all(r.get(f) is not None for f in fields):
+            return r
+    return None
 
 
 def fetch_weather():
@@ -95,6 +142,62 @@ def fetch_tides():
         if len(out) >= 6:
             break
     return out
+
+
+def fetch_surf():
+    """Wave height/period/direction + water temp from NDBC 41110; observed wind
+    from NDBC 41037. Sensors drop in and out independently, so each line is
+    emitted only when its source has a recent good reading."""
+    out = []
+
+    try:
+        wave_rows = parse_ndbc(get_text(
+            f"https://www.ndbc.noaa.gov/data/realtime2/{NDBC_WAVE_STATION}.txt"
+        ))
+    except Exception as e:
+        wave_rows = []
+        out.append(f"  (wave fetch failed: {e})")
+
+    try:
+        wind_rows = parse_ndbc(get_text(
+            f"https://www.ndbc.noaa.gov/data/realtime2/{NDBC_WIND_STATION}.txt"
+        ))
+    except Exception as e:
+        wind_rows = []
+        out.append(f"  (wind fetch failed: {e})")
+
+    wv = ndbc_first_with(wave_rows, ["WVHT", "DPD", "MWD"])
+    if wv:
+        height_ft = round(float(wv["WVHT"]) * 3.281, 1)
+        period = wv["DPD"]
+        dir_deg = int(float(wv["MWD"]))
+        ts = f"{wv['YY']}-{wv['MM']}-{wv['DD']} {wv['hh']}:{wv['mm']} UTC"
+        out.append(
+            f"  Waves ({NDBC_WAVE_STATION_NAME} buoy {NDBC_WAVE_STATION}, {ts}): "
+            f"{height_ft} ft @ {period}s from {deg_to_compass(dir_deg)} ({dir_deg}°)"
+        )
+    elif wave_rows:
+        out.append(f"  (no recent wave data from buoy {NDBC_WAVE_STATION})")
+
+    wt = ndbc_first_with(wave_rows, ["WTMP"])
+    if wt:
+        wtmp_c = float(wt["WTMP"])
+        wtmp_f = round(wtmp_c * 9 / 5 + 32)
+        out.append(f"  Water temp: {wtmp_f}°F ({wtmp_c:.1f}°C)")
+
+    wd = ndbc_first_with(wind_rows, ["WDIR", "WSPD"])
+    if wd:
+        wspd_mph = round(float(wd["WSPD"]) * 2.237)
+        wdir_deg = int(float(wd["WDIR"]))
+        ts = f"{wd['YY']}-{wd['MM']}-{wd['DD']} {wd['hh']}:{wd['mm']} UTC"
+        out.append(
+            f"  Wind observed ({NDBC_WIND_STATION_NAME} buoy {NDBC_WIND_STATION}, {ts}): "
+            f"{wspd_mph} mph from {deg_to_compass(wdir_deg)} ({wdir_deg}°)"
+        )
+    elif wind_rows:
+        out.append(f"  (no recent wind data from buoy {NDBC_WIND_STATION})")
+
+    return out or ["  (no surf data available)"]
 
 
 def fetch_current_conditions():
@@ -327,9 +430,15 @@ def main():
     except Exception as e:
         tides, tides_ok = [f"  (NOAA fetch failed: {e})"], False
 
-    if not (wx_ok or tides_ok):
-        # Both failed -- don't clobber last known good file
-        raise SystemExit("both fetches failed; keeping previous file")
+    try:
+        surf = fetch_surf()
+        surf_ok = True
+    except Exception as e:
+        surf, surf_ok = [f"  (NDBC fetch failed: {e})"], False
+
+    if not (wx_ok or tides_ok or surf_ok):
+        # All failed -- don't clobber last known good file
+        raise SystemExit("all fetches failed; keeping previous file")
 
     stamp = now_eastern().strftime("%Y-%m-%d %H:%M %Z")
     lines = [
@@ -345,6 +454,23 @@ def main():
     )
     lines.append("")
     lines.extend(tides)
+    lines.append("")
+    lines.append("Surf conditions (NDBC nearshore buoys):")
+    lines.append("")
+    lines.extend(surf)
+    lines.append("")
+    lines.append(
+        "Carolina Beach faces roughly east-southeast: winds from the W are offshore"
+    )
+    lines.append(
+        "(clean faces), winds from the E are onshore (blown-out, choppy). Anything"
+    )
+    lines.append(
+        "from N or S is cross-shore. Period matters: 8s+ is groundswell with shape,"
+    )
+    lines.append(
+        "5-7s is local windswell that's mushier."
+    )
     lines.append("")
     lines.append(
         "You can weave these in when the conversation naturally touches weather, the beach,"

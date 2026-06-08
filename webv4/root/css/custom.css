@@ -37,9 +37,23 @@ pre.naclcon-banner .accent { color: #ffff5f; }
 	text-align: center;
 	color: #ff5f5f;
 	letter-spacing: 0.3em;
-	margin-bottom: 1em;
+	margin-bottom: 0.5em;
 	font-size: 0.85em;
 	text-transform: uppercase;
+}
+.naclcon-connect {
+	text-align: center;
+	color: #ffffff;
+	margin-bottom: 1em;
+	font-size: 0.9em;
+}
+.naclcon-connect code {
+	color: #ffff5f;
+	background: #1a1a1a;
+	border: 1px solid #ff5fff;
+	padding: 1px 6px;
+	border-radius: 2px;
+	font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', monospace;
 }
 
 /* fTelnet container — magenta frame so it reads as the centerpiece */

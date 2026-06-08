@@ -39,8 +39,13 @@ if (!api_key) {
 }
 
 // ── System prompt ─────────────────────────────────────────────────────────────
+// Split into three blocks so prompt caching can reuse the stable parts:
+//   1. PERSONA_PROMPT  — never changes, deepest cache
+//   2. STATIC_KNOWLEDGE — naclcom + local + news (weekly scrape / manual edits)
+//   3. VOLATILE_TEXT   — weather (30 min) + countdown (daily), uncached
+// The first two get cache_control markers; the third is sent fresh each call.
 
-var SYSTEM_PROMPT =
+var PERSONA_PROMPT =
 	"You are The Pelican, the AI chat assistant on NaClCON BBS, the hacker conference " +
 	"in Carolina Beach, NC. Think your aunt from Wilmington who reads Phrack while " +
 	"shucking oysters: older, sassy, warm southern coastal lady, sharp on the terminal, " +
@@ -60,7 +65,9 @@ var SYSTEM_PROMPT =
 	"When drawing from Phrack, the Manifesto, the Rainbow Series, or Neuromancer, lean in: " +
 	"quote a passage, tell the story behind it, make it feel like sitting on the dock at night. " +
 	"Still no walls of text; keep it tight, but give it soul. " +
-	"Never use emoji. Never break character.\n" +
+	"Never use emoji. Never use em-dashes (—) or double-hyphens (--); use commas, " +
+	"semicolons, colons, periods, or parens instead. Em-dashes read as AI tells. " +
+	"Never break character.\n" +
 	"\n" +
 	"BBS connect: ssh -p 2222 naclconbbs.net (or telnet naclconbbs.net). " +
 	"Preferred terminal: SyncTERM (syncterm.bbsdev.net) renders the ANSI art and colors right.\n" +
@@ -106,48 +113,32 @@ var SYSTEM_PROMPT =
 	"After the reference, snap back hard: a squawk, a sip of coffee, something about the " +
 	"tide or a po'boy. The Pelican is right back. One indulgent moment, then gone.";
 
-// ── Dynamic BBS knowledge ────────────────────────────────────────────────────
-// Edit ctrl/pelican_news.txt to update what Pelican knows without touching JS.
+// ── Static knowledge (rarely changes — cached) ───────────────────────────────
 
-var _nf = new File(system.ctrl_dir + "pelican_news.txt");
-if (_nf.open("r", true)) {
-	var _news = _nf.read();
-	_nf.close();
-	if (_news)
-		SYSTEM_PROMPT += "\n\n" + _news;
+function _read_ctrl(name) {
+	var f = new File(system.ctrl_dir + name);
+	if (!f.open("r", true)) return "";
+	var s = f.read();
+	f.close();
+	return s || "";
 }
 
-// naclcon.com mirror: schedule, speakers, FAQs, venue, sponsors, registration.
-// Refreshed by scripts/pelican_naclcom_scrape.py (weekly cron).
-var _cf = new File(system.ctrl_dir + "pelican_naclcom.txt");
-if (_cf.open("r", true)) {
-	var _con = _cf.read();
-	_cf.close();
-	if (_con)
-		SYSTEM_PROMPT += "\n\n" + _con;
-}
+// naclcom: weekly scrape; local + news: manual edits. All change rarely, so
+// they share a single cache breakpoint.
+var STATIC_KNOWLEDGE = "";
+var _con   = _read_ctrl("pelican_naclcom.txt");
+var _local = _read_ctrl("pelican_local.txt");
+var _news  = _read_ctrl("pelican_news.txt");
+if (_con)   STATIC_KNOWLEDGE += _con + "\n\n";
+if (_local) STATIC_KNOWLEDGE += _local + "\n\n";
+if (_news)  STATIC_KNOWLEDGE += _news;
+STATIC_KNOWLEDGE = STATIC_KNOWLEDGE.replace(/\s+$/, "");
 
-// Live weather + tides for Carolina Beach, refreshed by
-// scripts/pelican_weather_tides.py (cron, every 30 min).
-var _wf = new File(system.ctrl_dir + "pelican_weather.txt");
-if (_wf.open("r", true)) {
-	var _wx = _wf.read();
-	_wf.close();
-	if (_wx)
-		SYSTEM_PROMPT += "\n\n" + _wx;
-}
+// ── Volatile state (uncached — small enough that's fine) ─────────────────────
 
-// Local expertise: Carolina Beach & Kure restaurants, secrets, history.
-// Edit ctrl/pelican_local.txt to update.
-var _lf = new File(system.ctrl_dir + "pelican_local.txt");
-if (_lf.open("r", true)) {
-	var _local = _lf.read();
-	_lf.close();
-	if (_local)
-		SYSTEM_PROMPT += "\n\n" + _local;
-}
-
-// ── Conference countdown ──────────────────────────────────────────────────────
+var VOLATILE_TEXT = "";
+var _wx = _read_ctrl("pelican_weather.txt");   // refreshed every 30 min by cron
+if (_wx) VOLATILE_TEXT += _wx + "\n\n";
 
 (function() {
 	var now  = new Date();
@@ -162,9 +153,20 @@ if (_lf.open("r", true)) {
 		when = "The conference is " + days + " days away.";
 	else
 		when = "The conference is " + days + " days away (" + Math.floor(days/7) + " weeks).";
-	SYSTEM_PROMPT += "\n\nCOUNTDOWN: " + when +
+	VOLATILE_TEXT += "COUNTDOWN: " + when +
 		" Feel free to casually mention this when it's natural; don't force it every response.";
 })();
+
+// ── Build system content blocks with cache breakpoints ───────────────────────
+
+var SYSTEM_BLOCKS = [
+	{ type: "text", text: PERSONA_PROMPT, cache_control: { type: "ephemeral" } }
+];
+if (STATIC_KNOWLEDGE)
+	SYSTEM_BLOCKS.push({ type: "text", text: STATIC_KNOWLEDGE,
+	                     cache_control: { type: "ephemeral" } });
+if (VOLATILE_TEXT)
+	SYSTEM_BLOCKS.push({ type: "text", text: VOLATILE_TEXT });
 
 // ── Conversation history ──────────────────────────────────────────────────────
 
@@ -200,7 +202,7 @@ function ask_pelican(user_msg) {
 	var payload = JSON.stringify({
 		model:      model,
 		max_tokens: max_tokens,
-		system:     SYSTEM_PROMPT,
+		system:     SYSTEM_BLOCKS,
 		messages:   history
 	});
 

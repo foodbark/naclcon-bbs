@@ -34,6 +34,12 @@ PAGES = [
 REPO_PATH = "/home/ubuntu/naclcon-bbs/ctrl/pelican_naclcom.txt"
 LIVE_PATH = "/sbbs/ctrl/pelican_naclcom.txt"
 
+# Post-fetch substitutions applied to every scraped page. naclcon.com hasn't
+# updated its terminology yet, so the BBS rewrites on ingest.
+SUBSTITUTIONS = [
+    (re.compile(r"\bFireside Chats?\b", re.IGNORECASE), "Saltcon Turtle Talks"),
+]
+
 HEADERS = {"User-Agent": "NaClCON-BBS-Pelican (foodbark@gmail.com)"}
 
 # Block-level tags whose end produces a newline (preserves rough paragraph structure).
@@ -95,7 +101,10 @@ def fetch(url):
         raw = r.read().decode("utf-8", errors="replace")
     parser = TextExtractor()
     parser.feed(raw)
-    return parser.get_text()
+    text = parser.get_text()
+    for pat, repl in SUBSTITUTIONS:
+        text = pat.sub(repl, text)
+    return text
 
 
 def main():
