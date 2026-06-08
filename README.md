@@ -32,9 +32,35 @@ telnet naclconbbs.net
 
 A Synchronet BBS (v3.21) running on AWS EC2 (Ubuntu 24.04). Spun up as a community hub for NaClCON attendees: message boards, file areas, chat, doors, and The Pelican.
 
-- **Nodes**: 20 (supports 20 concurrent users), currently on a t3.medium
+- **Nodes**: 20 (supports 20 concurrent users). Post-con, the box is being downsized from t3.medium to **t3.micro** to cut cost while keeping the board on the air (see [Post-Con Operations](#post-con-operations))
 - **Sysop**: foodbark
 - **Library path**: `/sbbs/exec` is registered in `/etc/ld.so.conf.d/sbbs.conf` so `sbbs` can start via systemd. The binary has `$ORIGIN` in its RUNPATH but that expansion is unreliable for PIE binaries under systemd, leading to "library not found" errors. The ldconfig entry is the fix for this.
+
+## Post-Con Operations
+
+NaClCON ran May 31 – June 2, 2026. With the con over and ongoing traffic light, the board stays up year-round but on a smaller footprint. The goal of the cost-down is to keep everything that was built intact and reversible — nothing is torn down, only scaled down or paused.
+
+**BBS box: t3.medium → t3.micro.** Synchronet's real memory footprint is ~966 MB, so it runs comfortably on a 1 GB instance once swap is in place. A 2 GB swapfile was added as a safety net before downsizing:
+
+```bash
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile && sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+echo 'vm.swappiness=10' | sudo tee /etc/sysctl.d/99-swappiness.conf   # prefer RAM; spill only under real pressure
+```
+
+Resize procedure (console, ~2 min downtime): **Stop instance → change instance type to t3.micro → Start**. The static Elastic IP reattaches automatically on start, so DNS (`naclconbbs.net`) holds with no change. Synchronet self-starts via systemd and swap auto-mounts from `/etc/fstab`; confirm by dialing `ssh naclconbbs.net -p 2222`.
+
+> **Heads-up on t3.micro:** memory-hungry interactive tooling (e.g. running an AI coding agent directly on the box) can OOM even with swap. Do large maintenance work *before* downsizing, or temporarily bump the instance type back up for the session, then return to micro.
+
+**Analytics box: stopped, not terminated.** The separate Elastic Stack EC2 (Kibana dashboards + alerting) is *stopped* rather than running, which costs $0 in compute while preserving the EBS volume, all indexed sessions, the GeoIP pipeline, and the alert rules. Start it back up (~1 min) whenever the dashboards are needed. This loses *visibility* while paused, not *data* — the permanent session record lives in S3 (see [Logs](#logs)), and Kibana is only a viewer on top of it.
+
+**Kept running regardless of analytics state:**
+
+- **fail2ban** — actively bans scanners on its own; pausing the analytics box only silences the Kibana alerts, not the bans. The board stays internet-facing on 22/23/2222, so this stays on.
+- **Synchronet onboard security** — login throttling, `.can` access lists, hack thresholds (see [Security](#security)).
+- **S3 log sync cron** — keeps the off-box record continuous; negligible cost.
 
 ## AWS Security Group — Required Open Ports
 
@@ -166,7 +192,7 @@ The idea is slap on the wrist for looking around, harder slap if you are after /
 
 ### Logs
 
-To stay on top of activity without being logged into the server, all logs are synced off-box to S3 every minute via `/home/ubuntu/bin/s3_log_sync.sh` (cron). S3 bucket: `s3://naclcon-bbs-dead-drop/`. BBS logs land in `bbs-logs/`, system logs in `system-logs/<hostname>/`. An Elastic Stack instance on a separate EC2 ingests from S3 for dashboards and alerting.
+To stay on top of activity without being logged into the server, all logs are synced off-box to S3 every minute via `/home/ubuntu/bin/s3_log_sync.sh` (cron). S3 bucket: `s3://naclcon-bbs-dead-drop/`. BBS logs land in `bbs-logs/`, system logs in `system-logs/<hostname>/`. An Elastic Stack instance on a separate EC2 ingests from S3 for dashboards and alerting. **Post-con this instance is stopped to save cost** (see [Post-Con Operations](#post-con-operations)) — the S3 record keeps accumulating regardless, and the box can be restarted in ~1 min when the dashboards are wanted again.
 
 | File | Contents |
 |------|----------|
