@@ -62,6 +62,18 @@ Resize procedure (console, ~2 min downtime): **Stop instance → change instance
 - **Synchronet onboard security** — login throttling, `.can` access lists, hack thresholds (see [Security](#security)).
 - **S3 log sync cron** — keeps the off-box record continuous; negligible cost.
 
+**Uptime alerting (independent of the analytics box).** With Kibana paused, the only signal that matters day-to-day is "is the board reachable at all?" That's covered by a [Healthchecks.io](https://healthchecks.io) dead-man's switch — a cron on the BBS box pings Healthchecks every 5 min, but *only* if sbbs is serving locally. Silence is the alarm: if the ping stops, Healthchecks notifies after the grace period.
+
+```bash
+# crontab (ubuntu). Replace <your-uuid> with the real check UUID — that ping
+# URL is effectively a credential, so keep it out of this repo and anywhere shared.
+*/5 * * * * /usr/bin/curl -fsS -m 10 -k -o /dev/null https://localhost/ && /usr/bin/curl -fsS -m 10 -o /dev/null https://hc-ping.com/<your-uuid>
+```
+
+Set the check to **period 5 min / grace ~10 min** and point its notification at email or a phone push. The local `https://localhost/` check verifies sbbs is actually *serving* (catches a crashed or hung process), and the cron failing to run at all covers the box being down or off the network.
+
+> **Blind spot:** because the check runs *from* the box, it can't detect a purely *inbound* break (e.g. a fat-fingered security group or DNS change) while the box and sbbs are otherwise healthy. That case is rare and self-inflicted. If you want it covered too, add an external poller (e.g. UptimeRobot) hitting `https://naclconbbs.net/` from outside — note the box **cannot** check its own public URL, since EC2 doesn't hairpin traffic to its own Elastic IP.
+
 ## AWS Security Group — Required Open Ports
 
 | Port | Protocol | Service | Notes |
