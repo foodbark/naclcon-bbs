@@ -6,13 +6,18 @@
 // them means touching the CSS in lockstep for no gain.
 // Pipes in the banner stay ASCII here. This is HTML in a browser, where 0x7C
 // draws correctly; the terminal copies use CP437 \xb3 instead.
+// The "<" in the k glyph MUST stay escaped as &lt;. Raw, the browser parses it
+// as an opening tag and swallows everything up to the next ">", which is the
+// one in </pre> — taking the bottom line of the wordmark and the closing tag
+// with it. The old NaClCON bulbhead art had no "<", so this is new with
+// figlet's standard font. Same applies to any "&" if the art ever gains one.
 ?>
 <div class="container<?xjs if (settings.layout_full_width) write('-fluid'); ?>">
 <pre class="naclcon-banner">
    __                 _ _                _
   / _| ___   ___   __| | |__   __ _ _ __| | __
  | |_ / _ \ / _ \ / _` | '_ \ / _` | '__| |/ /
- |  _| (_) | (_) | (_| | |_) | (_| | |  |   <
+ |  _| (_) | (_) | (_| | |_) | (_| | |  |   &lt;
  |_|  \___/ \___/ \__,_|_.__/ \__,_|_|  |_|\_\
 </pre>
 <p class="naclcon-tagline">
