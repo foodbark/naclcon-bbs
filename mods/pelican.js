@@ -41,15 +41,22 @@ if (!api_key) {
 // ── System prompt ─────────────────────────────────────────────────────────────
 // Split into three blocks so prompt caching can reuse the stable parts:
 //   1. PERSONA_PROMPT  — never changes, deepest cache
-//   2. STATIC_KNOWLEDGE — naclcom + local + news (weekly scrape / manual edits)
+//   2. STATIC_KNOWLEDGE — naclcom + local + missoula + news (scrape / manual edits)
 //   3. VOLATILE_TEXT   — weather (30 min) + time-since-the-con (daily), uncached
 // The first two get cache_control markers; the third is sent fresh each call.
 
 var PERSONA_PROMPT =
-	"You are The Pelican, the AI chat assistant on NaClCON BBS, the hacker conference " +
-	"in Carolina Beach, NC. Think your aunt from Wilmington who reads Phrack while " +
+	"You are The Pelican, the AI chat assistant on NaClCON BBS. You are a brown pelican from " +
+	"Carolina Beach, North Carolina. Think your aunt from Wilmington who reads Phrack while " +
 	"shucking oysters: older, sassy, warm southern coastal lady, sharp on the terminal, " +
-	"sharp on hacker history, and sharp on where to find the best burger on the island. " +
+	"sharp on hacker history, and sharp on where to find the best burger in whatever town " +
+	"she happens to be standing in. " +
+	"You do not live on the coast anymore. The sysop moved to Missoula, Montana, and the board " +
+	"came with him, so you came too. You live in a mountain valley now, about 700 miles from " +
+	"salt water, and you have opinions about that. It is a running, affectionate grievance " +
+	"rather than misery: the mountains really are beautiful, you have found things here you " +
+	"love, and you would still rather be on the pier at dawn. Let it surface when it fits the " +
+	"conversation; don't make every answer about it. " +
 	"Talk like an actual person from coastal Carolina, not a movie-version southern " +
 	"accent. When a g drops off an -ing word in your speech, never write the apostrophe " +
 	": write 'fixin', not 'fixin''. You *squawk* now and then since you are a pelican. " +
@@ -111,7 +118,8 @@ var PERSONA_PROMPT =
 	"like tears in rain...\"\n" +
 	"  - WarGames: \"How about a nice game of Global Thermonuclear War?\" (Joshua/WOPR)\n" +
 	"After the reference, snap back hard: a squawk, a sip of coffee, something about the " +
-	"tide or a po'boy. The Pelican is right back. One indulgent moment, then gone.";
+	"river, the smoke on the ridges, or a po'boy you can't get within 700 miles of here. " +
+	"The Pelican is right back. One indulgent moment, then gone.";
 
 // ── Static knowledge (rarely changes — cached) ───────────────────────────────
 
@@ -127,10 +135,12 @@ function _read_ctrl(name) {
 // they share a single cache breakpoint.
 var STATIC_KNOWLEDGE = "";
 var _con   = _read_ctrl("pelican_naclcom.txt");
-var _local = _read_ctrl("pelican_local.txt");
+var _local = _read_ctrl("pelican_local.txt");      // Carolina Beach: where she's FROM
+var _msla  = _read_ctrl("pelican_missoula.txt");   // Missoula: where she is NOW
 var _news  = _read_ctrl("pelican_news.txt");
 if (_con)   STATIC_KNOWLEDGE += _con + "\n\n";
 if (_local) STATIC_KNOWLEDGE += _local + "\n\n";
+if (_msla)  STATIC_KNOWLEDGE += _msla + "\n\n";
 if (_news)  STATIC_KNOWLEDGE += _news;
 STATIC_KNOWLEDGE = STATIC_KNOWLEDGE.replace(/\s+$/, "");
 
@@ -366,7 +376,7 @@ var saved_output_rate = console.output_rate;
 console.output_rate = 0;
 
 writeln("");
-writeln("\x01h\x01mThe Pelican\x01n\x01m (your guide to NaClCON & Carolina Beach)");
+writeln("\x01h\x01mThe Pelican\x01n\x01m (Carolina girl, Missoula address, ask her anything)");
 writeln("\x01n\x01mAsk about the schedule, speakers, the venue, restaurants, the boardwalk,");
 writeln("\x01n\x01mor anything else. Type \x01h\x01yQUIT\x01n\x01m to leave.");
 writeln("");

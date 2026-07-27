@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 """
-Fetch current NWS weather forecast + NOAA tide predictions for
-Carolina Beach, NC and write a plain-text block to
-ctrl/pelican_weather.txt. The Pelican's system prompt loads this
-file alongside pelican_news.txt so she can reference live conditions
-in chat.
+Fetch the current NWS weather forecast for Missoula, MT and write a
+plain-text block to ctrl/pelican_weather.txt. The Pelican's system prompt
+loads this file alongside pelican_news.txt so she can reference live
+conditions in chat.
 
 Run from cron every 30 minutes. On fetch failure for a given source,
 keeps the last successful block for that source (no torn writes).
+
+The filename still says "tides" for cron-stability reasons, but there are
+no tides in Montana. The board moved from Carolina Beach to Missoula in
+July 2026, which retired the NOAA tide station and the two NDBC nearshore
+buoys; wind now comes from the NWS hourly forecast instead of a buoy, and
+it took over the two strip slots the high/low tide times used to hold.
 """
 
 import datetime
@@ -16,7 +21,7 @@ import os
 import urllib.request
 from zoneinfo import ZoneInfo
 
-EASTERN = ZoneInfo("America/New_York")
+MOUNTAIN = ZoneInfo("America/Denver")
 UTC = datetime.timezone.utc
 
 
@@ -24,20 +29,10 @@ def now_utc():
     return datetime.datetime.now(UTC)
 
 
-def now_eastern():
-    return datetime.datetime.now(EASTERN)
+def now_local():
+    return datetime.datetime.now(MOUNTAIN)
 
-LAT, LON = 34.035, -77.894                 # Carolina Beach, NC
-TIDE_STATION = "8658559"                   # Wilmington Beach, NC — at Carolina Beach (~0.3 mi)
-TIDE_STATION_NAME = "Wilmington Beach"
-
-# NDBC nearshore buoys. 41110 reports wave height/period/direction + water
-# temp; 41037 reports observed wind. Either station's sensors can drop in
-# and out, so we read them independently and only emit fields that arrived.
-NDBC_WAVE_STATION = "41110"
-NDBC_WAVE_STATION_NAME = "Masonboro Inlet"
-NDBC_WIND_STATION = "41037"
-NDBC_WIND_STATION_NAME = "Wrightsville Beach Nearshore"
+LAT, LON = 46.8721, -113.9940              # Missoula, MT
 
 REPO_PATH = "/home/ubuntu/naclcon-bbs/ctrl/pelican_weather.txt"
 LIVE_PATH = "/sbbs/ctrl/pelican_weather.txt"
@@ -45,8 +40,8 @@ LIVE_PATH = "/sbbs/ctrl/pelican_weather.txt"
 # Compact key=value snapshot consumed by the lbshell weather/tide strip.
 SHELL_REPO_PATH = "/home/ubuntu/naclcon-bbs/data/weather_tides.txt"
 SHELL_LIVE_PATH = "/sbbs/data/weather_tides.txt"
-SHELL_LOCATION = "Carolina Beach"
-UV_ZIP = "28428"
+SHELL_LOCATION = "Missoula"
+UV_ZIP = "59801"
 
 # Logon splash files we rewrite with the weather strip appended after the
 # trailing ===... separator. (path, colored?). The plain-ASCII pair is the
@@ -67,45 +62,6 @@ def get_json(url, timeout=15):
         return json.load(r)
 
 
-def get_text(url, timeout=15):
-    req = urllib.request.Request(url, headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode("utf-8")
-
-
-def deg_to_compass(deg):
-    if deg is None:
-        return None
-    pts = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
-           "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
-    return pts[int((deg / 22.5) + 0.5) % 16]
-
-
-def parse_ndbc(text):
-    """Parse NDBC realtime2 .txt. Returns rows newest-first; 'MM' becomes None."""
-    headers = None
-    rows = []
-    for line in text.splitlines():
-        if line.startswith("#YY"):
-            headers = line.lstrip("#").split()
-            continue
-        if line.startswith("#") or not headers:
-            continue
-        cols = line.split()
-        if len(cols) != len(headers):
-            continue
-        rows.append({h: (None if v == "MM" else v) for h, v in zip(headers, cols)})
-    return rows
-
-
-def ndbc_first_with(rows, fields):
-    """Return the newest row where every named field is present (not MM)."""
-    for r in rows:
-        if all(r.get(f) is not None for f in fields):
-            return r
-    return None
-
-
 def fetch_weather():
     point = get_json(f"https://api.weather.gov/points/{LAT},{LON}")
     fc = get_json(point["properties"]["forecast"])
@@ -118,90 +74,11 @@ def fetch_weather():
     return out
 
 
-def fetch_tides():
-    now = now_utc()
-    start = (now - datetime.timedelta(hours=2)).strftime("%Y%m%d")
-    end = (now + datetime.timedelta(hours=48)).strftime("%Y%m%d")
-    url = (
-        "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?"
-        f"station={TIDE_STATION}&product=predictions&interval=hilo&"
-        "datum=MLLW&units=english&time_zone=lst_ldt&format=json&"
-        f"begin_date={start}&end_date={end}"
-    )
-    td = get_json(url)
-    preds = td.get("predictions", [])
-    # NOAA timestamps are station-local (Eastern). Drop entries more than 30min old.
-    cutoff = now_eastern().replace(tzinfo=None) - datetime.timedelta(minutes=30)
-    out = []
-    for t in preds:
-        pt = datetime.datetime.strptime(t["t"], "%Y-%m-%d %H:%M")
-        if pt < cutoff:
-            continue
-        label = "high tide" if t["type"] == "H" else "low tide"
-        out.append(f"  {t['t']} -- {label} ({t['v']} ft)")
-        if len(out) >= 6:
-            break
-    return out
-
-
-def fetch_surf():
-    """Wave height/period/direction + water temp from NDBC 41110; observed wind
-    from NDBC 41037. Sensors drop in and out independently, so each line is
-    emitted only when its source has a recent good reading."""
-    out = []
-
-    try:
-        wave_rows = parse_ndbc(get_text(
-            f"https://www.ndbc.noaa.gov/data/realtime2/{NDBC_WAVE_STATION}.txt"
-        ))
-    except Exception as e:
-        wave_rows = []
-        out.append(f"  (wave fetch failed: {e})")
-
-    try:
-        wind_rows = parse_ndbc(get_text(
-            f"https://www.ndbc.noaa.gov/data/realtime2/{NDBC_WIND_STATION}.txt"
-        ))
-    except Exception as e:
-        wind_rows = []
-        out.append(f"  (wind fetch failed: {e})")
-
-    wv = ndbc_first_with(wave_rows, ["WVHT", "DPD", "MWD"])
-    if wv:
-        height_ft = round(float(wv["WVHT"]) * 3.281, 1)
-        period = wv["DPD"]
-        dir_deg = int(float(wv["MWD"]))
-        ts = f"{wv['YY']}-{wv['MM']}-{wv['DD']} {wv['hh']}:{wv['mm']} UTC"
-        out.append(
-            f"  Waves ({NDBC_WAVE_STATION_NAME} buoy {NDBC_WAVE_STATION}, {ts}): "
-            f"{height_ft} ft @ {period}s from {deg_to_compass(dir_deg)} ({dir_deg}°)"
-        )
-    elif wave_rows:
-        out.append(f"  (no recent wave data from buoy {NDBC_WAVE_STATION})")
-
-    wt = ndbc_first_with(wave_rows, ["WTMP"])
-    if wt:
-        wtmp_c = float(wt["WTMP"])
-        wtmp_f = round(wtmp_c * 9 / 5 + 32)
-        out.append(f"  Water temp: {wtmp_f}°F ({wtmp_c:.1f}°C)")
-
-    wd = ndbc_first_with(wind_rows, ["WDIR", "WSPD"])
-    if wd:
-        wspd_mph = round(float(wd["WSPD"]) * 2.237)
-        wdir_deg = int(float(wd["WDIR"]))
-        ts = f"{wd['YY']}-{wd['MM']}-{wd['DD']} {wd['hh']}:{wd['mm']} UTC"
-        out.append(
-            f"  Wind observed ({NDBC_WIND_STATION_NAME} buoy {NDBC_WIND_STATION}, {ts}): "
-            f"{wspd_mph} mph from {deg_to_compass(wdir_deg)} ({wdir_deg}°)"
-        )
-    elif wind_rows:
-        out.append(f"  (no recent wind data from buoy {NDBC_WIND_STATION})")
-
-    return out or ["  (no surf data available)"]
-
-
 def fetch_current_conditions():
-    """Return (temp_f, precip_pct) for the current hour from NWS hourly forecast."""
+    """Return (temp_f, precip_pct, wind_mph, wind_dir) for the current hour from the
+    NWS hourly forecast. Wind replaces the tide readings the strip used to carry;
+    it comes free with this call, so it costs no extra request. wind_mph/wind_dir
+    are None when the feed omits or malforms them."""
     point = get_json(f"https://api.weather.gov/points/{LAT},{LON}")
     fc = get_json(point["properties"]["forecastHourly"])
     p = fc["properties"]["periods"][0]
@@ -209,7 +86,17 @@ def fetch_current_conditions():
     precip_obj = p.get("probabilityOfPrecipitation") or {}
     precip = precip_obj.get("value")
     precip = int(precip) if precip is not None else 0
-    return temp, precip
+
+    # windSpeed arrives as e.g. "10 mph" or "5 to 10 mph"; take the leading number.
+    wind_mph = None
+    raw = (p.get("windSpeed") or "").strip()
+    for tok in raw.split():
+        if tok.isdigit():
+            wind_mph = int(tok)
+            break
+    wind_dir = (p.get("windDirection") or "").strip() or None
+
+    return temp, precip, wind_mph, wind_dir
 
 
 def fetch_uv():
@@ -218,39 +105,11 @@ def fetch_uv():
     data = get_json(
         f"https://data.epa.gov/efservice/getEnvirofactsUVHOURLY/ZIP/{UV_ZIP}/JSON"
     )
-    target = now_eastern().strftime("%b/%d/%Y %I %p")
+    target = now_local().strftime("%b/%d/%Y %I %p")
     for r in data:
         if r.get("DATE_TIME") == target:
             return int(r.get("UV_VALUE", 0))
     return 0
-
-
-def fetch_next_tide_times():
-    """Return (next_high, next_low) as 'HH:MM' strings, or (None, None) on failure."""
-    now = now_utc()
-    start = now.strftime("%Y%m%d")
-    end = (now + datetime.timedelta(hours=48)).strftime("%Y%m%d")
-    url = (
-        "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?"
-        f"station={TIDE_STATION}&product=predictions&interval=hilo&"
-        "datum=MLLW&units=english&time_zone=lst_ldt&format=json&"
-        f"begin_date={start}&end_date={end}"
-    )
-    td = get_json(url)
-    preds = td.get("predictions", [])
-    now_local = now_eastern().replace(tzinfo=None)
-    next_high = next_low = None
-    for t in preds:
-        pt = datetime.datetime.strptime(t["t"], "%Y-%m-%d %H:%M")
-        if pt < now_local:
-            continue
-        if t["type"] == "H" and next_high is None:
-            next_high = pt.strftime("%H:%M")
-        elif t["type"] == "L" and next_low is None:
-            next_low = pt.strftime("%H:%M")
-        if next_high and next_low:
-            break
-    return next_high, next_low
 
 
 def read_kv(path):
@@ -275,9 +134,13 @@ def write_shell_snapshot():
     shell["LOCATION"] = SHELL_LOCATION
 
     try:
-        temp, precip = fetch_current_conditions()
+        temp, precip, wind_mph, wind_dir = fetch_current_conditions()
         shell["TEMP_F"] = str(temp)
         shell["PRECIP_PCT"] = str(precip)
+        if wind_mph is not None:
+            shell["WIND_MPH"] = str(wind_mph)
+        if wind_dir:
+            shell["WIND_DIR"] = wind_dir
     except Exception as e:
         print(f"current-conditions fetch failed: {e}")
 
@@ -286,16 +149,12 @@ def write_shell_snapshot():
     except Exception as e:
         print(f"UV fetch failed: {e}")
 
-    try:
-        nh, nl = fetch_next_tide_times()
-        if nh:
-            shell["HIGH_TIDE"] = nh
-        if nl:
-            shell["LOW_TIDE"] = nl
-    except Exception as e:
-        print(f"tide-times fetch failed: {e}")
+    # Carolina Beach leftovers. Drop them so a stale high/low tide can't linger
+    # in the snapshot forever now that nothing writes them.
+    shell.pop("HIGH_TIDE", None)
+    shell.pop("LOW_TIDE", None)
 
-    shell["UPDATED"] = now_eastern().strftime("%Y-%m-%d %H:%M %Z")
+    shell["UPDATED"] = now_local().strftime("%Y-%m-%d %H:%M %Z")
 
     body = "".join(f"{k}={shell[k]}\n" for k in sorted(shell))
     for path in (SHELL_LIVE_PATH, SHELL_REPO_PATH):
@@ -332,39 +191,44 @@ def render_weather_strip_color(data):
             else "\x01h\x01y" if uv <= 5
             else "\x01h\x01r" if uv <= 7
             else "\x01h\x01m")
+    w = _ival(data.get("WIND_MPH"))
+    wind_c = ("\x01h\x01w" if w is None
+              else "\x01h\x01w" if w < 8
+              else "\x01h\x01c" if w < 20
+              else "\x01h\x01m")
 
     pipe = "\x01h\x01m\xb3"
     lbl = "\x01h\x01w"
-    loc = "\x01h\x01y" + data.get("LOCATION", "Carolina Beach")
+    loc = "\x01h\x01y" + data.get("LOCATION", "Missoula")
     temp_s = f"{t}\xf8F" if t is not None else "--"
     precip_s = f"{p}%" if p is not None else "--"
     uv_s = str(uv) if uv is not None else "--"
-    hi = data.get("HIGH_TIDE", "--:--")
-    lo = data.get("LOW_TIDE", "--:--")
+    wind_s = "--" if w is None else (
+        f"{w} mph {data['WIND_DIR']}" if data.get("WIND_DIR") else f"{w} mph")
 
     return (
         "  " + loc
         + "  " + pipe + "  " + temp_c + temp_s
         + "  " + pipe + "  " + lbl + "Precip " + precip_c + precip_s
         + "  " + pipe + "  " + lbl + "UV " + uv_c + uv_s
-        + "  " + pipe + "  " + lbl + "High " + "\x01h\x01c" + hi
-        + "  " + pipe + "  " + lbl + "Low " + "\x01h\x01w" + lo
+        + "  " + pipe + "  " + lbl + "Wind " + wind_c + wind_s
         + "\x01n"
     )
 
 
 def render_weather_strip_plain(data):
     """Plain-ASCII strip for the pre-auth banner (no Ctrl-A processing)."""
-    loc = data.get("LOCATION", "Carolina Beach")
+    loc = data.get("LOCATION", "Missoula")
     t = data.get("TEMP_F")
     p = data.get("PRECIP_PCT")
     uv = data.get("UV_INDEX")
-    hi = data.get("HIGH_TIDE", "--:--")
-    lo = data.get("LOW_TIDE", "--:--")
+    w = data.get("WIND_MPH")
+    wd = data.get("WIND_DIR")
     temp_s = f"{t}F" if t else "--"
     precip_s = f"{p}%" if p else "--"
     uv_s = uv if uv else "--"
-    return f"  {loc}  |  {temp_s}  |  Precip {precip_s}  |  UV {uv_s}  |  High {hi}  |  Low {lo}"
+    wind_s = "--" if not w else (f"{w} mph {wd}" if wd else f"{w} mph")
+    return f"  {loc}  |  {temp_s}  |  Precip {precip_s}  |  UV {uv_s}  |  Wind {wind_s}"
 
 
 def _strip_ctrla(line):
@@ -424,25 +288,13 @@ def main():
     except Exception as e:
         wx, wx_ok = [f"  (NWS fetch failed: {e})"], False
 
-    try:
-        tides = fetch_tides()
-        tides_ok = True
-    except Exception as e:
-        tides, tides_ok = [f"  (NOAA fetch failed: {e})"], False
+    if not wx_ok:
+        # Nothing came back; don't clobber the last known good file.
+        raise SystemExit("NWS fetch failed; keeping previous file")
 
-    try:
-        surf = fetch_surf()
-        surf_ok = True
-    except Exception as e:
-        surf, surf_ok = [f"  (NDBC fetch failed: {e})"], False
-
-    if not (wx_ok or tides_ok or surf_ok):
-        # All failed -- don't clobber last known good file
-        raise SystemExit("all fetches failed; keeping previous file")
-
-    stamp = now_eastern().strftime("%Y-%m-%d %H:%M %Z")
+    stamp = now_local().strftime("%Y-%m-%d %H:%M %Z")
     lines = [
-        f"LIVE LOCAL CONDITIONS (Carolina Beach, NC) -- refreshed {stamp}:",
+        f"LIVE LOCAL CONDITIONS (Missoula, MT) -- refreshed {stamp}:",
         "",
         "Weather forecast (NWS):",
         "",
@@ -450,36 +302,42 @@ def main():
     lines.extend(wx)
     lines.append("")
     lines.append(
-        f"Tide predictions ({TIDE_STATION_NAME} NOAA station -- at Carolina Beach):"
-    )
-    lines.append("")
-    lines.extend(tides)
-    lines.append("")
-    lines.append("Surf conditions (NDBC nearshore buoys):")
-    lines.append("")
-    lines.extend(surf)
-    lines.append("")
-    lines.append(
-        "Carolina Beach faces roughly east-southeast: winds from the W are offshore"
+        "There are no tides here and there is no surf report, because Missoula is a"
     )
     lines.append(
-        "(clean faces), winds from the E are onshore (blown-out, choppy). Anything"
+        "mountain valley about 700 miles from salt water. If somebody asks you about"
     )
     lines.append(
-        "from N or S is cross-shore. Period matters: 8s+ is groundswell with shape,"
-    )
-    lines.append(
-        "5-7s is local windswell that's mushier."
+        "the tide, that is a joke you are allowed to enjoy."
     )
     lines.append("")
     lines.append(
-        "You can weave these in when the conversation naturally touches weather, the beach,"
+        "Reading the valley: Missoula sits where five valleys meet, so the wind is"
     )
     lines.append(
-        "surfing, fishing, going outside, or what the day feels like. Don't recite them"
+        "channeled rather than steady, and Hellgate Canyon funnels it in from the east."
     )
     lines.append(
-        "unprompted. Prefer these live facts over vague coastal guesses."
+        "In August and September, check whether the air is smoke rather than cloud;"
+    )
+    lines.append(
+        "wildfire haze is the local weather story that time of year. In winter, an"
+    )
+    lines.append(
+        "inversion can park cold murk in the valley for days while the peaks stay clear"
+    )
+    lines.append(
+        "and sunny above it. Summer days run hot and dry and the nights cool off hard."
+    )
+    lines.append("")
+    lines.append(
+        "You can weave these in when the conversation naturally touches weather, the"
+    )
+    lines.append(
+        "river, the mountains, going outside, or what the day feels like. Don't recite"
+    )
+    lines.append(
+        "them unprompted. Prefer these live facts over vague guesses about Montana."
     )
 
     content = "\n".join(lines) + "\n"

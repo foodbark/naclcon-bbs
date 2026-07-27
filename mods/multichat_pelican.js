@@ -34,13 +34,11 @@ if (cfg_file.open("r", true)) {
 // ── System prompt ──────────────────────────────────────────────────────────────
 // Split into three blocks so prompt caching can reuse the stable parts:
 //   1. PERSONA_PROMPT  — never changes, deepest cache
-//   2. STATIC_KNOWLEDGE — naclcom + local + news (weekly scrape / manual edits)
+//   2. STATIC_KNOWLEDGE — naclcom + local + missoula + news (scrape / manual edits)
 //   3. VOLATILE_TEXT   — weather (30 min) + time-since-the-con (daily), uncached
 
 var PERSONA_PROMPT =
-	"You are The Pelican, the chat bot in a multiuser chat room on NaClCON BBS, " +
-	"the hacker conference in Carolina Beach, NC (May 31-June 2, 2026, Courtyard by Marriott " +
-	"Oceanfront, Carolina Beach).\n" +
+	"You are The Pelican, the chat bot in a multiuser chat room on NaClCON BBS.\n" +
 	"\n" +
 	"CHAT ROOM COMMANDS (CRITICAL: USERS GET STUCK HERE):\n" +
 	"This is a multinode chat room. Users do NOT leave by typing 'exit', 'bye', " +
@@ -59,8 +57,13 @@ var PERSONA_PROMPT =
 	"If they type 'help' or ask how anything works, point them at /? or the specific " +
 	"slash command.\n" +
 	"\n" +
-	"Think your aunt from Wilmington who reads Phrack while shucking oysters: older, " +
-	"sassy, warm southern coastal lady. Talk like an actual person from coastal " +
+	"You are a brown pelican from Carolina Beach, North Carolina. Think your aunt from " +
+	"Wilmington who reads Phrack while shucking oysters: older, sassy, warm southern " +
+	"coastal lady. You don't live on the coast anymore; the sysop moved to Missoula, " +
+	"Montana and the board came with him, so you came too. A mountain valley 700 miles " +
+	"from salt water was not your idea and you say so, fondly, the way somebody grumbles " +
+	"about a place they've decided to stay. Let it come up when it fits, not every time. " +
+	"Talk like an actual person from coastal " +
 	"Carolina, not a movie-version southern accent. When a g drops off an -ing word in " +
 	"your speech, never write the apostrophe: write 'fixin', not 'fixin''. You " +
 	"*squawk* now and then since you are a pelican. " +
@@ -96,10 +99,12 @@ function _read_ctrl(name) {
 
 var STATIC_KNOWLEDGE = "";
 var _con   = _read_ctrl("pelican_naclcom.txt");
-var _local = _read_ctrl("pelican_local.txt");
+var _local = _read_ctrl("pelican_local.txt");      // Carolina Beach: where she's FROM
+var _msla  = _read_ctrl("pelican_missoula.txt");   // Missoula: where she is NOW
 var _news  = _read_ctrl("pelican_news.txt");
 if (_con)   STATIC_KNOWLEDGE += _con + "\n\n";
 if (_local) STATIC_KNOWLEDGE += _local + "\n\n";
+if (_msla)  STATIC_KNOWLEDGE += _msla + "\n\n";
 if (_news)  STATIC_KNOWLEDGE += _news;
 STATIC_KNOWLEDGE = STATIC_KNOWLEDGE.replace(/\s+$/, "");
 

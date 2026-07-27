@@ -1017,11 +1017,12 @@ function nc_weather_strip()
 		var idx=lines[i].indexOf("=");
 		if(idx>0) data[lines[i].substr(0,idx)]=lines[i].substr(idx+1);
 	}
-	if(data.TEMP_F===undefined && data.HIGH_TIDE===undefined) return null;
+	if(data.TEMP_F===undefined && data.WIND_MPH===undefined) return null;
 
 	var t=parseInt(data.TEMP_F,10);
 	var p=parseInt(data.PRECIP_PCT,10);
 	var uv=parseInt(data.UV_INDEX,10);
+	var w=parseInt(data.WIND_MPH,10);
 
 	var temp_c   = isNaN(t) ? "\x01h\x01w" :
 	               t<50  ? "\x01h\x01c" :
@@ -1037,22 +1038,24 @@ function nc_weather_strip()
 	               uv<=5 ? "\x01h\x01y" :
 	               uv<=7 ? "\x01h\x01r" :
 	                       "\x01h\x01m";
+	var wind_c   = isNaN(w) ? "\x01h\x01w" :
+	               w<8  ? "\x01h\x01w" :
+	               w<20 ? "\x01h\x01c" :
+	                      "\x01h\x01m";
 
 	var pipe="\x01h\x01m\xb3";   /* bright magenta CP437 vertical bar */
 	var lbl ="\x01h\x01w";       /* labels: bright white */
-	var loc ="\x01h\x01y"+(data.LOCATION||"Carolina Beach");
+	var loc ="\x01h\x01y"+(data.LOCATION||"Missoula");
 	var temp_s=isNaN(t) ? "--" : (t+"\xf8F");
 	var precip_s=isNaN(p) ? "--" : (p+"%");
 	var uv_s=isNaN(uv) ? "--" : String(uv);
-	var hi=data.HIGH_TIDE||"--:--";
-	var lo=data.LOW_TIDE||"--:--";
+	var wind_s=isNaN(w) ? "--" : (w+" mph"+(data.WIND_DIR ? " "+data.WIND_DIR : ""));
 
 	return "  "+loc+
 	       "  "+pipe+"  "+temp_c+temp_s+
 	       "  "+pipe+"  "+lbl+"Precip "+precip_c+precip_s+
 	       "  "+pipe+"  "+lbl+"UV "+uv_c+uv_s+
-	       "  "+pipe+"  "+lbl+"High "+"\x01h\x01c"+hi+
-	       "  "+pipe+"  "+lbl+"Low "+"\x01h\x01w"+lo+
+	       "  "+pipe+"  "+lbl+"Wind "+wind_c+wind_s+
 	       "\x01n";
 }
 
