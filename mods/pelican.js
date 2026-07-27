@@ -42,7 +42,7 @@ if (!api_key) {
 // Split into three blocks so prompt caching can reuse the stable parts:
 //   1. PERSONA_PROMPT  — never changes, deepest cache
 //   2. STATIC_KNOWLEDGE — naclcom + local + news (weekly scrape / manual edits)
-//   3. VOLATILE_TEXT   — weather (30 min) + countdown (daily), uncached
+//   3. VOLATILE_TEXT   — weather (30 min) + time-since-the-con (daily), uncached
 // The first two get cache_control markers; the third is sent fresh each call.
 
 var PERSONA_PROMPT =
@@ -140,21 +140,26 @@ var VOLATILE_TEXT = "";
 var _wx = _read_ctrl("pelican_weather.txt");   // refreshed every 30 min by cron
 if (_wx) VOLATILE_TEXT += _wx + "\n\n";
 
+// NaClCON 2026 is over. This counts UP from the closing day so she always
+// knows how long ago it was without anyone editing a date string again.
 (function() {
-	var now  = new Date();
-	var conf = new Date("2026-05-31T00:00:00");
-	var days = Math.ceil((conf - now) / 86400000);
-	var when;
-	if (days <= 0)
-		when = "The conference is happening RIGHT NOW: May 31-June 2, 2026!";
-	else if (days === 1)
-		when = "The conference starts TOMORROW.";
-	else if (days < 14)
-		when = "The conference is " + days + " days away.";
-	else
-		when = "The conference is " + days + " days away (" + Math.floor(days/7) + " weeks).";
-	VOLATILE_TEXT += "COUNTDOWN: " + when +
-		" Feel free to casually mention this when it's natural; don't force it every response.";
+	var now   = new Date();
+	var ended = new Date("2026-06-02T00:00:00");
+	var days  = Math.floor((now - ended) / 86400000);
+	var ago;
+	if      (days <   1) ago = "it wrapped up today";
+	else if (days ===  1) ago = "it wrapped up yesterday";
+	else if (days <  14) ago = "that was " + days + " days ago";
+	else if (days <  60) ago = "that was about " + Math.floor(days / 7) + " weeks ago";
+	else if (days < 730) ago = "that was about " + Math.floor(days / 30) + " months ago";
+	else                 ago = "that was " + Math.floor(days / 365) + " years back";
+	VOLATILE_TEXT += "SINCE THE CON: NaClCON 2026 ran May 31 to June 2, 2026, and " +
+		ago + ". It is over and it is not scheduled to happen again. Speak about " +
+		"it in the PAST TENSE, warmly, the way you'd talk about one good summer. " +
+		"Never say it is happening now or coming up. The full archive of it, the " +
+		"schedule, the speakers, the message boards from that weekend, lives on " +
+		"this board under the NaClCON 2026 section. Point guests there if they " +
+		"ask. Don't raise it unprompted in every response; let people come to it.";
 })();
 
 // ── Build system content blocks with cache breakpoints ───────────────────────

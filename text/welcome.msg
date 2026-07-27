@@ -1,26 +1,27 @@
 Welcome to NaClCON BBS, @ALIAS@!
 
-You've landed on the semi-official BBS for NaClCON — the hacker conference on the
-coast of Carolina Beach, NC (May 31 - June 2, 2026).
+This board started life as the semi-official BBS for NaClCON, the hacker
+conference on the coast at Carolina Beach, NC (May 31 - June 2, 2026). The con
+is over. The board stayed.
 
 -------------------------------------------------------------------------------
   Play Hard. Hack Harder.
 -------------------------------------------------------------------------------
 
-This BBS is here for the community — a place to connect before, during, and
-after the con. Post in the message boards, swap files, chat with other hackers,
-or just hang out.
+Everything from that weekend is still here: the schedule, the speakers, the
+talks, and the boards people posted to while it was all happening. Read the
+archive, or ignore it completely and just hang out. Both are fine.
 
 A few things to know:
 
   * Your sysop is @SYSOP@. Feel free to send feedback if something's broken.
-  * Message boards: CTF, Talks, Villages, Swap Shop, Beach, Food, After Hours,
-    Tools, Help Desk, Warez, and General.
+  * Message boards: General, Beach, Food, Tools, Help Desk, and Warez, plus the
+    NaClCON 2026 boards kept as an archive.
   * Check the bulletins for system stats and announcements.
   * The Pelican is available in the Chat menu if you need someone to talk to.
 
-See you at the con.
+Pull up a chair.
 
 -- @SYSOP@
    NaClCON BBS
-   naclcon.com
+   naclconbbs.net
