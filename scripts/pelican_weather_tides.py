@@ -347,7 +347,13 @@ def render_weather_strip_color(data):
 
 
 def render_weather_strip_plain(data):
-    """Plain-ASCII strip for the pre-auth banner (no Ctrl-A processing)."""
+    """Strip for the pre-auth banner: no Ctrl-A colour codes, but CP437 bars.
+
+    Separators are \\xb3 (CP437 solid vertical bar) rather than ASCII "|". In
+    the IBM CP437 font terminals use, 0x7C is drawn as a BROKEN bar with a gap
+    in it, so ASCII pipes arrive looking shattered. The logo in this same file
+    carries \\xb3 for exactly that reason; matching here keeps one file from
+    mixing solid and broken separators."""
     loc = data.get("LOCATION", "Missoula")
     t = data.get("TEMP_F")
     p = data.get("PRECIP_PCT")
@@ -357,8 +363,9 @@ def render_weather_strip_plain(data):
     precip_s = f"{p}%" if p else "--"
     aqi_s = aqi if aqi else "--"
     river_s = f"{cfs}cfs" if cfs else "--"
-    return (f"  {loc} | {temp_s} | Precip {precip_s} | AQI {aqi_s}"
-            f" | {_wind_str(data)} | Clark Fork {river_s}")
+    b = "\xb3"
+    return (f"  {loc} {b} {temp_s} {b} Precip {precip_s} {b} AQI {aqi_s}"
+            f" {b} {_wind_str(data)} {b} Clark Fork {river_s}")
 
 
 def _strip_ctrla(line):
