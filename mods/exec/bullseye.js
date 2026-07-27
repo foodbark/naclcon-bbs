@@ -33,7 +33,28 @@ file.close();
 
 bull = bull.filter(function(str) { return truncsp(str) });
 
-if(bull.length < 1) {
+// Parse the config into display items. A line starting with '#' is a
+// non-selectable section header; anything else is a bulletin, optionally
+// followed by '|' and an explicit menu label (otherwise the label is derived
+// from the filename, as it always was). Only bulletins consume a number.
+var items = [];
+var files = [];
+for(i = 0; i < bull.length; ++i) {
+	var line = truncsp(bull[i]);
+	if(line.charAt(0) == '#') {
+		items.push({ header: true, text: truncsp(line.slice(1).replace(/^\s+/, "")) });
+		continue;
+	}
+	var bar = line.indexOf('|');
+	var path = (bar == -1) ? line : truncsp(line.slice(0, bar));
+	var label = (bar == -1)
+		? file_getname(path).replace(/\.[^.]+$/, '')
+		: line.slice(bar + 1).replace(/^\s+/, "");
+	files.push(path);
+	items.push({ header: false, label: label, num: files.length });
+}
+
+if(files.length < 1) {
 	alert("No bulletins listed in " + file.name);
 	exit(0);
 }
@@ -52,20 +73,28 @@ while(bbs.online && !js.terminated) {
 	console.print("\x01n\x01h\x01y                            B u l l e t i n s                                   \x01n\r\n");
 	console.print("\x01n\x01h\x01r-------------------------------------------------------------------------------\x01n\r\n");
 	console.print("\r\n");
-	for(i = 0; i < bull.length; ++i) {
-		var name = file_getname(bull[i]).replace(/\.[^.]+$/, '');
-		console.print("\x01n\x01h\x01y  " + (i + 1) + "\x01n\x01w  " + name + "\r\n");
+	for(i = 0; i < items.length; ++i) {
+		if(items[i].header) {
+			console.print("\x01n\x01h\x01m  " + items[i].text + "\r\n");
+			console.print("\x01n\x01h\x01k  " +
+				new Array(items[i].text.length + 1).join("-") + "\x01n\r\n");
+			continue;
+		}
+		var num = "" + items[i].num;
+		if(num.length < 2)
+			num = " " + num;
+		console.print("\x01n\x01h\x01y  " + num + "\x01n\x01w  " + items[i].label + "\r\n");
 	}
 	console.print("\r\n");
 	console.mnemonics("\x01n\x01wEnter number or [\x01h\x01yQ\x01n\x01wuit]: ");
-	b = console.getnum(bull.length);
+	b = console.getnum(files.length);
 	if(b < 1)
 		break;
-	if(b > bull.length) {
+	if(b > files.length) {
 		alert("Invalid bulletin number: "+b);
 	} else {
 		console.clear(7);
-		var fname = truncsp(bull[b - 1]);
+		var fname = truncsp(files[b - 1]);
 		var ext = file_getext(fname);
 		var success = false;
 		if(ext == ".*")
