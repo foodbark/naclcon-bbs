@@ -98,7 +98,7 @@ The five con sub-boards (CTF, Talks, Villages, Swap Shop, After Hours) moved out
 
 ### BullsEye config format
 
-`mods/exec/bullseye.js` (which overrides the stock module) gained two `text/bullseye.cfg` features so the bulletin menu can have sections:
+`mods/bullseye.js` (which overrides the stock module) gained two `text/bullseye.cfg` features so the bulletin menu can have sections:
 
 | Line form | Meaning |
 |-----------|---------|

@@ -101,7 +101,11 @@ Change one, change the other, then diff their visible output against the same sn
 
 ### BullsEye Bulletin Config
 
-`mods/exec/bullseye.js` overrides the stock module and extends `text/bullseye.cfg`: a line starting with `#` is a non-selectable section header, and `path|Label` sets an explicit menu label instead of deriving one from the filename. Numbering skips headers and stays continuous. Line 1 is still the print-mode expression (`P_SEEK`).
+`mods/bullseye.js` overrides the stock module and extends `text/bullseye.cfg`: a line starting with `#` is a non-selectable section header, and `path|Label` sets an explicit menu label instead of deriving one from the filename. Numbering skips headers and stays continuous. Line 1 is still the print-mode expression (`P_SEEK`).
+
+> **`mods/exec/` is NOT an override path.** `xtrn.ini` invokes this module as `cmd=*bullseye`, and Synchronet resolves a `*name` module by searching `mods/name.js` then `exec/name.js`. It never looks in `mods/exec/`. A file at `mods/exec/bullseye.js` is therefore dead: stock `exec/bullseye.js` runs instead. `mods/exec/` is only for modules invoked by explicit path, like `jsexec mods/exec/post_speakers.js`.
+>
+> This bit once already: `mods/exec/bullseye.js` was edited for months while the board actually ran a hand-edited `/sbbs/exec/bullseye.js`, so changes appeared to do nothing until the cfg format changed and the mismatch surfaced as "file not found". **When a module change seems to have no effect, check which path Synchronet is really resolving before debugging the code.**
 
 ### Chat Section Override
 
