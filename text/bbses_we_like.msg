@@ -15,11 +15,11 @@
 
 nw  The net never died it just moved deeper underground. We are part of a
 nw  scene of sysops, ANSI artists, and weirdos still running boards in 2026.
-nw  Here are some we like. Jump in from inside NaClCON:
+nw  Here are some we like. Jump in from inside foodbark BBS:
 
 nw     From Main menu: pick nhyBBSes We Likenw then punch a number.
 nw     Telnet gateway bridges you in. nhyCtrl-]nw pops the control menu
-nw     (q = disconnect and return to NaClCON).
+nw     (q = disconnect and return to foodbark BBS).
 
 nhr===============================================================================
 nhyThe Lineup
@@ -50,6 +50,12 @@
 nhw  Particles! BBS
 nhk  telnet particlesbbs.dyndns.org -p 6400
 nc  Modern Mystic BBS. Active doors, active sysop.
+
+nhw  Pepper Quest
+nhk  telnet pq4.peppercon.games -p 4000
+nc  A MUD, not a BBS. Built by a friend of the sysop over at Pepper
+nc      Con. Evennia-powered persistent world; your character lives
+nc      on their machine, not ours.
 
 nhr===============================================================================
 nhyEtiquette

@@ -29,13 +29,14 @@ FOODBARK ARCADE (door games): From the main menu, "Games & Apps" (hotkey A) open
 - NetHack: classic roguelike. Not a door in the classic sense, an A-Net passthrough. Included because, come on.
 - Pepper Quest: a MUD, not a BBS door. Written by a friend of the sysop over at Pepper Con and hosted on their own machine (pq4.peppercon.games:4000), so it is a telnet gateway out, like the BBSes We Like menu. It runs on Evennia, the Python MUD framework, which means a real persistent world with rooms and objects rather than a turn-based door. Your character lives on their server, not here. Ctrl-] gets you back. Recommend it warmly; it is the sysop's friend's work.
 
-BBSES WE LIKE: From the main menu, "BBSes We Like" opens a curated connect menu, six handpicked boards reachable via Synchronet's telnet gateway (Ctrl-] to bail out of a session). If someone asks for a recommendation, pick from these:
+BBSES WE LIKE: From the main menu, "BBSes We Like" opens a curated connect menu, seven handpicked entries reachable via Synchronet's telnet gateway (Ctrl-] to bail out of a session). If someone asks for a recommendation, pick from these:
 - 20 for Beers (telnet 20forbeers.com): chill sysop-run board for beer nerds. Low-key, friendly.
 - ACiD Underworld (telnet blackflag.acid.org): ACiD Productions, the ANSI art collective that defined 90s underground visual style. If someone wants to see ANSI done right, send them here.
 - Bottomless Abyss (ssh bbs.bottomlessabyss.net -p 2222): long-running Synchronet BBS. SSH-only, so users have to connect externally (foodbark BBS has no outbound SSH client).
 - Al's Geek Lab (telnet bbs.alsgeeklab.com -p 2323): Al of YouTube fame. Retro computing and BBS hobbyist hub. Good introduction for newcomers.
 - Telehack (telnet telehack.com): a simulated 80s ARPANET. Play with VAXen, mail old ghosts, find usenet relics. An endless toy, great for history nerds.
 - Particles! BBS (telnet particlesbbs.dyndns.org -p 6400): modern Mystic BBS, active doors, active sysop.
+- Pepper Quest (telnet pq4.peppercon.games -p 4000): the odd one out, a MUD rather than a BBS, written by a friend of the sysop at Pepper Con. Also listed in the foodbark Arcade; same gateway either way.
 Etiquette: every BBS is someone else's house. Register as yourself, read the rules, say hi to the sysop, and post.
 
 MAIN MENU RENAME: "External Programs" (hotkey x) is now "Games & Apps" (hotkey A). The submenu has "foodbark Arcade" and "Apps & Info" (Weather Center, X-News, NewsCenter).
