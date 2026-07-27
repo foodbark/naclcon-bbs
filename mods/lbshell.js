@@ -1006,7 +1006,7 @@ function nc_weather_strip()
 	/* Reads /sbbs/data/weather_tides.txt (key=value, refreshed by cron) and
 	 * returns a Ctrl-A coloured single-line strip for the screen_rows-8 slot,
 	 * or null if the file is missing/unreadable. Values are coloured by
-	 * meaning (temperature band, precip likelihood, EPA UV category); brand
+	 * meaning (temperature band, precip likelihood, AirNow AQI category); brand
 	 * accents — bright yellow location, bright magenta pipes — frame them. */
 	var data={};
 	var f=new File("/sbbs/data/weather_tides.txt");
@@ -1021,8 +1021,9 @@ function nc_weather_strip()
 
 	var t=parseInt(data.TEMP_F,10);
 	var p=parseInt(data.PRECIP_PCT,10);
-	var uv=parseInt(data.UV_INDEX,10);
+	var aqi=parseInt(data.AQI,10);
 	var w=parseInt(data.WIND_MPH,10);
+	var cfs=parseInt(data.RIVER_CFS,10);
 
 	var temp_c   = isNaN(t) ? "\x01h\x01w" :
 	               t<50  ? "\x01h\x01c" :
@@ -1033,29 +1034,51 @@ function nc_weather_strip()
 	               p<20 ? "\x01h\x01w" :
 	               p<50 ? "\x01h\x01c" :
 	                      "\x01h\x01m";
-	var uv_c     = isNaN(uv) ? "\x01h\x01w" :
-	               uv<=2 ? "\x01h\x01g" :
-	               uv<=5 ? "\x01h\x01y" :
-	               uv<=7 ? "\x01h\x01r" :
-	                       "\x01h\x01m";
+	/* The six AirNow AQI categories (airnow.gov/aqi/aqi-basics): green,
+	 * yellow, orange, red, purple, maroon. The 16-colour palette has no
+	 * orange and no maroon, so brown and dark red stand in, the usual ANSI
+	 * substitution. Those two need \x01n to clear the high-intensity bit,
+	 * and \x01n also clears the background, so they re-assert \x015 (magenta
+	 * bg) because this row is painted with console.attributes=0x5F. The
+	 * python renderer draws the same strip onto a normal background and so
+	 * omits the background code; that is the one intentional difference
+	 * between the two. */
+	var aqi_c    = isNaN(aqi) ? "\x01h\x01w" :
+	               aqi<=50  ? "\x01h\x01g" :          /* Good */
+	               aqi<=100 ? "\x01h\x01y" :          /* Moderate */
+	               aqi<=150 ? "\x01n\x015\x01y" :     /* USG (orange) */
+	               aqi<=200 ? "\x01h\x01r" :          /* Unhealthy */
+	               aqi<=300 ? "\x01h\x01m" :          /* Very Unhealthy */
+	                          "\x01n\x015\x01r";      /* Hazardous (maroon) */
 	var wind_c   = isNaN(w) ? "\x01h\x01w" :
 	               w<8  ? "\x01h\x01w" :
 	               w<20 ? "\x01h\x01c" :
 	                      "\x01h\x01m";
+	/* Rough local bands for the Clark Fork above Missoula: summer low, normal,
+	 * runoff. Approximate on purpose; it's a colour hint, not a gauge. */
+	var river_c  = isNaN(cfs) ? "\x01h\x01w" :
+	               cfs<1000 ? "\x01h\x01w" :
+	               cfs<5000 ? "\x01h\x01c" :
+	                          "\x01h\x01m";
 
 	var pipe="\x01h\x01m\xb3";   /* bright magenta CP437 vertical bar */
 	var lbl ="\x01h\x01w";       /* labels: bright white */
 	var loc ="\x01h\x01y"+(data.LOCATION||"Missoula");
 	var temp_s=isNaN(t) ? "--" : (t+"\xf8F");
 	var precip_s=isNaN(p) ? "--" : (p+"%");
-	var uv_s=isNaN(uv) ? "--" : String(uv);
-	var wind_s=isNaN(w) ? "--" : (w+" mph"+(data.WIND_DIR ? " "+data.WIND_DIR : ""));
+	var aqi_s=isNaN(aqi) ? "--" : String(aqi);
+	var wind_s=isNaN(w) ? "--" : (w+"mph"+(data.WIND_DIR ? " "+data.WIND_DIR : ""));
+	var river_s=isNaN(cfs) ? "--" : (cfs+"cfs");
 
+	/* Six fields at 79 columns is tight, so separators are one space either
+	 * side of the bar rather than two. Mirrors the python renderer exactly. */
+	var sep=" "+pipe+" ";
 	return "  "+loc+
-	       "  "+pipe+"  "+temp_c+temp_s+
-	       "  "+pipe+"  "+lbl+"Precip "+precip_c+precip_s+
-	       "  "+pipe+"  "+lbl+"UV "+uv_c+uv_s+
-	       "  "+pipe+"  "+lbl+"Wind "+wind_c+wind_s+
+	       sep+temp_c+temp_s+
+	       sep+lbl+"Precip "+precip_c+precip_s+
+	       sep+lbl+"AQI "+aqi_c+aqi_s+
+	       sep+wind_c+wind_s+
+	       sep+lbl+"Clark Fork "+river_c+river_s+
 	       "\x01n";
 }
 
