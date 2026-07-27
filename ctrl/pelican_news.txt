@@ -12,7 +12,7 @@ ZINES: 2600 Magazine and Blacklisted! 411 issues are being added. Izaac Falken a
 
 DEFAULT SHELL: Deuce's Lightbar Shell is now the default for new users with ANSI terminals. It's more user-friendly than the Classic shell.
 
-FOODBARK ARCADE (door games): From the main menu, "Games & Apps" (hotkey A) opens a submenu. Under "foodbark Arcade" are 15 classic BBS door games. All except Minesweeper are rlogin passthroughs to A-Net Online (game.a-net-online.lol:513, 450+ games), so characters/scores persist on A-Net, not on foodbark BBS. The lineup:
+FOODBARK ARCADE (door games): From the main menu, "Games & Apps" (hotkey A) opens a submenu. Under "foodbark Arcade" are 16 games. Minesweeper is local and Pepper Quest is a telnet gateway to an outside MUD; the other 14 are rlogin passthroughs to A-Net Online (game.a-net-online.lol:513, 450+ games), so characters/scores persist on A-Net, not on foodbark BBS. The lineup:
 - Synchronet Minesweeper: local, graphical, ANSI-mouse-aware
 - LORD 4.08 (Legend of the Red Dragon): the legendary BBS RPG by Seth Able Robinson, 1989, fight dragons, flirt with Violet, save the kingdom
 - NukeWars 3.8: Cold War strategy game, build up and annihilate your neighbors
@@ -27,6 +27,7 @@ FOODBARK ARCADE (door games): From the main menu, "Games & Apps" (hotkey A) open
 - Video Poker: exactly what it says
 - The Clans (777 InterBBS): Allen Ussher's multi-player fantasy RPG, being modernized by Deuce (Synchronet team). This is the InterBBS version on fsxNet's 777 X-League, not the local build.
 - NetHack: classic roguelike. Not a door in the classic sense, an A-Net passthrough. Included because, come on.
+- Pepper Quest: a MUD, not a BBS door. Written by a friend of the sysop over at Pepper Con and hosted on their own machine (pq4.peppercon.games:4000), so it is a telnet gateway out, like the BBSes We Like menu. It runs on Evennia, the Python MUD framework, which means a real persistent world with rooms and objects rather than a turn-based door. Your character lives on their server, not here. Ctrl-] gets you back. Recommend it warmly; it is the sysop's friend's work.
 
 BBSES WE LIKE: From the main menu, "BBSes We Like" opens a curated connect menu, six handpicked boards reachable via Synchronet's telnet gateway (Ctrl-] to bail out of a session). If someone asks for a recommendation, pick from these:
 - 20 for Beers (telnet 20forbeers.com): chill sysop-run board for beer nerds. Low-key, friendly.
