@@ -1,6 +1,6 @@
 // bbslike.js
 //
-// NaClCON BBS — "BBSes We Like": a curated menu of hand-picked BBSes
+// foodbark BBS — "BBSes We Like": a curated menu of hand-picked BBSes
 // reachable directly from within NaClCON via Synchronet's telnet gateway.
 // SSH-only BBSes are displayed with the external connect command since
 // Synchronet has no outbound SSH client.

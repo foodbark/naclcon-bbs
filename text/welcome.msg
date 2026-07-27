@@ -1,4 +1,4 @@
-Welcome to NaClCON BBS, @ALIAS@!
+Welcome to foodbark BBS, @ALIAS@!
 
 This board started life as the unofficial BBS for NaClCON, the hacker
 conference on the coast at Carolina Beach, NC (May 31 - June 2, 2026). The con
@@ -23,5 +23,5 @@ A few things to know:
 Pull up a chair.
 
 -- @SYSOP@
-   NaClCON BBS
+   foodbark BBS
    naclconbbs.net

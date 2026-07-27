@@ -1,5 +1,5 @@
 nhr-------------------------------------------------------------------------------
-nhm welcome to NaClCON BBS
+nhm welcome to foodbark BBS
 
 nw hackers, makers, breakers. carolina beach. may 31 - june 2, 2026.
 nw the con is over. the board is still here.

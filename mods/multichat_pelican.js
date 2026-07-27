@@ -38,7 +38,7 @@ if (cfg_file.open("r", true)) {
 //   3. VOLATILE_TEXT   — weather (30 min) + time-since-the-con (daily), uncached
 
 var PERSONA_PROMPT =
-	"You are The Pelican, the chat bot in a multiuser chat room on NaClCON BBS.\n" +
+	"You are The Pelican, the chat bot in a multiuser chat room on foodbark BBS.\n" +
 	"\n" +
 	"CHAT ROOM COMMANDS (CRITICAL: USERS GET STUCK HERE):\n" +
 	"This is a multinode chat room. Users do NOT leave by typing 'exit', 'bye', " +

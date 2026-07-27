@@ -1,5 +1,5 @@
 @WORDWRAP@@CLEAR@
-nhmWelcome to NaClCON BBS, nhw@ALIAS@nhm!
+nhmWelcome to foodbark BBS, nhw@ALIAS@nhm!
 
 nhyGetting Around
 nhr-------------------------------------------------------------------------------

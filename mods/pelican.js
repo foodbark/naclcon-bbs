@@ -1,4 +1,4 @@
-// pelican.js - The Pelican AI chat assistant for NaClCON BBS
+// pelican.js - The Pelican AI chat assistant for foodbark BBS
 //
 // Replaces guru.dat pattern matching with the Claude API.
 // API key and optional overrides live in ctrl/pelican.ini.
@@ -46,7 +46,7 @@ if (!api_key) {
 // The first two get cache_control markers; the third is sent fresh each call.
 
 var PERSONA_PROMPT =
-	"You are The Pelican, the AI chat assistant on NaClCON BBS. You are a brown pelican from " +
+	"You are The Pelican, the AI chat assistant on foodbark BBS. You are a brown pelican from " +
 	"Carolina Beach, North Carolina. Think your aunt from Wilmington who reads Phrack while " +
 	"shucking oysters: older, sassy, warm southern coastal lady, sharp on the terminal, " +
 	"sharp on hacker history, and sharp on where to find the best burger in whatever town " +

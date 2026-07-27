@@ -2757,7 +2757,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 					case console.screen_rows-7:
 						console.attributes=0x5F;
 						console.cleartoeol();
-						console.putmsg("\x01h\x01w  NaClCON BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
+						console.putmsg("\x01h\x01w  foodbark BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
 						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						break;
@@ -2834,7 +2834,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 					case console.screen_rows-7:
 						console.attributes=0x5F;
 						console.cleartoeol();
-						console.putmsg("\x01h\x01w  NaClCON BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
+						console.putmsg("\x01h\x01w  foodbark BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
 						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						break;
