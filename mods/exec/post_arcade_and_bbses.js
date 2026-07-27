@@ -1,7 +1,7 @@
 // post_arcade_and_bbses.js
 // Run once with: /sbbs/exec/jsexec mods/exec/post_arcade_and_bbses.js
 // Posts two announcements to LOCAL-NOTICES:
-//   1. NaClCON Arcade (door games)
+//   1. foodbark Arcade (door games)
 //   2. BBSes We Like (curated connect menu)
 
 var FROM     = "foodbark";
@@ -30,14 +30,14 @@ function post(sub_code, subject, body) {
 }
 
 // ---------------------------------------------------------------------
-// 1. NaClCON Arcade
+// 1. foodbark Arcade
 // ---------------------------------------------------------------------
 
 var arcade_lines = [
 	"Fifteen classic BBS door games are now live on NaClCON.",
 	"",
 	"From the main menu, pick 'Games & Apps' (hotkey A) and go into",
-	"'NaClCON Arcade'. Hotkey in, play, back out. Scores and characters",
+	"'foodbark Arcade'. Hotkey in, play, back out. Scores and characters",
 	"persist on A-Net Online (game.a-net-online.lol) -- they're shared",
 	"with anyone else playing these games across BBSes that pass through",
 	"to A-Net, so you're entering a live multi-BBS leaderboard, not a",
@@ -137,6 +137,6 @@ var bbses_lines = [
 // ---------------------------------------------------------------------
 
 print("Posting to " + NOTICES + "...");
-post(NOTICES, "New door games: NaClCON Arcade (15 classics live)", arcade_lines.join("\r\n"));
+post(NOTICES, "New door games: foodbark Arcade (15 classics live)", arcade_lines.join("\r\n"));
 post(NOTICES, "New feature: BBSes We Like (curated connect menu)",   bbses_lines.join("\r\n"));
 print("Done.");
