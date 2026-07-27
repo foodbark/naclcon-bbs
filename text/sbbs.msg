@@ -7,16 +7,9 @@
 nhm                 ³  _³ (_) ³ (_) ³ (_³ ³ ³_) ³ (_³ ³ ³  ³   <
 nhm                 ³_³  \___/ \___/ \__,_³_.__/ \__,_³_³  ³_³\_\
 
-nhy                  T h e   H i s t o r y   o f   H a c k i n g
+^An^Ah^Ak          formerly NaClCON BBS, the unofficial board for NaClCON 2026
 
-nhr-------------------------------------------------------------------------------
-nhw                 P l a y   H a r d .   H a c k   H a r d e r .
-nhr-------------------------------------------------------------------------------
-
-nw                  May 31 - June 2, 2026  *  Carolina Beach, NC
-nw                        Courtyard by Marriott Oceanfront
-
-nhm                        naclcon.com  |  info@naclcon.com
+^An^Ah^Ac                      Missoula, Montana  *  naclconbbs.net
 
 nhr===============================================================================
 n@TRUNCOFF@@WORDWRAP@

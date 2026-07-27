@@ -1,6 +1,11 @@
 <?xjs
-// NaClCON branded header. Loaded by index.xjs via loadComponent('header.xjs').
+// foodbark branded header. Loaded by index.xjs via loadComponent('header.xjs').
 // Stock webv4 has no header.xjs, so this is a pure addition (not a fork).
+// The naclcon-* class names are kept deliberately: they are internal selectors
+// defined in webv4/root/css/custom.css, not user-visible text, and renaming
+// them means touching the CSS in lockstep for no gain.
+// Pipes in the banner stay ASCII here. This is HTML in a browser, where 0x7C
+// draws correctly; the terminal copies use CP437 \xb3 instead.
 ?>
 <div class="container<?xjs if (settings.layout_full_width) write('-fluid'); ?>">
 <pre class="naclcon-banner">
@@ -11,7 +16,7 @@
  |_|  \___/ \___/ \__,_|_.__/ \__,_|_|  |_|\_\
 </pre>
 <p class="naclcon-tagline">
-  The History of Hacking &nbsp;&middot;&nbsp; May 31 &ndash; June 2, 2026 &nbsp;&middot;&nbsp; Carolina Beach, NC
+  A personal BBS &nbsp;&middot;&nbsp; Missoula, Montana &nbsp;&middot;&nbsp; formerly NaClCON BBS
 </p>
 <p class="naclcon-connect">
   Connect from your terminal: <code>telnet naclconbbs.net 23</code> &nbsp;|&nbsp; <code>ssh naclconbbs.net -p 2222</code>

@@ -6,7 +6,7 @@
 var FROM      = "foodbark";
 var FROM_EXT  = "1";
 var SUB_CODE  = (typeof argv !== "undefined" && argv.length > 0) ? argv[0] : "DOVE-ADS";
-var SUBJECT   = "NaClCON 2026 -- Hacker Con on the Beach, May 31 - Jun 2";
+var SUBJECT   = "foodbark BBS: personal board in Missoula, NaClCON 2026 archive aboard";
 var BODY_FILE = system.text_dir + "dovenet_ad.msg";
 
 var f = new File(BODY_FILE);
