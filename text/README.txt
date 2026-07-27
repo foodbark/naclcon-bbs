@@ -3,7 +3,7 @@ NACLCON 2026 BBS - SYSOP MANUAL
 SYSTEM DETAILS
 ==============
 BBS Name: NaClCON BBS
-Location: Carolina Beach, NC
+Location: Missoula, MT (moved July 2026; the con was Carolina Beach, NC)
 Host: AWS EC2 (Ubuntu 24.04.4 LTS)
 Sysop: foodbark
 

@@ -47,6 +47,8 @@ Key wiki pages are also cached locally in `/sbbs/docs/wiki/` (named `namespace--
 
 This is a **Synchronet v3.21 BBS** with custom JavaScript modules. Synchronet is the core engine; this repo contains only configuration and extensions.
 
+NaClCON 2026 ran May 31 - June 2, 2026 and is over. The board now runs year-round as the sysop's personal BBS with the con preserved as a read-only archive, so **write copy in the past tense** and point people at the archive. The board calls itself **unofficial**, never "semi-official"; that wording is a deliberate choice to avoid implying endorsement by organisers who have since fallen out, so don't "correct" it.
+
 ### The mods/ Override Pattern
 
 **Never edit files under `/sbbs/exec/` or `/sbbs/text/` directly.** Synchronet resolves modules by checking `mods/` before `exec/`, so any stock file can be overridden by placing a copy in `mods/`. All NaClCON customizations must live in this repo and be deployed via rsync — edits made directly to `/sbbs/` are untracked and will be lost or cause confusion.
@@ -67,10 +69,39 @@ To override a stock Synchronet module (e.g. `exec/logon.js`): copy it to `mods/l
 
 The AI chatbot is the primary custom feature. It is split across two files:
 
+The Pelican relocated from Carolina Beach to **Missoula, MT** in July 2026 (the sysop moved; the board followed). Her knowledge is split by location: `ctrl/pelican_local.txt` is where she is *from* (framed as memory by its own preamble), `ctrl/pelican_missoula.txt` is where she *is*. Both modules load `naclcom → local → missoula → news` into `STATIC_KNOWLEDGE`; if you add a knowledge file, add it to **both** modules.
+
+NaClCON 2026 is over. Both modules compute a count **up** from the closing day and instruct her to use the past tense. There is no date string to maintain, and nothing should reintroduce a countdown.
+
 - **`mods/pelican.js`** — 1-on-1 chat. Each user gets a persistent history file at `data/user/pelican_NNNN.json` (where `NNNN` is the user number). Keeps last 10 exchange pairs. 300-token response limit.
 - **`mods/multichat_pelican.js`** — Full reimplementation of Synchronet's `bbs.multinode_chat()`. Pelican responds when addressed by name (`pelican`/`peli`) or when ≤3 users are in the channel. Shared Pelican history at `data/user/pelican_chan.json`, 30-message window, 150-token responses. Public chat is also persisted to `/sbbs/data/multichat_scrollback.txt` (last 90 rendered lines) and replayed under a `── scrollback ──` header on join. Slash commands: `/W <alias> <text>` (whisper to one online user, alias-matched via `system.matchuser`, not persisted), `/L` (list who's in the room), `/Q` (quit), `/?` (re-show menu via `bbs.menu("multchat")`). `^U` and `^P` pass through to Synchronet's built-in user-list and private-message dialogs. Menu file: `text/menu/multchat.msg` (NaClCON-branded).
 
 Both read `ctrl/pelican.ini` for the API key, model (Haiku), and token limits. The Pelican persona is a sassy southern coastal Peli-hen.
+
+### Message Groups and Sub-Board Codes
+
+**A sub's internal code is the group's `code_prefix` + the ini section suffix, and the message base filename derives from that code.** `[grp:Local]` has `code_prefix=LOCAL-`, so `[sub:Local:CTF]` is code `LOCAL-CTF` stored in `data/subs/local-ctf.*`.
+
+This makes moving a sub between groups dangerous: if the destination group has a different prefix, the code changes, the filename changes, and every message in that base is orphaned. When the five NaClCON sub-boards moved into `[grp:NaClCON2026]` (the read-only con archive, `post_ars=SYSOP`), that group was **deliberately given the same `code_prefix=LOCAL-`** so the codes and data files were untouched. Duplicate prefixes across groups are fine provided the full codes stay unique.
+
+After editing `ctrl/msgs.ini`, `sbbs` needs a restart to pick it up. Expect `!ERROR 98 ... port 23: Address already in use` on the way back up: it retries every 15s up to 5 times and usually binds on attempt 3. Don't restart again; check `sudo ss -tlnp | grep sbbs` (sudo is needed to see the process) and confirm both `0.0.0.0:23` and `[::]:23`.
+
+### The Conditions Strip (two renderers, keep in sync)
+
+The one-line weather/conditions strip is built from `data/weather_tides.txt` (key=value, refreshed every 30 min by cron) and rendered in **two** places that must agree:
+
+- `render_weather_strip_color()` / `_plain()` in `scripts/pelican_weather_tides.py`: writes it into the logon splash files.
+- `nc_weather_strip()` in `mods/lbshell.js`: draws it live on the Lightbar status row.
+
+Change one, change the other, then diff their visible output against the same snapshot. They differ deliberately in one respect: the AQI colours for "Sensitive Groups" and "Hazardous" need `\x01n` to clear the high-intensity bit, and `\x01n` also clears the **background**, so the lbshell version re-asserts `\x015` (its row is painted `console.attributes=0x5F`, magenta background) while the python version, drawing on a normal background, does not.
+
+**Width budget:** six fields fit 79 columns with ~3 to spare. A seventh will wrap an 80-column terminal.
+
+`scripts/pelican_weather_tides.py` keeps its name for crontab stability despite Montana having no tides. Sources: NWS (temp/precip/wind), Open-Meteo (US AQI + PM2.5), USGS gauge `12340500` "Clark Fork above Missoula", *not* `12353000` ("below Missoula"), which is past the Bitterroot confluence and reads much higher.
+
+### BullsEye Bulletin Config
+
+`mods/exec/bullseye.js` overrides the stock module and extends `text/bullseye.cfg`: a line starting with `#` is a non-selectable section header, and `path|Label` sets an explicit menu label instead of deriving one from the filename. Numbering skips headers and stays continuous. Line 1 is still the print-mode expression (`P_SEEK`).
 
 ### Chat Section Override
 

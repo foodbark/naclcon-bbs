@@ -2,9 +2,11 @@
 
 ![NaClCON BBS](screenshot.png)
 
-Semi-official bulletin board system for [NaClCON 2026](https://naclcon.com) hacker conference in Carolina Beach, NC. May 31 - June 2, 2026.
+Unofficial bulletin board system for the [NaClCON 2026](https://naclcon.com) hacker conference, which ran May 31 - June 2, 2026 in Carolina Beach, NC. The con is over; the board stayed. It now runs year-round as the sysop's personal BBS with that weekend preserved as a read-only archive.
 
 > Play Hard. Hack Harder.
+
+> **Wording note:** the board describes itself as *unofficial*, never *semi-official*. It was closer to semi-official in practice, but some of the con organisers have since fallen out, and claiming any official standing risks taking a side. This is deliberate; please don't "correct" it.
 
 ## Connect
 
@@ -74,6 +76,84 @@ Set the check to **period 5 min / grace ~10 min** and point its notification at 
 
 > **Blind spot:** because the check runs *from* the box, it can't detect a purely *inbound* break (e.g. a fat-fingered security group or DNS change) while the box and sbbs are otherwise healthy. That case is rare and self-inflicted. If you want it covered too, add an external poller (e.g. UptimeRobot) hitting `https://naclconbbs.net/` from outside — note the box **cannot** check its own public URL, since EC2 doesn't hairpin traffic to its own Elastic IP.
 
+## The Post-Con Conversion (July 2026)
+
+Turning a conference board into a year-round personal one. Ops (cost-down, alerting) is above; this is the content and behaviour side.
+
+### The stuck countdown
+
+Both Pelican modules carried a countdown to the con that computed `days = ceil(conf - now)` and fell into its `days <= 0` branch permanently once the con passed, injecting *"The conference is happening RIGHT NOW"* into every system prompt from June 3 onward. It is now a count **up** from the closing day (2026-06-02), phrased in bands (days → weeks → months → years) so it stays readable forever with no date string to maintain:
+
+```js
+var days = Math.floor((now - ended) / 86400000);
+```
+
+Retensed alongside it: `text/welcome.msg`, `data/msgs/auto.msg`, `text/sbbs.msg`, `text/naclcon-readme.msg`, and the `NACLCON ITSELF` section of `ctrl/pelican_local.txt`, which separately told her the con was running and that everyone online was probably an attendee.
+
+### The NaClCON 2026 archive wing
+
+The five con sub-boards (CTF, Talks, Villages, Swap Shop, After Hours) moved out of the `Local` group into a dedicated `[grp:NaClCON2026]` ("NaClCON 2026 Archive") with `post_ars=SYSOP`. They stay fully readable; nobody but the sysop can post.
+
+> **Critical gotcha when regrouping subs.** A sub's internal code is the group's `code_prefix` **plus** the ini section suffix, and the message base filename derives from that code. `[grp:Local]` has `code_prefix=LOCAL-`, so `[sub:Local:CTF]` is code `LOCAL-CTF` living in `data/subs/local-ctf.*`. The archive group therefore **deliberately reuses `code_prefix=LOCAL-`**. Any other prefix would have renamed the bases and orphaned every message in them. Duplicate prefixes across groups are fine as long as the resulting full codes stay unique.
+
+### BullsEye config format
+
+`mods/exec/bullseye.js` (which overrides the stock module) gained two `text/bullseye.cfg` features so the bulletin menu can have sections:
+
+| Line form | Meaning |
+|-----------|---------|
+| `# Some Header` | Non-selectable section header; consumes no number |
+| `../text/foo.msg` | Bulletin, label derived from filename (original behaviour) |
+| `../text/foo.msg\|Nice Label` | Bulletin with an explicit menu label |
+
+Numbering skips headers and stays continuous across sections. The first line remains the print-mode expression (`P_SEEK`). This is also how `schedule.msg` finally got listed; it had existed in `text/` all along but was never in the config, so it was unreachable.
+
+### The Pelican moved to Missoula
+
+The sysop relocated and the board went with him, so she did too. She is still a Carolina Beach pelican, now living in a mountain valley ~700 miles from salt water and grumbling about it affectionately. Her knowledge is split by *where*, not just *what*:
+
+- `ctrl/pelican_local.txt`: **where she is from.** Reframed rather than rewritten: a new preamble declares the whole file memory of home water, so ~200 lines of restaurant and beach lore stay useful as things she knows by heart instead of directions to a boardwalk nobody is standing on.
+- `ctrl/pelican_missoula.txt`: **where she is now.** Rivers and confluences, the M on Mount Sentinel, Brennan's Wave, food and beer, smokejumpers, inversions and smoke season, and a bird-to-bird rivalry with the local ospreys.
+
+See [The Pelican](#the-pelican) for the full knowledge-surface list.
+
+### Conditions strip
+
+The logon splash and the Lightbar status row both carry a one-line conditions strip built from `data/weather_tides.txt`:
+
+```
+  Missoula | 71F | Precip 0% | AQI 113 | 0mph | Clark Fork 1820cfs
+```
+
+Tides and the two NDBC surf buoys are gone with the move inland. Wind took one freed slot (it rides along with the NWS hourly forecast already being fetched, so it costs no extra request); **Clark Fork river flow** took the other. AQI **replaced the EPA UV index**, because in a valley that spends August and September under wildfire smoke, particulate is the number people actually want.
+
+| Field | Source | Notes |
+|-------|--------|-------|
+| Temp / Precip / Wind | NWS `api.weather.gov` | Wind direction is legitimately absent when calm |
+| AQI + PM2.5 | Open-Meteo air quality | No API key |
+| River flow / stage / water temp | USGS gauge `12340500` | "Clark Fork above Missoula", the in-town gauge |
+
+> **Gauge choice matters.** `12340500` ("above Missoula") is the in-town gauge, the one reflecting the water at Brennan's Wave. `12353000` ("below Missoula") sits downstream of the Bitterroot confluence and reads substantially higher. Don't swap them casually.
+
+AQI is coloured by the six [AirNow categories](https://www.airnow.gov/aqi/aqi-basics/), because a bare number doesn't read as good or bad at a glance:
+
+| AQI | Category | AirNow | Rendered |
+|-----|----------|--------|----------|
+| 0–50 | Good | Green | bright green |
+| 51–100 | Moderate | Yellow | bright yellow |
+| 101–150 | Sensitive Groups | Orange | **brown** (no orange in a 16-colour palette) |
+| 151–200 | Unhealthy | Red | bright red |
+| 201–300 | Very Unhealthy | Purple | bright magenta |
+| 301+ | Hazardous | Maroon | **dark red** (no maroon either) |
+
+> **Two renderers, keep them in sync.** `render_weather_strip_color()` / `_plain()` in `scripts/pelican_weather_tides.py` writes the strip into the logon splash files; `nc_weather_strip()` in `mods/lbshell.js` draws the same strip live on the status row. Change one, change the other, then diff their visible output against the same snapshot.
+>
+> They differ in exactly one respect, on purpose. Brown and dark red are the only codes needing `\x01n` to clear the high-intensity bit, and per the Synchronet source `\x01n` also clears the **background**. The lbshell status row is painted `console.attributes=0x5F` (magenta background) so it re-asserts `\x015` after the reset; the logon splash draws on a normal background and omits it. Hence `aqi_colour(aqi, bg)`.
+>
+> **Width budget:** six fields fit 79 columns with little room. Worst realistic case (sub-zero, high precip, gusty with direction, spring runoff at five digits) measures 76. A seventh field will wrap an 80-column terminal. A planned winter change swaps Clark Fork cfs for Snowbowl snow depth as a *swap*, not an addition, for this reason.
+
+Known rough edge: Very Unhealthy renders bright magenta on the magenta status row, the weakest contrast of the six. The pipes have the same issue already, so it is pre-existing rather than new.
+
 ## AWS Security Group — Required Open Ports
 
 | Port | Protocol | Service | Notes |
@@ -105,6 +185,9 @@ Also considering adding email server back in (can of worms though it is) as it i
 - [x] Shell restricted to Synchronet Classic + Deuce's Lightbar Shell; **Lightbar Shell is the default** for new users (ANSI/80-col terminals; others fall back to Classic)
 - [x] NaClCON color palette applied to both shells
 - [x] The Pelican: Claude-powered AI chat bot (1-on-1 and multinode)
+- [x] **NaClCON 2026 archive wing**: con sub-boards regrouped and frozen read-only, bulletins sectioned (see [The Post-Con Conversion](#the-post-con-conversion-july-2026))
+- [x] **Pelican relocated to Missoula, MT** with split origin/current knowledge files
+- [x] **Conditions strip** on logon + Lightbar status row: NWS weather, AirNow-coloured AQI, Clark Fork river flow
 - [x] Speaker list bulletin and per-speaker message threads
 - [x] Pre-login NaClCON banner shown at connect (before login prompt, via `mods/login.js`)
 - [x] Terminal-adaptive splash art at logon (wide ANSI art for large terminals >80 col, narrow art for 80-col terminals like SyncTERM; see `mods/logon.js`)
@@ -295,6 +378,8 @@ NaClCON BBS is joining [fsxNet](https://fsxnet.nz/) - the **F**un, **S**imple, e
 
 The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her way around a terminal. Powered by the Claude API (Haiku model). Best experienced in SyncTERM (syncterm.bbsdev.net).
 
+Since July 2026 she lives in **Missoula, Montana**, having followed the sysop and the board inland from Carolina Beach. She is still a Carolina Beach pelican and says so; the mountains are an affectionate running grievance, not a new identity.
+
 **1-on-1 chat** (`mods/pelican.js`): accessible via the 'T' key in both shells. Maintains per-user conversation history across sessions in `data/user/pelican_NNNN.json`. Config (API key, model, token limits) in `ctrl/pelican.ini` (gitignored). In private chat she gives longer, lore-heavy responses (3-5 sentences) and wraps text to your terminal width.
 
 **Multinode chat** (`mods/multichat_pelican.js`): a full JS reimplementation of Synchronet's built-in multinode chat that layers in Pelican responses. She chimes in when addressed by name (`pelican` / `peli`) or when there are 3 or fewer users in the channel. Shared Pelican history in `data/user/pelican_chan.json`. The chat menu is at `text/menu/multchat.msg` (NaClCON-branded, multi-color).
@@ -303,12 +388,19 @@ The room has a rolling **persistent scrollback** of the last 90 broadcast lines,
 
 Slash commands: `/W <alias> <text>` whispers to one online user (alias-matched), `/L` lists who's currently in the room, `/Q` exits, `/?` re-shows the menu. `^U` and `^P` pass through to Synchronet's built-in user list and private-message dialogs. Chat scrolls continuously without paginate-prompts.
 
-**Persona & knowledge:** She's warm but sassy, drops a "hun" or "darlin'" occasionally (hard cap: one per response, skipped in most). She knows full NaClCON 2026 details (speakers, schedule, venue, tickets), the NaClCON Arcade door lineup, and the BBSes We Like curated list. Her canonical texts: every issue of Phrack (phrack.org), The Hacker's Manifesto (The Mentor, 1986, Phrack #7), the DoD Rainbow Series (Orange Book/TCSEC, Password Management Guideline, TCSEC Application Guidance, Computer Security Glossary), and Neuromancer (Gibson, 1984).
+**Persona & knowledge:** She's warm but sassy, drops a "hun" or "darlin'" occasionally (hard cap: one per response, skipped in most). She knows the NaClCON 2026 details (speakers, schedule, venue) and speaks about the con in the **past tense**, pointing people at the on-board archive; the NaClCON Arcade door lineup; and the BBSes We Like curated list.
+
+> **Dialect note:** when a g drops off an `-ing` word she never writes the apostrophe (`fixin`, not `fixin'`), because the apostrophe reads theatrical. Real contractions (`y'all`, `ain't`) keep theirs. She is also instructed never to use em-dashes or double-hyphens, which read as AI tells. Her canonical texts: every issue of Phrack (phrack.org), The Hacker's Manifesto (The Mentor, 1986, Phrack #7), the DoD Rainbow Series (Orange Book/TCSEC, Password Management Guideline, TCSEC Application Guidance, Computer Security Glossary), and Neuromancer (Gibson, 1984).
 
 **Dynamic knowledge surfaces** (appended to her system prompt every chat session):
 - `ctrl/pelican_news.txt` — static BBS-state facts (Hacker Archives, Arcade, BBSes We Like, menu layout). Hand-edited.
-- `ctrl/pelican_weather.txt` — live NWS weather forecast + NOAA tide predictions for Carolina Beach, refreshed every 30 minutes by `scripts/pelican_weather_tides.py` (cron). Gitignored. She references current conditions organically when asked — the system prompt specifically instructs her not to recite unprompted.
-- `ctrl/pelican_local.txt` — local-expert knowledge: Carolina Beach & Kure restaurants (curated from recent Wilmington-subreddit threads), local secrets and rituals (Venus flytraps at the State Park, Freeman Park 4x4 etiquette, Thursday night fireworks, Sunday movie nights at the Lake), Pleasure Island history (1857 founding, Hurricane Hazel, the boardwalk's golden age, Freeman family legacy at the north end, Fort Fisher), and NC hacker history (Mitnick's 1995 Raleigh capture, the BBS underground, the December 2025 BEC attack on the town itself, NaClCON's "Salt Con" framing). Hand-edited. She picks one or two relevant items rather than reciting.
+- `ctrl/pelican_weather.txt`: live conditions for **Missoula**: NWS forecast, AirNow-category air quality, and the Clark Fork river (flow, stage, water temp). Refreshed every 30 minutes by `scripts/pelican_weather_tides.py` (cron). Gitignored. She references current conditions organically when asked; the prompt specifically instructs her not to recite unprompted.
+- `ctrl/pelican_local.txt`: **where she is from.** Carolina Beach & Kure restaurants (curated from Wilmington-subreddit threads), local secrets and rituals (Venus flytraps at the State Park, Freeman Park 4x4 etiquette, Thursday night fireworks, Sunday movie nights at the Lake), Pleasure Island history (1857 founding, Hurricane Hazel, the boardwalk's golden age, Freeman family legacy at the north end, Fort Fisher), and NC hacker history (Mitnick's 1995 Raleigh capture, the BBS underground, the December 2025 BEC attack on the town itself, NaClCON's "Salt Con" framing). Since July 2026 the file's preamble frames all of it as **memory**, so she talks about the coast as a place she knows by heart rather than one she is standing in.
+- `ctrl/pelican_missoula.txt`: **where she is now.** The Clark Fork and its confluences, the M on Mount Sentinel, Brennan's Wave, the food and beer worth naming, the smokejumper base, inversions and smoke season, Snowbowl and Flathead Lake, and a bird-to-bird rivalry with the local ospreys. Hand-edited.
+
+Both location files are loaded, in the order `naclcom → local → missoula → news`, so she can hold "I'm from there, I live here" without confusing the two. She picks one or two relevant items rather than reciting.
+
+> The script is still named `pelican_weather_tides.py` even though Montana has no tides. The name is kept so the crontab entry doesn't need touching; don't be misled by it, and don't rename it without updating cron.
 
 ## Logon Splash Art
 
