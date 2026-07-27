@@ -38,7 +38,22 @@ pre.naclcon-banner {
 	line-height: 1.05;
 	text-align: left;
 	white-space: pre;
-	overflow-x: auto;
+	/* Bootstrap ships `pre { overflow: auto }`, making this a scroll container.
+	   With width:fit-content the box rounds to whole pixels while the text
+	   advance width is fractional, so a stray horizontal scrollbar shows up
+	   under art that visibly fits. Switch it off and re-enable only on
+	   viewports genuinely too narrow for the 46-column wordmark (below).
+	   BOTH axes must be visible: per spec, `visible` on one axis computes to
+	   `auto` when the other isn't visible, which puts the scrollbar back. */
+	overflow: visible;
+}
+/* ~46 cols at 12px monospace is ~330px, plus the container's side padding.
+   Below this the wordmark genuinely doesn't fit, so allow it to scroll. */
+@media (max-width: 420px) {
+	pre.naclcon-banner {
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
 }
 pre.naclcon-banner .accent { color: #ffff5f; }
 .naclcon-tagline {
