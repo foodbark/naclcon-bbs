@@ -117,6 +117,24 @@ The sysop relocated and the board went with him, so she did too. She is still a 
 
 See [The Pelican](#the-pelican) for the full knowledge-surface list.
 
+### Rebrand to foodbark (in progress)
+
+The board is becoming **foodbark**, the sysop's personal BBS, with NaClCON kept as a memorial rather than an identity. The logon splash is done; the rest of the copy and config still say NaClCON BBS.
+
+Both splash files (`text/logon.asc` plain pre-auth, `text/menu/logon.asc` coloured post-auth) now show the foodbark wordmark hard left in bright magenta, `Formerly...` set out to the right, and the NaClCON logo beneath it **dimmed to dark gray**, so the handover reads visually instead of two logos competing. The con's dates, venue, `naclcon.com` line and "Play Hard. Hack Harder." are dropped; "The History of Hacking" stays as part of the memorial. Both files land at 22 rows including the conditions strip, inside the 24-row budget so nothing scrolls off an 80x24 terminal.
+
+> Any edit to these two files **must leave the last all-`=` line as the final content line**. `scripts/pelican_weather_tides.py` truncates at that separator and appends the conditions strip after it; move or lose it and the strip lands in the wrong place or the file grows on every cron run. The build script asserts this.
+
+Still carrying NaClCON branding: `text/logo.asc`, `text/sbbs.msg`, `text/newuser.msg`, `text/welcome.msg`, the webv4 frontend, lbshell theming, the BBS name in `ctrl/sbbs.ini` / `ctrl/main.ini`, and `[qwk] default_tagline` in `ctrl/msgs.ini` (which rides out on every DOVE-Net message). The NaClCON colour palette is deliberately **kept**.
+
+#### Planned: bbs.foodbark.io
+
+`foodbark.io` is already owned. The intent is a `bbs.foodbark.io` subdomain pointing here alongside `naclconbbs.net`, with both resolving to the same board.
+
+> **DNS alone is not enough.** The TLS certificate must include the new hostname or `https://bbs.foodbark.io` throws a certificate warning, which is a worse first impression than not having the domain at all. Certs are issued by Synchronet's built-in `exec/letsyncrypt.js`, so the new name has to be added to the hostname list in `ctrl/sbbs.ini` and a renewal run, ideally in the same change as the DNS record. Telnet and SSH are unaffected; this only touches the web frontend and the fTelnet browser terminal.
+
+When it lands, the splash footer becomes a two-domain line (currently `Missoula, Montana  *  naclconbbs.net`).
+
 ### Conditions strip
 
 The logon splash and the Lightbar status row both carry a one-line conditions strip built from `data/weather_tides.txt`:
