@@ -34,7 +34,7 @@ if (cfg_file.open("r", true)) {
 // ── System prompt ──────────────────────────────────────────────────────────────
 // Split into three blocks so prompt caching can reuse the stable parts:
 //   1. PERSONA_PROMPT  — never changes, deepest cache
-//   2. STATIC_KNOWLEDGE — naclcom + local + missoula + news (scrape / manual edits)
+//   2. STATIC_KNOWLEDGE — naclcom + local + missoula + foodbark + news (scrape / manual edits)
 //   3. VOLATILE_TEXT   — weather (30 min) + time-since-the-con (daily), uncached
 
 var PERSONA_PROMPT =
@@ -102,9 +102,11 @@ var _con   = _read_ctrl("pelican_naclcom.txt");
 var _local = _read_ctrl("pelican_local.txt");      // Carolina Beach: where she's FROM
 var _msla  = _read_ctrl("pelican_missoula.txt");   // Missoula: where she is NOW
 var _news  = _read_ctrl("pelican_news.txt");
+var _fb    = _read_ctrl("pelican_foodbark.txt");  // sysop's blog: /posts/ + /foodporn/
 if (_con)   STATIC_KNOWLEDGE += _con + "\n\n";
 if (_local) STATIC_KNOWLEDGE += _local + "\n\n";
 if (_msla)  STATIC_KNOWLEDGE += _msla + "\n\n";
+if (_fb)    STATIC_KNOWLEDGE += _fb + "\n\n";
 if (_news)  STATIC_KNOWLEDGE += _news;
 STATIC_KNOWLEDGE = STATIC_KNOWLEDGE.replace(/\s+$/, "");
 
