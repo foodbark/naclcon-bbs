@@ -114,13 +114,26 @@ def load_posted(path):
 
 
 def write_both(rel, body):
-    """Atomic write to repo and live. Non-fatal if the live tree is absent."""
+    """Atomic write to repo and live. Non-fatal if the live tree is absent.
+
+    UTF-8, matching pelican_naclcom_scrape.py. This must NOT be cp437: these
+    files are loaded into the Pelican's system prompt and sent to the Claude
+    API as JSON, which requires valid UTF-8. A cp437 write turns a character
+    like the o-umlaut in "pörkölt" into a lone 0x94 byte, and the API rejects
+    the whole request with
+
+        400 invalid_request_error: The request body is not valid JSON:
+        str is not valid UTF-8: surrogates not allowed
+
+    which takes down BOTH pelican.js and multichat_pelican.js, since they load
+    this file into the same STATIC_KNOWLEDGE block. These files are never
+    printed to a terminal, so there is no CP437 requirement on them."""
     for base in (REPO, LIVE):
         path = base + rel
         if not os.path.isdir(os.path.dirname(path)):
             continue
         tmp = path + ".tmp"
-        with io.open(tmp, "w", encoding="cp437", errors="replace", newline="\n") as f:
+        with io.open(tmp, "w", encoding="utf-8", newline="\n") as f:
             f.write(body)
         os.replace(tmp, path)
 
