@@ -164,13 +164,13 @@ AQI is coloured by the six [AirNow categories](https://www.airnow.gov/aqi/aqi-ba
 | 201–300 | Very Unhealthy | Purple | bright magenta |
 | 301+ | Hazardous | Maroon | **dark red** (no maroon either) |
 
-> **Two renderers, keep them in sync.** `render_weather_strip_color()` / `_plain()` in `scripts/pelican_weather_tides.py` writes the strip into the logon splash files; `nc_weather_strip()` in `mods/lbshell.js` draws the same strip live on the status row. Change one, change the other, then diff their visible output against the same snapshot.
+> **Two renderers, keep them in sync.** `render_weather_strip_color()` / `_plain()` in `scripts/pelican_weather_tides.py` writes the strip into the logon splash files; `nc_weather_strip()` in `mods/lbshell.js` draws the same strip live on the status row. They emit **byte-identical** output; verify by hex-diffing both against the same snapshot rather than by eye.
 >
-> They differ in exactly one respect, on purpose. Brown and dark red are the only codes needing `\x01n` to clear the high-intensity bit, and per the Synchronet source `\x01n` also clears the **background**. The lbshell status row is painted `console.attributes=0x5F` (magenta background) so it re-asserts `\x015` after the reset; the logon splash draws on a normal background and omits it. Hence `aqi_colour(aqi, bg)`.
+> The banner rows used to be painted `console.attributes=0x5F` (magenta background), which forced the two dark AQI codes to re-assert `\x015` after their `\x01n` reset (per the Synchronet source, `\x01n` clears the background too). That background has been removed, so the renderers are plain and identical again.
 >
 > **Width budget:** six fields fit 79 columns with little room. Worst realistic case (sub-zero, high precip, gusty with direction, spring runoff at five digits) measures 76. A seventh field will wrap an 80-column terminal. A planned winter change swaps Clark Fork cfs for Snowbowl snow depth as a *swap*, not an addition, for this reason.
 
-Known rough edge: Very Unhealthy renders bright magenta on the magenta status row, the weakest contrast of the six. The pipes have the same issue already, so it is pre-existing rather than new.
+The three banner rows (conditions strip, board/time/node, last-on/calls) render on the normal background. They were originally magenta (`0x5F`, plus `0x5B` for the third), which made bright-magenta values such as the Very Unhealthy AQI band nearly illegible against it. The menu lightbar keeps its magenta highlight; only the banner changed.
 
 ## AWS Security Group — Required Open Ports
 

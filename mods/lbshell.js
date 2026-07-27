@@ -1038,18 +1038,18 @@ function nc_weather_strip()
 	 * yellow, orange, red, purple, maroon. The 16-colour palette has no
 	 * orange and no maroon, so brown and dark red stand in, the usual ANSI
 	 * substitution. Those two need \x01n to clear the high-intensity bit,
-	 * and \x01n also clears the background, so they re-assert \x015 (magenta
-	 * bg) because this row is painted with console.attributes=0x5F. The
-	 * python renderer draws the same strip onto a normal background and so
-	 * omits the background code; that is the one intentional difference
-	 * between the two. */
+	 * and \x01n also clears the background. That used to matter: this row
+	 * was painted magenta (console.attributes=0x5F) so the two dark codes
+	 * had to re-assert \x015 to restore it. The banner background is gone
+	 * now, so they don't, and this renderer matches the python one exactly.
+	 * Keep them identical. */
 	var aqi_c    = isNaN(aqi) ? "\x01h\x01w" :
 	               aqi<=50  ? "\x01h\x01g" :          /* Good */
 	               aqi<=100 ? "\x01h\x01y" :          /* Moderate */
-	               aqi<=150 ? "\x01n\x015\x01y" :     /* USG (orange) */
+	               aqi<=150 ? "\x01n\x01y" :              /* USG (orange) */
 	               aqi<=200 ? "\x01h\x01r" :          /* Unhealthy */
 	               aqi<=300 ? "\x01h\x01m" :          /* Very Unhealthy */
-	                          "\x01n\x015\x01r";      /* Hazardous (maroon) */
+	                          "\x01n\x01r";           /* Hazardous (maroon) */
 	var wind_c   = isNaN(w) ? "\x01h\x01w" :
 	               w<8  ? "\x01h\x01w" :
 	               w<20 ? "\x01h\x01c" :
@@ -2744,7 +2744,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 					case console.screen_rows-8:
 						var nc_ws=nc_weather_strip();
 						if(nc_ws) {
-							console.attributes=0x5F;
+							console.attributes=LBShell_Attr;
 							console.cleartoeol();
 							console.putmsg(nc_ws);
 							console.attributes=LBShell_Attr;
@@ -2755,14 +2755,14 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 						}
 						break;
 					case console.screen_rows-7:
-						console.attributes=0x5F;
+						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						console.putmsg("\x01h\x01w  foodbark BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
 						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						break;
 					case console.screen_rows-6:
-						console.attributes=0x5B;
+						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						console.putmsg("\x01h\x01c  Last On: @LASTDATEON@  \xb3  Calls: @SERVED-R4@ of @TCALLS-L7@  \xb3  Since: @SINCE@\x01n");
 						console.attributes=LBShell_Attr;
@@ -2821,7 +2821,7 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 					case console.screen_rows-8:
 						var nc_ws=nc_weather_strip();
 						if(nc_ws) {
-							console.attributes=0x5F;
+							console.attributes=LBShell_Attr;
 							console.cleartoeol();
 							console.putmsg(nc_ws);
 							console.attributes=LBShell_Attr;
@@ -2832,14 +2832,14 @@ function cleararea(xpos,ypos,width,height,eol_allowed)
 						}
 						break;
 					case console.screen_rows-7:
-						console.attributes=0x5F;
+						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						console.putmsg("\x01h\x01w  foodbark BBS  \xb3  @TIME-L@ @DATE@  \xb3  Node @NODE-L3@  \xb3  Up @UPTIME-L8@\x01n");
 						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						break;
 					case console.screen_rows-6:
-						console.attributes=0x5B;
+						console.attributes=LBShell_Attr;
 						console.cleartoeol();
 						console.putmsg("\x01h\x01c  Last On: @LASTDATEON@  \xb3  Calls: @SERVED-R4@ of @TCALLS-L7@  \xb3  Since: @SINCE@\x01n");
 						console.attributes=LBShell_Attr;

@@ -259,17 +259,20 @@ def _ival(s):
         return None
 
 
-def aqi_colour(aqi, bg=""):
+def aqi_colour(aqi):
     """Ctrl-A colour for an AQI value, following the six AirNow categories
     (airnow.gov/aqi/aqi-basics): green, yellow, orange, red, purple, maroon.
 
     The 16-colour BBS palette has no orange and no maroon, so brown (low
-    intensity yellow) and dark red (low intensity red) stand in for them, which
-    is the usual ANSI substitution. Those two are the only ones that need
-    \\x01n to clear the high-intensity bit, and \\x01n also clears the
-    background, hence `bg`: callers drawing onto a coloured background pass the
-    background code to re-establish it. The lbshell status row does; the logon
-    splash, drawn on normal background, passes nothing."""
+    intensity yellow) and dark red (low intensity red) stand in for them,
+    which is the usual ANSI substitution. Those two are the only ones needing
+    a reset to clear the high-intensity bit.
+
+    That reset also clears the background. It used to matter: the lbshell
+    status row was painted magenta, so these codes had to re-assert it and
+    the function took a background argument. The banner background is gone,
+    so both renderers now emit exactly the same codes. nc_weather_strip() in
+    mods/lbshell.js must be kept identical."""
     if aqi is None:
         return "\x01h\x01w"
     if aqi <= 50:                       # Good
@@ -277,12 +280,12 @@ def aqi_colour(aqi, bg=""):
     if aqi <= 100:                      # Moderate
         return "\x01h\x01y"
     if aqi <= 150:                      # Unhealthy for Sensitive Groups
-        return "\x01n" + bg + "\x01y"
+        return "\x01n\x01y"
     if aqi <= 200:                      # Unhealthy
         return "\x01h\x01r"
     if aqi <= 300:                      # Very Unhealthy
         return "\x01h\x01m"
-    return "\x01n" + bg + "\x01r"       # Hazardous
+    return "\x01n\x01r"       # Hazardous
 
 
 def _wind_str(data, unit=True):
@@ -314,7 +317,7 @@ def render_weather_strip_color(data):
                 else "\x01h\x01w" if p < 20
                 else "\x01h\x01c" if p < 50
                 else "\x01h\x01m")
-    aqi_c = aqi_colour(aqi, bg="")
+    aqi_c = aqi_colour(aqi)
     wind_c = ("\x01h\x01w" if w is None
               else "\x01h\x01w" if w < 8
               else "\x01h\x01c" if w < 20

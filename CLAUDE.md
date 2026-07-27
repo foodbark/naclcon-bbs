@@ -93,7 +93,9 @@ The one-line weather/conditions strip is built from `data/weather_tides.txt` (ke
 - `render_weather_strip_color()` / `_plain()` in `scripts/pelican_weather_tides.py`: writes it into the logon splash files.
 - `nc_weather_strip()` in `mods/lbshell.js`: draws it live on the Lightbar status row.
 
-Change one, change the other, then diff their visible output against the same snapshot. They differ deliberately in one respect: the AQI colours for "Sensitive Groups" and "Hazardous" need `\x01n` to clear the high-intensity bit, and `\x01n` also clears the **background**, so the lbshell version re-asserts `\x015` (its row is painted `console.attributes=0x5F`, magenta background) while the python version, drawing on a normal background, does not.
+Change one, change the other. They emit **byte-identical** output and should stay that way; verify by hex-diffing both against the same `data/weather_tides.txt` snapshot, not by eye.
+
+They briefly diverged: the AQI colours for "Sensitive Groups" and "Hazardous" need `\x01n` to clear the high-intensity bit, `\x01n` also clears the **background**, and the lbshell banner rows used to be painted magenta (`console.attributes=0x5F`), so that renderer had to re-assert `\x015`. The banner background was removed, so both are plain again.
 
 **Width budget:** six fields fit 79 columns with ~3 to spare. A seventh will wrap an 80-column terminal.
 
