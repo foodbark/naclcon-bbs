@@ -1,6 +1,6 @@
 Welcome to NaClCON BBS, @ALIAS@!
 
-This board started life as the semi-official BBS for NaClCON, the hacker
+This board started life as the unofficial BBS for NaClCON, the hacker
 conference on the coast at Carolina Beach, NC (May 31 - June 2, 2026). The con
 is over. The board stayed.
 

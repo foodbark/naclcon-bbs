@@ -21,9 +21,9 @@
 n@TRUNCOFF@@WORDWRAP@
 nhyAbout This BBS
 nhr-------------------------------------------------------------------------------
-nwNaClCON BBS is the semi-official bulletin board for NaClCON 2026, the hacker
-nwconference on the coast of Carolina Beach, NC. Connect before, during,
-nwand after the con to chat, share files, and post in the message boards.
+nwNaClCON BBS is the unofficial bulletin board for NaClCON 2026, the hacker
+nwconference that ran on the coast of Carolina Beach, NC. The con is over;
+nwthe board stayed. Chat, share files, and post in the message boards.
 
 nhyKey Combos
 nhr-------------------------------------------------------------------------------
