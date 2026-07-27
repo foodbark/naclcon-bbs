@@ -39,10 +39,11 @@ function show_menu() {
 	console.clear(LIGHTGRAY);
 	console.print("\x01n\x01h\x01r===============================================================================\x01n\r\n");
 	console.print("\r\n");
-	console.print("\x01n\x01h\x01m                   _  _    __    ___  __    ___  _____  _  _                   \x01n\r\n");
-	console.print("\x01n\x01h\x01m                  ( \\( )  /__\\  / __)(  )  / __)(  _  )( \\( )                  \x01n\r\n");
-	console.print("\x01n\x01h\x01m                   )  (  /(__)\\( (__  )(__( (__  )(_)(  )  (                   \x01n\r\n");
-	console.print("\x01n\x01h\x01m                  (_)\\_)(__)(__)\\___)(____)\\___)(_____)(_)\\_)                  \x01n\r\n");
+	console.print("\x01n\x01h\x01m                   __                 _ _                _\x01n\r\n");
+	console.print("\x01n\x01h\x01m                  / _\xb3 ___   ___   __\xb3 \xb3 \xb3__   __ _ _ __\xb3 \xb3 __\x01n\r\n");
+	console.print("\x01n\x01h\x01m                 \xb3 \xb3_ / _ \\ / _ \\ / _` \xb3 '_ \\ / _` \xb3 '__\xb3 \xb3/ /\x01n\r\n");
+	console.print("\x01n\x01h\x01m                 \xb3  _\xb3 (_) \xb3 (_) \xb3 (_\xb3 \xb3 \xb3_) \xb3 (_\xb3 \xb3 \xb3  \xb3   <\x01n\r\n");
+	console.print("\x01n\x01h\x01m                 \xb3_\xb3  \\___/ \\___/ \\__,_\xb3_.__/ \\__,_\xb3_\xb3  \xb3_\xb3\\_\\\x01n\r\n");
 	console.print("\r\n");
 	console.print("\x01n\x01h\x01y                          B B S e s   W e   L i k e                            \x01n\r\n");
 	console.print("\x01n\x01h\x01r-------------------------------------------------------------------------------\x01n\r\n");
