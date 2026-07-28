@@ -198,3 +198,222 @@ pre.naclcon-banner .accent { color: #ffff5f; }
 
 /* Dark mode is forced site-wide — hide the navbar toggle */
 .dark-switch { display: none !important; }
+
+/* ------------------------------------------------------------------
+   Pelican web chat (webv4/mods/pages/004-pelican.xjs)
+
+   Both images are decoded from the truecolor half-block ANSI in art/ by
+   scripts/ans2png.py, so they are tiny (80px and 79px wide) and MUST be
+   scaled with image-rendering: pixelated. Smoothing them turns crisp
+   ANSI blocks into mush.
+   ------------------------------------------------------------------ */
+
+.peli-chat {
+	max-width: 760px;
+	margin: 0 auto 1.5em auto;
+}
+
+/* ---- Header: portrait over a dimmed Carolina Beach pier ---- */
+
+.peli-header {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 12px 14px;
+	border: 1px solid #ff5fff;
+	border-bottom: 0;
+	border-radius: 3px 3px 0 0;
+	position: relative;
+	overflow: hidden;
+	background-color: #120c18;
+}
+/* The pier sits behind everything at low opacity as a mood strip. It is a
+   separate layer rather than a background-image so the blur/opacity does
+   not touch the text on top of it. */
+.peli-header::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-image: url('../images/pelican-pier.png');
+	background-size: cover;
+	background-position: center 40%;
+	image-rendering: pixelated;
+	opacity: 0.22;
+	z-index: 0;
+}
+.peli-header > * { position: relative; z-index: 1; }
+
+.peli-portrait {
+	width: 72px;
+	height: auto;
+	flex: 0 0 auto;
+	image-rendering: pixelated;
+	border: 1px solid #ff5fff;
+	box-shadow: 0 0 10px rgba(255, 95, 255, 0.35);
+}
+
+.peli-ident { min-width: 0; }
+
+.peli-name {
+	margin: 0;
+	font-size: 1.35em;
+	font-weight: bold;
+	color: #ff5fff;
+	letter-spacing: 0.04em;
+}
+.peli-sub {
+	margin: 2px 0 0 0;
+	color: #ffffff;
+	font-size: 0.85em;
+}
+.peli-status {
+	margin: 2px 0 0 0;
+	color: #ffff5f;
+	font-size: 0.75em;
+	opacity: 0.8;
+}
+
+/* ---- Transcript ---- */
+
+.peli-log {
+	height: 58vh;
+	min-height: 260px;
+	max-height: 560px;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	background: #0d0d0d;
+	border: 1px solid #ff5fff;
+	border-bottom: 0;
+	padding: 12px 14px;
+	font-size: 0.92em;
+	line-height: 1.5;
+	/* Long unbroken strings (URLs, a wall of dashes) must not widen the box
+	   and start the whole page scrolling sideways. */
+	overflow-wrap: break-word;
+	word-break: break-word;
+}
+
+.peli-line { margin-bottom: 0.85em; }
+.peli-line:last-child { margin-bottom: 0; }
+
+.peli-label {
+	display: block;
+	font-weight: bold;
+	font-size: 0.85em;
+	letter-spacing: 0.05em;
+}
+.peli-peli .peli-label { color: #ff5fff; }
+.peli-you  .peli-label { color: #ffff5f; }
+
+.peli-body {
+	display: block;
+	color: #ffffff;
+	white-space: pre-wrap;
+}
+
+.peli-sys {
+	color: #888888;
+	font-size: 0.85em;
+	font-style: italic;
+	text-align: center;
+}
+
+.peli-thinking { color: #ff5f5f; }
+.peli-thinking::after {
+	content: '';
+	animation: peli-dots 1.2s steps(4, end) infinite;
+}
+@keyframes peli-dots {
+	0%   { content: ''; }
+	25%  { content: '.'; }
+	50%  { content: '..'; }
+	75%  { content: '...'; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.peli-thinking::after { animation: none; content: '...'; }
+}
+
+/* ---- Composer ---- */
+
+.peli-input {
+	display: flex;
+	gap: 8px;
+	align-items: flex-end;
+	padding: 10px;
+	background: #141414;
+	border: 1px solid #ff5fff;
+	border-radius: 0 0 3px 3px;
+}
+
+.peli-input textarea {
+	flex: 1 1 auto;
+	min-width: 0;
+	resize: none;
+	background: #0a0a0a;
+	color: #ffffff;
+	border: 1px solid #2a2a2a;
+	border-radius: 2px;
+	padding: 8px 10px;
+	font-family: inherit;
+	/* 16px keeps iOS Safari from zooming the viewport on focus. */
+	font-size: 16px;
+	line-height: 1.4;
+	max-height: 120px;
+}
+.peli-input textarea:focus {
+	outline: none;
+	border-color: #ff5fff;
+	box-shadow: 0 0 6px rgba(255, 95, 255, 0.4);
+}
+.peli-input textarea:disabled { opacity: 0.6; }
+
+.peli-input button {
+	flex: 0 0 auto;
+	min-height: 38px;
+	padding: 8px 18px;
+	font-weight: bold;
+}
+
+.peli-hint {
+	margin: 0.5em 2px 0 2px;
+	color: #888888;
+	font-size: 0.75em;
+}
+
+/* ---- Logged-out state ---- */
+
+.peli-locked {
+	border: 1px solid #ff5fff;
+	border-radius: 0 0 3px 3px;
+	background: #0d0d0d;
+	padding: 2em 1.5em;
+	text-align: center;
+}
+.peli-locked p { color: #ff5fff; font-size: 1.1em; margin-bottom: 0.5em; }
+.peli-locked .peli-locked-sub {
+	color: #ffffff;
+	font-size: 0.85em;
+	margin-bottom: 0;
+}
+.peli-locked code {
+	color: #ffff5f;
+	background: #1a1a1a;
+	border: 1px solid #ff5fff;
+	padding: 1px 6px;
+	border-radius: 2px;
+}
+
+/* ---- Phones ---- */
+
+@media (max-width: 600px) {
+	.peli-header { gap: 10px; padding: 10px; }
+	.peli-portrait { width: 56px; }
+	.peli-name { font-size: 1.15em; }
+	.peli-sub { font-size: 0.78em; }
+	.peli-log {
+		height: 52vh;
+		min-height: 220px;
+		padding: 10px;
+	}
+	.peli-input button { padding: 8px 14px; }
+}

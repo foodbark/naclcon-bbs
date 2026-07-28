@@ -65,18 +65,56 @@ To override a stock Synchronet module (e.g. `exec/logon.js`): copy it to `mods/l
 - `data/` — Runtime data (message bases, per-user history). `data/user/pelican_*.json` are created at runtime.
 - `webv4/` — NaClCON branding overrides for the Synchronet web frontend. Mirrors the layout under `/sbbs/webv4/`. Use the override hooks rather than forking stock files: `webv4/root/css/custom.css` is auto-linked by `index.xjs` after `style.css`, and `webv4/mods/components/header.xjs` is auto-loaded by `loadComponent()` ahead of stock `webv4/components/`. The web frontend depends on user #2 (`Guest`) being **active** — if the home page renders empty, `journalctl -u sbbs` will show `!DELETED OR INACTIVE USER #2: Guest`; clear `USER_INACTIVE` via jsexec.
 
+  > **Pages must NOT wrap their content in `<div class="container">`.** `index.xjs` calls `writePage()` from inside a `col-xs-12 col-sm-9`, and a Bootstrap 3 `.container` is *fixed* width (750/970/1170px). Nested in that column it ends up wider than its parent on desktop and spills right, so the sidebar appears to cut into the page content. Every stock page emits straight into the column. Only components rendered outside the grid, like `mods/components/header.xjs` and the navbar, get a `.container`.
+
 ### The Pelican (Claude AI Integration)
 
-The AI chatbot is the primary custom feature. It is split across two files:
+The AI chatbot is the primary custom feature. It is split across four files:
 
-The Pelican relocated from Carolina Beach to **Missoula, MT** in July 2026 (the sysop moved; the board followed). Her knowledge is split by location: `ctrl/pelican_local.txt` is where she is *from* (framed as memory by its own preamble), `ctrl/pelican_missoula.txt` is where she *is*. Both modules load `naclcom → local → missoula → news` into `STATIC_KNOWLEDGE`; if you add a knowledge file, add it to **both** modules.
+The Pelican relocated from Carolina Beach to **Missoula, MT** in July 2026 (the sysop moved; the board followed). Her knowledge is split by location: `ctrl/pelican_local.txt` is where she is *from* (framed as memory by its own preamble), `ctrl/pelican_missoula.txt` is where she *is*. Knowledge loads in the order `naclcom → local → missoula → foodbark → news` into `STATIC_KNOWLEDGE`; if you add a knowledge file, add it to **`mods/load/pelican_brain.js` and to `mods/multichat_pelican.js`** (multichat still carries its own copy).
 
-NaClCON 2026 is over. Both modules compute a count **up** from the closing day and instruct her to use the past tense. There is no date string to maintain, and nothing should reintroduce a countdown.
+NaClCON 2026 is over. Both the brain and multichat compute a count **up** from the closing day and instruct her to use the past tense. There is no date string to maintain, and nothing should reintroduce a countdown.
 
-- **`mods/pelican.js`** — 1-on-1 chat. Each user gets a persistent history file at `data/user/pelican_NNNN.json` (where `NNNN` is the user number). Keeps last 10 exchange pairs. 300-token response limit.
+- **`mods/load/pelican_brain.js`** — the shared brain: persona prompt, knowledge loading, cache breakpoints, history read/write, input guards, and the Claude API call. Used by the terminal module and the web endpoint so the persona has one source of truth. Exposes `PelicanBrain.{config, ask, load_history, save_history, is_injection, system_blocks, MAX_INPUT}`.
+
+  > **Block order is load-bearing for prompt caching.** `system_blocks(venue)` emits `[CORE_PERSONA (cached), STATIC_KNOWLEDGE (cached), venue coda + volatile]`. The two cached blocks must stay a **byte-identical prefix across venues**, which is exactly why anything venue-specific or time-varying is appended *last*. Putting the venue text earlier would fork the cache between terminal and web and silently double the cache-write cost.
+
+- **`mods/pelican.js`** — terminal 1-on-1 chat. Each user gets a persistent history file at `data/user/pelican_NNNN.json` (where `NNNN` is the user number). Keeps last 10 exchange pairs, 20 API calls per session. This file is now only the terminal UI (input wrapping, word wrap, Ctrl-A colors).
 - **`mods/multichat_pelican.js`** — Full reimplementation of Synchronet's `bbs.multinode_chat()`. Pelican responds when addressed by name (`pelican`/`peli`) or when ≤3 users are in the channel. Shared Pelican history at `data/user/pelican_chan.json`, 30-message window, 150-token responses. Public chat is also persisted to `/sbbs/data/multichat_scrollback.txt` (last 90 rendered lines) and replayed under a `── scrollback ──` header on join. Slash commands: `/W <alias> <text>` (whisper to one online user, alias-matched via `system.matchuser`, not persisted), `/L` (list who's in the room), `/Q` (quit), `/?` (re-show menu via `bbs.menu("multchat")`). `^U` and `^P` pass through to Synchronet's built-in user-list and private-message dialogs. Menu file: `text/menu/multchat.msg` (NaClCON-branded).
 
-Both read `ctrl/pelican.ini` for the API key, model (Haiku), and token limits. The Pelican persona is a sassy southern coastal Peli-hen.
+- **`webv4/root/api/pelican.ssjs` + `webv4/mods/pages/004-pelican.xjs`** — web chat, reachable at `/?page=004-pelican.xjs` (webv4 routes by full filename, not by the short page name). The endpoint is **logged-in only**: guests get a 401 from the API and a "log in" panel on the page, because it spends API money on every call and the board is publicly reachable. Per-user daily cap via `web_daily_limit` in `pelican.ini`, counted in `data/user/pelican_webquota_NNNN.json`.
+
+  It deliberately reads and writes the **same** `data/user/pelican_NNNN.json` the terminal uses, so a conversation started in SyncTERM continues in the browser. The `HELLO` opener both front ends send is filtered out of the transcript the page renders, since the user never saw it on screen. Styles live in `custom.css` under "Pelican web chat".
+
+All of these read `ctrl/pelican.ini` for the API key, model (Haiku), and token limits. The Pelican persona is a sassy southern coastal Peli-hen.
+
+### ANSI Art to PNG (`scripts/ans2png.py`)
+
+The art in `art/` is **truecolor half-block ANSI**: every character cell holds two stacked pixels (`▀`/`▄` with `38;2;r;g;b` foreground and `48;2;r;g;b` background), so an 80x56 cell grid is really an 80x112 RGB bitmap. `scripts/ans2png.py` decodes that back into a pixel-exact PNG, which is how the web chat gets her portrait without needing a CP437 webfont.
+
+Two dialects exist in `art/` and the script handles both:
+- **UTF-8** (`closeup.ans`, `XXXXX.ans`, `1XXXX.ans`) — real `U+2580`/`U+2584` characters, LF line breaks.
+- **CP437** (`closeup02.ans`, `logo.ans`) — raw byte `0xDF`, **no line breaks at all** (it relies on the terminal wrapping at 80 columns, so the decoder must wrap manually), plus a trailing SAUCE record starting at `0x1A` that must be stripped.
+
+Generated PNGs are tiny (80px wide) and **must** be scaled with `image-rendering: pixelated`, or the blocks turn to mush.
+
+`scripts/img2ans.py` is the exact inverse: it encodes any image or animation into the same half-block ANSI. `--verify` round-trips the result back through `ans2png.py` and asserts the pixels match, which is the quickest way to confirm a change to either script did not break the pair.
+
+> **Both scripts are vendored from the standalone `halfblock` repo and should be fixed upstream first**, then copied back. That repo has a round-trip test suite (`python3 tests/test_roundtrip.py`) covering both glyph encodings, all three row conventions and several widths; the copies here have no tests of their own. The suite caught two real decoder bugs plus a regression that silently mangled `art/logo.ans`, none of which the board art alone would have surfaced.
+
+- **At exactly 80 columns it emits no line breaks**, relying on terminal auto-wrap. This is why `art/logo.ans` and `art/closeup02.ans` have zero newlines; adding one costs a blank line per row on an 80-column terminal. Narrower output gets CRLF.
+
+  > **That default only holds inside SyncTERM.** Auto-wrap art shears diagonally in any window that is not exactly 80 columns, which is every modern terminal. Use `--positioned` for anything that will be viewed outside a BBS session: it prefixes each row with an absolute `ESC[row;1H` and a clear-to-EOL, so width stops mattering. It is also the right choice for animation, since frames then land exactly on top of each other instead of drifting.
+
+- `--space` encodes with background-coloured ASCII spaces instead of half blocks, one cell per pixel. Nothing outside `0x20-0x7E`, so it cannot break on a font missing `U+2580` or on a terminal that is not in UTF-8 mode. Costs half the vertical resolution; `fit()` halves the pixel height to compensate, so the aspect ratio matches half-block output exactly. Note it is **entirely** background colour, so a terminal without truecolor renders it as blank space rather than as wrong colours.
+- It only emits the parts of an SGR sequence that actually changed. Re-stating both colours plus a reset per cell, as the older art does, is what makes those files 100KB+.
+- Defaults to CP437 (raw `0xDF`) for SyncTERM, written as latin-1 so bytes round-trip; `--utf8` emits `U+2580` instead.
+
+**`text/nyan/` + `mods/nyan.js`** — a 12-frame animation at 80x16 cells, played as `*nyan` or `jsexec mods/nyan.js <loops>`. Each frame is a full redraw because roughly 90% of cells change between frames, so there is nothing worth delta-encoding. That costs about 28KB per frame, 700KB per two-loop run. The player sets `console.output_rate = 0` (as `pelican.js` does) so the baud emulation does not throttle it, and falls back to plain `write()` when `console` is undefined so it can be tested headlessly under jsexec. `text/nyan/ascii/` holds the `--space` variant; pass `ascii` to use it.
+
+> **The charset default is decided by whether a session exists.** `console` is defined in a BBS session and undefined under jsexec, and the player keys off that. In a session the CP437 bytes go out untouched, because Synchronet does its own translation for UTF-8 terminals. Under jsexec nothing translates, so the player emits UTF-8 by default; a raw `0xDF` reaching a modern terminal renders as a replacement character. `cp437` and `utf8` override.
+>
+> Both of the bugs this animation shipped with came from assuming SyncTERM's environment applied outside it: no-newline art needs an exactly-80-column terminal, and raw CP437 needs Synchronet in the path. **Anything under `text/` that might get viewed with `cat` or `jsexec` rather than through the BBS carries both assumptions.**
 
 ### Message Groups and Sub-Board Codes
 

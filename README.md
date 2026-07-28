@@ -203,6 +203,7 @@ Also considering adding email server back in (can of worms though it is) as it i
 - [x] Shell restricted to Synchronet Classic + Deuce's Lightbar Shell; **Lightbar Shell is the default** for new users (ANSI/80-col terminals; others fall back to Classic)
 - [x] NaClCON color palette applied to both shells
 - [x] The Pelican: Claude-powered AI chat bot (1-on-1 and multinode)
+- [x] **The Pelican on the web** — login-gated browser chat at `/?page=004-pelican.xjs`, sharing conversation history with the terminal so a chat carries across both
 - [x] **NaClCON 2026 archive wing**: con sub-boards regrouped and frozen read-only, bulletins sectioned (see [The Post-Con Conversion](#the-post-con-conversion-july-2026))
 - [x] **Pelican relocated to Missoula, MT** with split origin/current knowledge files
 - [x] **Conditions strip** on logon + Lightbar status row: NWS weather, AirNow-coloured AQI, Clark Fork river flow
@@ -398,7 +399,19 @@ The Pelican is the BBS chat bot: a sassy southern coastal Peli-hen who knows her
 
 Since July 2026 she lives in **Missoula, Montana**, having followed the sysop and the board inland from Carolina Beach. She is still a Carolina Beach pelican and says so; the mountains are an affectionate running grievance, not a new identity.
 
+**Shared brain** (`mods/load/pelican_brain.js`): the persona prompt, knowledge-file loading, prompt-cache breakpoints, history read/write, input guards and the Claude API call live here, so the terminal and the web share one source of truth rather than drifting apart. The front ends below are thin.
+
+> Block order matters for prompt caching. `system_blocks(venue)` emits `[persona (cached), knowledge (cached), venue note + volatile]`, and the two cached blocks must stay a **byte-identical prefix across venues**. That is precisely why anything venue-specific or time-varying is appended last. Moving the venue note earlier would fork the cache between terminal and web.
+
 **1-on-1 chat** (`mods/pelican.js`): accessible via the 'T' key in both shells. Maintains per-user conversation history across sessions in `data/user/pelican_NNNN.json`. Config (API key, model, token limits) in `ctrl/pelican.ini` (gitignored). In private chat she gives longer, lore-heavy responses (3-5 sentences) and wraps text to your terminal width.
+
+**Web chat** (`webv4/root/api/pelican.ssjs` + `webv4/mods/pages/004-pelican.xjs`): talk to her from a browser at `/?page=004-pelican.xjs`, no terminal needed. Her portrait sits at the top, the transcript scrolls beneath it, and the composer is pinned to the bottom; it is built mobile-first, since half the point is chatting from a phone.
+
+It reads and writes the **same history file** the terminal uses, so a conversation started in SyncTERM continues in the browser and vice versa, and the page says so when it picks one up.
+
+> **Logged-in users only.** Guests get a 401 from the endpoint and a "log in" panel on the page. The board is small and private, but this endpoint spends real API money per call and the site is publicly reachable; an unfamiliar IP scraped the page within a minute of it going live. Per-user daily cap via `web_daily_limit` in `pelican.ini`, counted in `data/user/pelican_webquota_NNNN.json`, separate from the terminal's own 20-calls-per-session cap.
+>
+> **Pages must not wrap their content in `<div class="container">`.** `index.xjs` calls `writePage()` from inside a `col-sm-9`, and a Bootstrap 3 `.container` is *fixed* width, so nesting one makes it wider than its parent on desktop and it spills under the sidebar. Every stock page emits straight into the column.
 
 **Multinode chat** (`mods/multichat_pelican.js`): a full JS reimplementation of Synchronet's built-in multinode chat that layers in Pelican responses. She chimes in when addressed by name (`pelican` / `peli`) or when there are 3 or fewer users in the channel. Shared Pelican history in `data/user/pelican_chan.json`. The chat menu is at `text/menu/multchat.msg` (NaClCON-branded, multi-color).
 
@@ -416,7 +429,13 @@ Slash commands: `/W <alias> <text>` whispers to one online user (alias-matched),
 - `ctrl/pelican_local.txt`: **where she is from.** Carolina Beach & Kure restaurants (curated from Wilmington-subreddit threads), local secrets and rituals (Venus flytraps at the State Park, Freeman Park 4x4 etiquette, Thursday night fireworks, Sunday movie nights at the Lake), Pleasure Island history (1857 founding, Hurricane Hazel, the boardwalk's golden age, Freeman family legacy at the north end, Fort Fisher), and NC hacker history (Mitnick's 1995 Raleigh capture, the BBS underground, the December 2025 BEC attack on the town itself, NaClCON's "Salt Con" framing). Since July 2026 the file's preamble frames all of it as **memory**, so she talks about the coast as a place she knows by heart rather than one she is standing in.
 - `ctrl/pelican_missoula.txt`: **where she is now.** The Clark Fork and its confluences, the M on Mount Sentinel, Brennan's Wave, the food and beer worth naming, the smokejumper base, inversions and smoke season, Snowbowl and Flathead Lake, and a bird-to-bird rivalry with the local ospreys. Hand-edited.
 
-Both location files are loaded, in the order `naclcom → local → missoula → news`, so she can hold "I'm from there, I live here" without confusing the two. She picks one or two relevant items rather than reciting.
+- `ctrl/pelican_foodbark.txt`: the sysop's blog (`/posts/` and `/foodporn/`). Hand-edited.
+
+All the knowledge files load in the order `naclcom → local → missoula → foodbark → news`, so she can hold "I'm from there, I live here" without confusing the two. She picks one or two relevant items rather than reciting.
+
+> If you add a knowledge file, add it to **both** `mods/load/pelican_brain.js` and `mods/multichat_pelican.js`. Multichat still carries its own copy of the persona, because its channel behaviour differs enough (150-token replies, shared room history, addressed-by-name logic) that folding it into the brain was not worth the risk.
+>
+> Knowledge files must be **UTF-8, never CP437**. A single stray CP437 byte makes every API call fail and takes both chat modes down at once.
 
 > The script is still named `pelican_weather_tides.py` even though Montana has no tides. The name is kept so the crontab entry doesn't need touching; don't be misled by it, and don't rename it without updating cron.
 
@@ -438,6 +457,26 @@ Art files live in `text/menu/` and deploy to `/sbbs/text/menu/` via rsync:
 | `random_wide_closeup.ans` | Wide |
 
 Source art files (pre-rename) are in `art/`. To add more, drop a file matching `random_wide*` or `random_narrow*` into `text/menu/` and rsync to deploy. The logon module picks from all matching files at random.
+
+### Making new art from an image
+
+The art in `art/` is **truecolor half-block ANSI**: each character cell holds two stacked pixels (`▀` with a 24-bit foreground and background), so an 80x56 grid is really an 80x112 bitmap. That means ordinary images convert straight into it.
+
+`scripts/img2ans.py` encodes, `scripts/ans2png.py` decodes, and a round trip is pixel-exact:
+
+```bash
+python3 scripts/img2ans.py source.png art/newsplash.ans --width 80 --verify
+```
+
+Defaults (CP437 glyph, 80-column auto-wrap) match the existing files and are what SyncTERM expects, so new art drops in alongside the old with no special handling. `--verify` proves the round trip before you deploy.
+
+> Both scripts are **vendored from [halfblock](https://github.com/foodbark/halfblock)**, which is where their test suite lives. Fix bugs upstream first, then copy back. Its `glyphtest.txt` is also the fastest way to check whether a terminal can draw half blocks and handle 24-bit colour, which are the two failure modes this art has.
+>
+> The defaults assume a classic 80-column terminal and break outside one: auto-wrap art shears diagonally in any wider window (`--positioned` fixes it), and the raw CP437 `0xDF` byte is not valid UTF-8, so it renders as replacement characters anywhere Synchronet is not doing the translation (`--utf8` fixes that). Neither matters for art served through the BBS; both matter the moment you `cat` a file.
+>
+> `text/ftelnet_splash.ans` additionally needs **CRLF** line endings or the art cascades diagonally in the browser terminal.
+
+`text/nyan/` plus `mods/nyan.js` are a 12-frame animation experiment left in the tree as a worked example of the format. It is deliberately **not wired** to any menu.
 
 ## Sysop
 

@@ -1,0 +1,235 @@
+<!--The Pelican-->
+<?xjs
+// Web chat with The Pelican. Talks to webv4/root/api/pelican.ssjs, which is
+// login-gated and shares its conversation history with the terminal module
+// mods/pelican.js, so a chat started in SyncTERM continues here.
+//
+// Lives in webv4/mods/pages/ (the override path), so no stock file is forked.
+// Styles are in webv4/root/css/custom.css under "Pelican web chat".
+//
+// The portrait is art/closeup.ans decoded to a PNG by scripts/ans2png.py. The
+// art is truecolor half-block ANSI, meaning it is really an 80x112 bitmap, so
+// the PNG is pixel-exact and needs no CP437 font in the browser.
+
+var pelican_guest = (user.alias === settings.guest || user.number === 0);
+?>
+<?xjs
+// NO wrapping <div class="container"> here. index.xjs already calls
+// writePage() from inside a col-xs-12 col-sm-9, and a Bootstrap 3 .container
+// is FIXED width (750/970/1170px). Nesting one inside that column makes it
+// wider than its parent on desktop, so it spills right underneath the sidebar
+// and the recent-visitors panel appears to cut into the chat. Stock pages
+// (000-home, 001-forum, 002-files, 003-games) all emit straight into the
+// column for exactly this reason. Only top-level components like
+// mods/components/header.xjs, which sit outside the grid, get a .container.
+?>
+
+  <div class="peli-chat">
+
+    <div class="peli-header">
+      <img class="peli-portrait" src="./images/pelican.png"
+           alt="The Pelican, a brown pelican in sunglasses against a Carolina sunset">
+      <div class="peli-ident">
+        <h2 class="peli-name">The Pelican</h2>
+        <p class="peli-sub">Carolina peli-hen, Missoula address. Ask her anything.</p>
+        <p class="peli-status" id="peli-status">
+<?xjs if (pelican_guest) { ?>
+          Not logged in.
+<?xjs } else { ?>
+          Connecting...
+<?xjs } ?>
+        </p>
+      </div>
+    </div>
+
+<?xjs if (pelican_guest) { ?>
+
+    <div class="peli-locked">
+      <p>She only talks to folks she knows, sugar.</p>
+      <p class="peli-locked-sub">
+        Log in up top and she'll be right here. No account? You can still
+        <a href="./?page=register">register</a>, or come find her on the board
+        itself: <code>ssh naclconbbs.net -p 2222</code>
+      </p>
+    </div>
+
+<?xjs } else { ?>
+
+    <div class="peli-log" id="peli-log" aria-live="polite" aria-label="Conversation">
+      <div class="peli-line peli-sys" id="peli-boot">Wakin her up...</div>
+    </div>
+
+    <form class="peli-input" id="peli-form" autocomplete="off">
+      <textarea id="peli-text" rows="1" maxlength="500"
+                placeholder="Say somethin to her..." aria-label="Your message"></textarea>
+      <button type="submit" id="peli-send" class="btn btn-primary">Send</button>
+    </form>
+    <p class="peli-hint">
+      Enter sends, Shift+Enter makes a new line. She remembers your last few
+      exchanges, here and on the board.
+    </p>
+
+<?xjs } ?>
+
+  </div>
+
+<?xjs if (!pelican_guest) { ?>
+<script>
+(function () {
+	var API   = './api/pelican.ssjs';
+	var log   = document.getElementById('peli-log');
+	var form  = document.getElementById('peli-form');
+	var text  = document.getElementById('peli-text');
+	var send  = document.getElementById('peli-send');
+	var stat  = document.getElementById('peli-status');
+	var boot  = document.getElementById('peli-boot');
+	var busy  = false;
+
+	function esc(s) {
+		return String(s).replace(/[&<>"']/g, function (c) {
+			return { '&': '&amp;', '<': '&lt;', '>': '&gt;',
+			         '"': '&quot;', "'": '&#39;' }[c];
+		});
+	}
+
+	function atBottom() {
+		return log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+	}
+
+	function scroll() {
+		log.scrollTop = log.scrollHeight;
+	}
+
+	// who is 'peli' | 'you' | 'sys'
+	function addLine(who, body) {
+		var stick = atBottom();
+		var el = document.createElement('div');
+		el.className = 'peli-line peli-' + who;
+		if (who === 'sys') {
+			el.textContent = body;
+		} else {
+			var label = (who === 'peli') ? '[The Pelican]' : '[You]';
+			el.innerHTML = '<span class="peli-label">' + label + '</span>' +
+			               '<span class="peli-body">' + esc(body) + '</span>';
+		}
+		log.appendChild(el);
+		if (stick) scroll();
+		return el;
+	}
+
+	function setStatus(s) {
+		if (stat) stat.textContent = s;
+	}
+
+	function remainingText(n) {
+		if (typeof n !== 'number') return '';
+		return n + ' message' + (n === 1 ? '' : 's') + ' left today';
+	}
+
+	function setBusy(b) {
+		busy = b;
+		send.disabled = b;
+		text.disabled = b;
+		send.textContent = b ? '...' : 'Send';
+	}
+
+	function thinking() {
+		var el = addLine('sys', 'She is thinkin...');
+		el.classList.add('peli-thinking');
+		scroll();
+		return el;
+	}
+
+	function post(payload) {
+		return fetch(API, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(payload)
+		}).then(function (r) { return r.json().catch(function () { return {}; }); });
+	}
+
+	function handle(res) {
+		if (res && res.reply) {
+			addLine('peli', res.reply);
+		} else if (res && res.error === 'auth') {
+			addLine('sys', 'Your session expired. Log in again and she will pick right back up.');
+		} else {
+			addLine('sys', 'Something went sideways, hun. Try again?');
+		}
+		if (res && typeof res.remaining === 'number') setStatus(remainingText(res.remaining));
+		scroll();
+	}
+
+	// Grow the textarea with the message, up to a ceiling.
+	function autosize() {
+		text.style.height = 'auto';
+		text.style.height = Math.min(text.scrollHeight, 120) + 'px';
+	}
+	text.addEventListener('input', autosize);
+
+	text.addEventListener('keydown', function (e) {
+		if (e.key === 'Enter' && !e.shiftKey) {
+			e.preventDefault();
+			form.dispatchEvent(new Event('submit', { cancelable: true }));
+		}
+	});
+
+	form.addEventListener('submit', function (e) {
+		e.preventDefault();
+		if (busy) return;
+		var msg = text.value.replace(/^\s+|\s+$/g, '');
+		if (!msg) return;
+
+		addLine('you', msg);
+		text.value = '';
+		autosize();
+		setBusy(true);
+		var t = thinking();
+
+		post({ message: msg })
+			.then(function (res) { t.remove(); handle(res); })
+			.catch(function () {
+				t.remove();
+				addLine('sys', 'Could not reach her. Check your connection?');
+			})
+			.then(function () {
+				setBusy(false);
+				if (window.innerWidth > 700) text.focus();
+			});
+	});
+
+	// Load the running conversation, then greet if there is nothing yet.
+	fetch(API, { headers: { 'Accept': 'application/json' } })
+		.then(function (r) { return r.json(); })
+		.then(function (res) {
+			if (boot) boot.remove();
+			if (!res || !res.ok) {
+				addLine('sys', 'She is not answering right now. Try again later.');
+				return;
+			}
+			setStatus(remainingText(res.remaining));
+
+			var hist = res.history || [];
+			hist.forEach(function (m) {
+				addLine(m.role === 'assistant' ? 'peli' : 'you', m.content);
+			});
+
+			if (hist.length) {
+				addLine('sys', '- picking up where you left off -');
+				scroll();
+				return;
+			}
+
+			setBusy(true);
+			var t = thinking();
+			return post({ greet: true })
+				.then(function (r2) { t.remove(); handle(r2); })
+				.then(function () { setBusy(false); });
+		})
+		.catch(function () {
+			if (boot) boot.remove();
+			addLine('sys', 'Could not reach her. Check your connection?');
+		});
+})();
+</script>
+<?xjs } ?>

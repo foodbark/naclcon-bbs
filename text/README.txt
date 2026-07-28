@@ -50,9 +50,32 @@ HARDENING APPLIED
 - AWS Security Group: Port 22 restricted to sysop IP only
 - OS SSH: password authentication disabled (key-only)
 - ufw enabled (default deny inbound) with rate limiting on 443 and 2222
-- fail2ban running with four jails: sshd, sbbs-passwd, sbbs-scanner, sbbs-shadow
+- fail2ban running with six jails: sshd, sbbs-passwd, sbbs-scanner, sbbs-shadow
+  (in /etc/fail2ban/jail.d/sbbs.conf), sbbs-web404 (5+ HTTP 404s in an hour,
+  reads the systemd journal directly), and synchronet-bbs (BBS SSH session
+  failures, in /etc/fail2ban/jail.d/synchronet.conf)
 - Synchronet login throttling: 5s delay between attempts, hack threshold 5,
   temp ban after 20 attempts (15 min), permanent filter after 50 attempts (24h)
+
+NOTE: keep the synchronet-bbs jail loose. Residential telnet callers normally
+reconnect 10-17 times in under 70 seconds, which a tight rule reads as a flood
+and bans real users. Use an L3 hashlimit on ports 23/2222 for flood defence
+instead. UFW's LIMIT is likewise wrong for web ports, since browsers open six
+or more parallel connections; use a tuned hashlimit in before.rules.
+
+ANSI ART
+========
+Art under text/ and art/ is truecolor half-block ANSI: two stacked pixels per
+character cell, so it is really a bitmap. Convert images to it with
+scripts/img2ans.py and back with scripts/ans2png.py (--verify proves the round
+trip). Both are vendored from https://github.com/foodbark/halfblock, which is
+where the tests live -- fix bugs there first.
+
+If art displays wrong, run 'cat glyphtest.txt' from that repo before debugging
+the file. It separates the two failure modes in one shot: a font that cannot
+draw the half block (rows 2-4) versus a terminal without 24-bit colour (row 5).
+Do not judge either by copy-pasting the output; pasting strips colour, and
+every cell in this art is the same character.
 
 SYSOP QUICK REF
 ===============
