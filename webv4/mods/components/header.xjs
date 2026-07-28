@@ -27,3 +27,15 @@
   Connect from your terminal: <code>telnet naclconbbs.net 23</code> &nbsp;|&nbsp; <code>ssh naclconbbs.net -p 2222</code>
 </p>
 </div>
+<?xjs
+// Swaps the ANSI art embedded in foodbark.io article posts for the matching
+// PNG. Loaded here because this component is an override hook that runs on
+// every page; index.xjs and lib/forum.js are stock and must not be forked.
+// The script no-ops on pages with no message bodies.
+?>
+<?xjs
+// The ?v= is a cache-buster. Browsers hold onto this aggressively, and a
+// stale copy looks exactly like the script being broken: the raw half-block
+// bytes and the [art:] markers both show through. Bump it on every change.
+?>
+<script src="./js/foodbark-art.js?v=3" defer></script>

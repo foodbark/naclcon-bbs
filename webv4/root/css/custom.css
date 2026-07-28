@@ -200,6 +200,31 @@ pre.naclcon-banner .accent { color: #ffff5f; }
 .dark-switch { display: none !important; }
 
 /* ------------------------------------------------------------------
+   ANSI art in forum messages (webv4/root/js/foodbark-art.js)
+
+   These PNGs are decoded straight out of the .ans the terminal displays,
+   so they are only ~70px wide. image-rendering: pixelated is what makes
+   the browser and SyncTERM agree: without it the browser smooths the
+   half-block cells into mush and the two stop matching, which is the
+   entire point of serving the decoded art rather than the source photo.
+   ------------------------------------------------------------------ */
+
+img.fb-art {
+	display: block;
+	width: 100%;
+	/* 70 cells wide is the house style (see scripts/foodbark_art.py), and a
+	   cap keeps it from ballooning on a wide monitor past the point where
+	   the pixels read as art rather than as a mistake. */
+	max-width: 560px;
+	height: auto;
+	margin: 0.75em 0;
+	image-rendering: pixelated;
+	image-rendering: crisp-edges;   /* Firefox fallback, keep after pixelated */
+	border: 1px solid #ff5fff;
+	background: #0a0a0a;
+}
+
+/* ------------------------------------------------------------------
    Pelican web chat (webv4/mods/pages/004-pelican.xjs)
 
    Both images are decoded from the truecolor half-block ANSI in art/ by

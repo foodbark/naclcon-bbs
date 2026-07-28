@@ -124,11 +124,15 @@ def encode(img, glyph, newline, positioned=False, top_row=1):
             out.append("\x1b[0m\x1b[K")
             continue
         if newline:
-            out.append("\r\n")
-            # A newline resets nothing, but SyncTERM paints the rest of the
-            # row with the current background. Clear it so trailing cells do
-            # not smear the last colour across the line.
-            out.append("\x1b[0m")
+            # Reset BEFORE the line ends, not after. Terminals implementing
+            # background-colour erase paint the remainder of a line with
+            # whatever background is active when that line ends, so leaving
+            # the last cell's colour set smears a bar from the edge of the
+            # art to the edge of the window. ESC[K then clears the rest of
+            # the line with the default background rather than the old one.
+            # Only visible when the window is wider than the art, which is
+            # why it hides on an exactly-fitting terminal.
+            out.append("\x1b[0m\x1b[K\r\n")
             fg = bg = None
     out.append("\x1b[0m")
     return "".join(out)

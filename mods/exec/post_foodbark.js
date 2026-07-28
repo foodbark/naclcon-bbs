@@ -10,6 +10,18 @@
 // Idempotent: every posted guid is appended to data/foodbark_posted.txt, which
 // the python side diffs against on the next run. Re-running with nothing staged
 // is a no-op.
+//
+// ART: if text/foodbark/<slug>.ans exists, where <slug> is the last path
+// segment of the article link, it is prepended to the message body. This is
+// opt-in per article by design. Article images are a mixed bag: photographs
+// and illustrations convert beautifully to half-block ANSI, but screenshots
+// of text turn to mush at 70 columns and no encoder setting rescues them.
+// Curating by dropping in a file beats auto-converting whatever appeared
+// first in the HTML. Make them with scripts/img2ans.py --width 70.
+//
+// Flags:
+//   --dry-run          assemble everything, report, write nothing
+//   --pending=<path>   read staged items from somewhere else (testing)
 
 "use strict";
 
@@ -20,6 +32,16 @@ var FROM_EXT  = "1";
 var REPO      = "/home/ubuntu/naclcon-bbs/";
 var PENDING   = "data/foodbark_pending.json";
 var POSTED    = "data/foodbark_posted.txt";
+var ART_DIR   = system.text_dir + "foodbark/";
+
+var dry_run = false;
+var pending_override = "";
+for (var a = 0; a < argv.length; a++) {
+	var opt = "" + argv[a];
+	if (opt === "--dry-run") dry_run = true;
+	var m = opt.match(/^--pending=(.+)$/);
+	if (m) pending_override = m[1];
+}
 
 function read_file(path) {
 	var f = new File(path);
@@ -40,7 +62,61 @@ function append_line(path, line) {
 	return true;
 }
 
-var raw = read_file(system.data_dir + "foodbark_pending.json");
+// https://foodbark.io/posts/stand-up-soba/ -> "stand-up-soba"
+function slug_of(link) {
+	if (!link) return "";
+	var s = ("" + link).replace(/[?#].*$/, "").replace(/\/+$/, "");
+	var i = s.lastIndexOf("/");
+	return (i >= 0) ? s.substring(i + 1) : s;
+}
+
+// Read as binary: the art is CP437 (raw 0xDF) to match the rest of text/, and
+// Synchronet translates it for UTF-8 terminals on its own inside a session.
+function read_bin(path) {
+	var f = new File(path);
+	if (!f.open("rb")) {
+		log(LOG_WARNING, "post_foodbark: cannot read art " + path);
+		return null;
+	}
+	var s = f.read();
+	f.close();
+	return s || null;
+}
+
+// An article can carry several images: <slug>-1.ans, <slug>-2.ans, ...
+// (<slug>.ans is still honoured for a single one.) Built by
+// scripts/foodbark_art.py, which also writes the matching web PNG.
+function art_files(slug) {
+	if (!slug) return [];
+	var found = directory(ART_DIR + slug + "-*.ans").sort();
+	if (file_exists(ART_DIR + slug + ".ans"))
+		found.unshift(ART_DIR + slug + ".ans");
+	return found;
+}
+
+// Wrap each piece in plain-ASCII sentinels naming its web image.
+//
+// The web frontend cannot show this art: Synchronet's html_encode predates
+// 24-bit colour and mis-parses it, and stock webv4 strips ANSI anyway, which
+// would leave a screenful of naked half-block bytes above the essay. So the
+// browser swaps the whole marked block for the matching PNG, which holds the
+// identical pixels (webv4/root/js/foodbark-art.js).
+//
+// The markers are deliberately Ctrl-A coloured, not plain: Synchronet renders
+// them dim grey in the terminal, while the web strips Ctrl-A before it strips
+// ANSI, so "[art:name]" survives in the browser for the script to find.
+function art_block(path) {
+	var data = read_bin(path);
+	if (!data) return null;
+	var name = file_getname(path).replace(/\.ans$/i, "");
+	return "\x01h\x01k[art:" + name + "]\x01n\r\n" +
+	       data + "\r\n" +
+	       "\x01h\x01k[/art]\x01n\r\n\r\n";
+}
+
+var raw = pending_override ? read_file(pending_override) : null;
+if (raw === null && !pending_override)
+	raw = read_file(system.data_dir + "foodbark_pending.json");
 if (raw === null) raw = read_file(REPO + PENDING);
 if (raw === null) {
 	print("nothing staged (no foodbark_pending.json); run scripts/foodbark_feed.py first");
@@ -59,19 +135,45 @@ if (!pending.length) {
 	exit(0);
 }
 
-var mb = new MsgBase(SUB_CODE);
+var mb = null;
+if (!dry_run) {
+mb = new MsgBase(SUB_CODE);
 if (!mb.open()) {
 	print("ERROR: cannot open msgbase " + SUB_CODE + " (" + mb.error + ")");
 	print("If the sub is new, ctrl/msgs.ini must be deployed; jsexec reads it fresh,");
 	print("but the running sbbs needs a restart before callers can see the sub.");
 	exit(1);
 }
+}
 
-var posted = 0, failed = 0;
+var posted = 0, failed = 0, illustrated = 0;
 for (var i = 0; i < pending.length; i++) {
 	var e = pending[i];
 	var body = e.body + "\r\n\r\n" + "-- " + "\r\n" + e.link + "\r\n";
 	body = body.replace(/\r?\n/g, "\r\n");
+
+	// Prepend the art AFTER the newline normalisation above, never before.
+	// That regex would otherwise run over the escape sequences, and the art's
+	// row endings are already exactly CRLF.
+	var slug = slug_of(e.link);
+	var files = art_files(slug);
+	var art = "";
+	for (var a = 0; a < files.length; a++) {
+		var block = art_block(files[a]);
+		if (block) art += block;
+	}
+	if (art) {
+		body = art + body;
+		illustrated++;
+	}
+	if (dry_run) {
+		print("  " + (art ? "[art] " : "[   ] ") + e.title.substr(0, 52));
+		print("        slug=" + slug + "  body=" + body.length + " bytes" +
+		      (art ? "  art=" + art.length + " in " + files.length + " image(s)"
+		           : "  (no " + ART_DIR + slug + "*.ans)"));
+		posted++;
+		continue;
+	}
 
 	var hdr = {
 		to:       "All",
@@ -94,13 +196,14 @@ for (var i = 0; i < pending.length; i++) {
 		print("  FAILED: " + e.title);
 	}
 }
-mb.close();
+if (mb) mb.close();
 
-print("posted " + posted + " of " + pending.length + " to " + SUB_CODE +
-      (failed ? " (" + failed + " failed)" : ""));
+print((dry_run ? "would post " : "posted ") + posted + " of " + pending.length +
+      " to " + SUB_CODE + (failed ? " (" + failed + " failed)" : "") +
+      ", " + illustrated + " with art");
 
 // Clear the staging file so a re-run before the next fetch is a no-op.
-if (posted && !failed) {
+if (posted && !failed && !dry_run) {
 	for (var p = 0; p < 2; p++) {
 		var path = (p === 0) ? (REPO + PENDING) : (system.data_dir + "foodbark_pending.json");
 		var f = new File(path);
